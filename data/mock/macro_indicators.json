@@ -1,0 +1,13 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-03T13:04:00+10:00",
+  "groups": {
+    "Rates": [{"name": "US 10Y yield", "value": 4.35, "unit": "%", "status": "mock", "note": "Treasury rate proxy"}],
+    "Liquidity": [{"name": "Fed balance sheet", "value": "Unavailable", "status": "mock", "note": "Awaiting provider fetch"}],
+    "Inflation": [{"name": "CPI YoY", "value": 3.1, "unit": "%", "status": "mock", "note": "Inflation trend proxy"}],
+    "Credit": [{"name": "High yield spread", "value": 3.4, "unit": "%", "status": "mock", "note": "Credit risk proxy"}],
+    "Volatility": [{"name": "VIX", "value": 16.8, "status": "mock", "note": "Equity volatility proxy"}],
+    "Dollar": [{"name": "DXY proxy", "value": 104.2, "status": "mock", "note": "Dollar strength proxy"}],
+    "Commodities": [{"name": "Gold/Oil tone", "value": "Mixed", "status": "mock", "note": "Commodity cross-check"}]
+  }
+}

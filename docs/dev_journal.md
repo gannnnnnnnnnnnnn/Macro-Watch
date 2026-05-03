@@ -1,0 +1,93 @@
+# Dev Journal
+
+Append-only lightweight project journal.
+
+## 2026-05-03 13:04 Australia/Melbourne
+
+- task: Create initial local Macro-Watch v0 scaffold.
+- files changed: `AGENTS.md`, `README.md`, `.gitignore`, `.agents/skills/update-dev-docs/SKILL.md`, `.agents/skills/publish-review-checkpoint/SKILL.md`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `docs/architecture.md`, `package.json`, `package-lock.json`, `next.config.mjs`, `postcss.config.mjs`, `tailwind.config.ts`, `tsconfig.json`, `next-env.d.ts`, `app/**`, `components/**`, `lib/**`, `data/mock/**`, `data/generated/.gitkeep`, `scripts/openbb_pipeline/**`.
+- what changed: Added workflow docs, local Next.js/TypeScript/Tailwind cockpit pages, file-based generated-first/mock-fallback data loading, mock market/macro/stress data, and an OpenBB-aware pipeline skeleton that writes generated fallback data with warnings.
+- validation: `npm install` passed; `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`; `python3 -m venv .venv` passed; `pip install -r requirements.txt` passed; `python run_all.py` passed and wrote generated JSON plus `pipeline_status.json`.
+- notes/risks: `npm install` reported two moderate audit findings. OpenBB installed locally, but v0 live fetches are intentionally conservative and currently write generated fallback records with warning status.
+- next: Replace fallback pipeline records with real no-paid-key OpenBB fetches and add chart rendering once the data contract settles.
+- commit hash if available: `27a89a1`
+
+## 2026-05-03 13:36 Australia/Melbourne
+
+- task: Wire first OpenBB real data pipeline.
+- files changed: `scripts/openbb_pipeline/fetch_market_snapshot.py`, `scripts/openbb_pipeline/fetch_macro_indicators.py`, `scripts/openbb_pipeline/fetch_stress_indicators.py`, `scripts/openbb_pipeline/run_all.py`, `app/data-lab/page.tsx`, `components/Cockpit.tsx`, `lib/types.ts`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Replaced market fallback-only behavior with real OpenBB historical fetches using yfinance for SPY, QQQ, VIX via `^VIX`, UUP, TLT, GLD, USO, and BTC-USD; added per-symbol status/error handling; expanded `pipeline_status.json` with per-file and per-symbol status; kept macro and stress as clearly labeled placeholders; surfaced provider, file, and symbol status in Data Lab.
+- validation: `npm run build` initially failed on a Data Lab TypeScript fallback tuple inference issue, then passed after the type fix; `python3 -m venv .venv` was not needed because `.venv` already existed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched real yfinance data through OpenBB for all market symbols; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: OpenBB real market fetch worked locally for all requested market proxies. No unavailable market symbols in local validation. Overall pipeline status is `warning` because macro and stress files are still placeholder/unavailable by design.
+- next: Add the first real no-key macro or stress indicator source, then consider simple market history charts.
+- commit hash if available: `e83b886`
+
+## 2026-05-03 14:03 Australia/Melbourne
+
+- task: Polish market cockpit and add history data.
+- files changed: `scripts/openbb_pipeline/fetch_market_history.py`, `scripts/openbb_pipeline/run_all.py`, `data/mock/market_history.json`, `lib/data.ts`, `lib/types.ts`, `components/Cockpit.tsx`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx`, `app/markets/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added generated/mock `market_history.json` support, exported 60 recent daily rows per symbol through OpenBB/yfinance, included history status in `pipeline_status.json`, added SVG sparklines to market cards and tables, strengthened the home dashboard/regime strip, upgraded market detail and watchlist views, and made macro/stress placeholders and Data Lab warnings more intentional.
+- validation: First `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: Market history real fetch worked locally for SPY, QQQ, VIX via `^VIX`, UUP, TLT, GLD, USO, and BTC-USD with 60 rows each. No unavailable market history symbols. Overall pipeline status remains `warning` because macro and stress files are still placeholder/unavailable by design.
+- next: Add one real no-key macro or stress data source, then refine historical chart interactions around the existing local JSON contract.
+- commit hash if available: `67fa47f`
+
+## 2026-05-03 14:28 Australia/Melbourne
+
+- task: Wire first FRED macro indicators.
+- files changed: `scripts/openbb_pipeline/requirements.txt`, `scripts/openbb_pipeline/fetch_macro_indicators.py`, `scripts/openbb_pipeline/fetch_stress_indicators.py`, `scripts/openbb_pipeline/run_all.py`, `lib/types.ts`, `components/Cockpit.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added `pandas_datareader` plus a no-key FRED CSV fallback, generated real FRED macro indicators for rates, CPI, unemployment, Fed assets, reverse repos, and credit spreads, calculated 10Y-2Y spread and CPI YoY, made stress buckets partial with real credit/liquidity/Treasury context, added per-series FRED status to `pipeline_status.json`, and surfaced provider/date/real-vs-pending labels in Macro, Stress, and Data Lab.
+- validation: First `npm run build` failed on a typed fallback tuple in Data Lab, then passed after the type fix; `pip install -r requirements.txt` installed `pandas_datareader`; `python run_all.py` passed; `pandas_datareader` failed locally because Python lacked `distutils`, then the FRED CSV fallback fetched real data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: FRED series worked locally for `DGS10`, `DGS2`, `FEDFUNDS`, `CPIAUCSL`, `UNRATE`, `WALCL`, `RRPONTSYD`, `BAMLH0A0HYM2`, and `BAA10Y`. No FRED series failed after CSV fallback. Stress remains partial by design because volatility, banking, household, and leverage buckets are not fully wired.
+- next: Add historical context or simple deltas for FRED series, then wire VIX snapshot into volatility stress without creating fake scores.
+- commit hash if available: `367b63e`
+
+## 2026-05-03 14:55 Australia/Melbourne
+
+- task: Polish cockpit shell and data views.
+- files changed: `components/AppShell.tsx`, `components/TradingViewWidget.tsx`, `components/Cockpit.tsx`, `app/layout.tsx`, `app/page.tsx`, `app/markets/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added a reusable app shell with sidebar navigation and top status strip, upgraded the dashboard with generated-data freshness, market pulse, macro snapshot, and stress snapshot, expanded Markets with selected asset detail and a public TradingView embed, improved Macro and Stress views around real/pending badges, and reshaped Data Lab into an operations-style page with files, providers, market symbols, FRED series, warnings, commands, and source contract.
+- validation: `npm run build` failed once on a Data Lab file warning type, then passed after the type fix; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: TradingView widget was added as a client-only public embed, not the proprietary Charting Library; if its external script fails, the widget shows a fallback card. UI remains server-rendered around local JSON and still has no interactive selected-symbol state beyond the first generated asset. Stress remains partial and not scored.
+- next: Add lightweight client-side selected asset switching on Markets, then wire VIX into volatility stress while keeping labels honest.
+- commit hash if available: `f58950b`
+
+## 2026-05-03 15:21 Australia/Melbourne
+
+- task: Add market selection and VIX stress context.
+- files changed: `components/MarketsClient.tsx`, `components/TradingViewWidget.tsx`, `app/markets/page.tsx`, `app/page.tsx`, `app/data-lab/page.tsx`, `scripts/openbb_pipeline/fetch_stress_indicators.py`, `scripts/openbb_pipeline/run_all.py`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added client-side selected asset switching for Markets without global state, made watchlist rows selectable with selected-row highlighting, updated selected asset detail/sparkline/TradingView widget from the selected symbol, expanded TradingView symbol mapping for UUP and TLT, passed market snapshot data into stress generation, and wired real VIX from OpenBB/yfinance into the Volatility stress bucket without creating a score.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; generated `stress_indicators.json` contains real VIX value/status/provider; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: Selected asset switching works as a client component on `/markets` and defaults to the first generated asset. VIX stress wiring worked locally with VIX from yfinance/OpenBB. TradingView mapping uses `NASDAQ:TLT`, which is the common TradingView embed symbol; external widget loading can still fail independently of the local app.
+- next: Add small historical delta views for FRED and VIX context, still without fake scoring.
+- commit hash if available: `f2cb0ed`
+
+## 2026-05-03 15:48 Australia/Melbourne
+
+- task: Harden v0.1 local cockpit.
+- files changed: `scripts/openbb_pipeline/fetch_macro_indicators.py`, `lib/freshness.ts`, `lib/types.ts`, `components/AppShell.tsx`, `components/Cockpit.tsx`, `app/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`.
+- what changed: Added generated-data freshness and stale warning helpers, surfaced freshness in the top status strip, sidebar, dashboard, and Data Lab, added neutral FRED delta fields (`previous_value`, `delta`, `delta_label`, `one_year_delta`) where history supports them, showed delta context in macro/stress indicators and metric tiles, tightened Data Lab operating summary, and updated milestone docs for v0.1.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. `npm run dev` was not run because it was optional and build/pipeline validation covered the checkpoint.
+- notes/risks: UI now warns when generated data is older than 24 hours. Delta fields are context only and do not imply good/bad or regime scoring. Empty/missing data paths continue to render unavailable, pending, or run-pipeline states.
+- next: Review v0.1 locally, then add small historical context views only if the current cockpit feels solid.
+- commit hash if available: `4fa929e`
+
+## 2026-05-03 18:46 Australia/Melbourne
+
+- task: Fix Tailwind styling and rescue cockpit UI.
+- files changed: `package.json`, `package-lock.json`, `postcss.config.mjs`, `app/globals.css`, `components/AppShell.tsx`, `app/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Restored the styling pipeline to stable Tailwind v3 by pinning `tailwindcss` to `3.4.17`, pinning PostCSS/autoprefixer versions, removing the Tailwind v4-only `@tailwindcss/postcss` plugin dependency, and switching PostCSS config back to the v3 `tailwindcss` plugin. Added global sans-serif/link/table/form defaults and made a focused visual rescue pass on the top status strip, dashboard hero/focus grid, and Data Lab summary grid.
+- validation: `npm install` passed and updated the lockfile; first `npm run build` passed; generated CSS was checked for utilities including `grid`, `border-line`, `bg-panel`, and `text-slate-*`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched/wrote market, macro, stress, history, and pipeline status data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`; `npm run dev` started on port 3001 because port 3000 was in use, and all five app routes returned HTTP 200.
+- notes/risks: Root cause was dependency drift to Tailwind v4 plus the v4 PostCSS plugin while the project uses a Tailwind v3 config/content/custom-color setup. `npm install` still reports two moderate audit findings. Visual rescue was intentionally focused and did not add new features, pages, data sources, or scoring.
+- next: Run the dev server and visually review all five pages; then keep the next slice small and local-first.
+- commit hash if available: `9f2cd3d`
+
+## 2026-05-03 19:10 Australia/Melbourne
+
+- task: Finalize v0.1 Local Macro Cockpit checkpoint.
+- files changed: `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `README.md`.
+- what changed: Marked v0.1 Local Macro Cockpit as ready for merge review, clarified working scope and explicit out-of-scope items, added Phase 2 Daily Use Layer candidates, and tightened README notes around generated JSON, mock fallback, and running the local pipeline for real data.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and wrote generated market, history, macro, stress, and pipeline status JSON; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. Optional `npm run dev` was not rerun for this docs-only checkpoint.
+- notes/risks: No feature, UI, or data-source changes in this checkpoint.
+- next: Merge review for v0.1, then choose one small Phase 2 daily-use slice.
+- commit hash if available: Pending.

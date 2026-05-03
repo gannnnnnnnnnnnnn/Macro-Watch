@@ -1,0 +1,21 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-03T13:04:00+10:00",
+  "assets": [
+    {"symbol": "SPY", "name": "S&P 500 proxy", "value": 512.4, "unit": "USD", "change": 0.42, "status": "mock"},
+    {"symbol": "QQQ", "name": "Nasdaq 100 proxy", "value": 438.8, "unit": "USD", "change": 0.61, "status": "mock"},
+    {"symbol": "VIX", "name": "Volatility proxy", "value": 16.8, "change": -2.31, "status": "mock"},
+    {"symbol": "UUP", "name": "US dollar proxy", "value": 28.1, "unit": "USD", "change": 0.12, "status": "mock"},
+    {"symbol": "TLT", "name": "US10Y/Treasury proxy", "value": 91.6, "unit": "USD", "change": -0.18, "status": "mock"},
+    {"symbol": "GLD", "name": "Gold proxy", "value": 216.5, "unit": "USD", "change": 0.34, "status": "mock"},
+    {"symbol": "USO", "name": "Oil proxy", "value": 74.2, "unit": "USD", "change": -0.45, "status": "mock"},
+    {"symbol": "BTC-USD", "name": "Bitcoin", "value": 64800, "unit": "USD", "change": 1.25, "status": "mock"}
+  ],
+  "watchlist": [
+    {"symbol": "SPY", "name": "S&P 500 proxy", "value": 512.4, "unit": "USD", "change": 0.42, "status": "mock"},
+    {"symbol": "QQQ", "name": "Nasdaq 100 proxy", "value": 438.8, "unit": "USD", "change": 0.61, "status": "mock"},
+    {"symbol": "VIX", "name": "Volatility proxy", "value": 16.8, "change": -2.31, "status": "mock"},
+    {"symbol": "UUP", "name": "US dollar proxy", "value": 28.1, "unit": "USD", "change": 0.12, "status": "mock"},
+    {"symbol": "TLT", "name": "Treasury duration proxy", "value": 91.6, "unit": "USD", "change": -0.18, "status": "mock"}
+  ]
+}

@@ -1,0 +1,2 @@
+openbb>=4.0.0
+pandas_datareader>=0.10.0
