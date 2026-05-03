@@ -2,7 +2,7 @@
 
 ## Current phase
 
-v0.1 local macro cockpit closeout.
+v0.1 local macro cockpit styling hardening.
 
 ## Current runnable path
 
@@ -10,7 +10,7 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 ## Current stack
 
-Next.js, TypeScript, Tailwind CSS, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market snapshot and history fetches plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
+Next.js, TypeScript, Tailwind CSS v3, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market snapshot and history fetches plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
 
 ## Current data contract
 
@@ -18,4 +18,4 @@ Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicato
 
 ## Next step
 
-Start the next slice only after reviewing the v0.1 cockpit locally; likely next step is small historical context views, not new subsystems.
+Review the Tailwind v3-styled cockpit locally across all five pages before starting any new data or workflow slice.

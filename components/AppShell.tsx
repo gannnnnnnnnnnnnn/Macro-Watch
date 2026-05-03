@@ -61,8 +61,8 @@ export function TopStatusStrip() {
   const fredReal = Object.values(pipelineStatus.fred_series ?? {}).filter((series) => series.real_data).length;
   const freshness = getFreshness(pipelineStatus.generated_at);
   return (
-    <div className="border-b border-line bg-[#080b12]/80 px-4 py-3 backdrop-blur">
-      <div className="mx-auto grid max-w-7xl gap-2 text-xs text-slate-400 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="border-b border-line bg-[#080b12]/85 px-4 py-3 shadow-lg shadow-black/10 backdrop-blur">
+      <div className="mx-auto grid max-w-7xl gap-2 text-xs text-slate-400 sm:grid-cols-2 xl:grid-cols-5">
         <div className="flex items-center justify-between gap-3 rounded border border-line bg-ink px-3 py-2"><span>Source</span><SourceBadge source={source} /></div>
         <div className="flex items-center justify-between gap-3 rounded border border-line bg-ink px-3 py-2"><span>Generated</span><span className="text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</span></div>
         <div className="flex items-center justify-between gap-3 rounded border border-line bg-ink px-3 py-2"><span>Freshness</span><StatusBadge label={freshness.label} real={!freshness.isStale} /></div>

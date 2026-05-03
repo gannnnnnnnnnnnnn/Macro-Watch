@@ -70,4 +70,14 @@ Append-only lightweight project journal.
 - validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. `npm run dev` was not run because it was optional and build/pipeline validation covered the checkpoint.
 - notes/risks: UI now warns when generated data is older than 24 hours. Delta fields are context only and do not imply good/bad or regime scoring. Empty/missing data paths continue to render unavailable, pending, or run-pipeline states.
 - next: Review v0.1 locally, then add small historical context views only if the current cockpit feels solid.
+- commit hash if available: `4fa929e`
+
+## 2026-05-03 18:46 Australia/Melbourne
+
+- task: Fix Tailwind styling and rescue cockpit UI.
+- files changed: `package.json`, `package-lock.json`, `postcss.config.mjs`, `app/globals.css`, `components/AppShell.tsx`, `app/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Restored the styling pipeline to stable Tailwind v3 by pinning `tailwindcss` to `3.4.17`, pinning PostCSS/autoprefixer versions, removing the Tailwind v4-only `@tailwindcss/postcss` plugin dependency, and switching PostCSS config back to the v3 `tailwindcss` plugin. Added global sans-serif/link/table/form defaults and made a focused visual rescue pass on the top status strip, dashboard hero/focus grid, and Data Lab summary grid.
+- validation: `npm install` passed and updated the lockfile; first `npm run build` passed; generated CSS was checked for utilities including `grid`, `border-line`, `bg-panel`, and `text-slate-*`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched/wrote market, macro, stress, history, and pipeline status data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`; `npm run dev` started on port 3001 because port 3000 was in use, and all five app routes returned HTTP 200.
+- notes/risks: Root cause was dependency drift to Tailwind v4 plus the v4 PostCSS plugin while the project uses a Tailwind v3 config/content/custom-color setup. `npm install` still reports two moderate audit findings. Visual rescue was intentionally focused and did not add new features, pages, data sources, or scoring.
+- next: Run the dev server and visually review all five pages; then keep the next slice small and local-first.
 - commit hash if available: Pending.

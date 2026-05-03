@@ -49,7 +49,7 @@ export default function Home() {
               Generated market, macro, and stress JSON is active. The cockpit is not scoring regimes yet; pending areas stay labeled.
             </p>
           </div>
-          <div className="grid gap-2 text-sm sm:grid-cols-2 xl:min-w-[520px]">
+          <div className="grid gap-2 text-sm sm:grid-cols-2 xl:min-w-[620px] xl:grid-cols-5">
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Data source</p><div className="mt-2"><SourceBadge source={source} /></div></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real markets</p><p className="mt-2 text-slate-200">{realMarkets}/{assets.length}</p></div>
@@ -61,7 +61,7 @@ export default function Home() {
 
       <ShellTitle title="Market pulse" source={source} />
       <Panel title="Focus now">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           <MetricTile label="VIX" value={value(vixStress)} detail="Watch item; not scored yet" badge={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} />
           <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Partial context" />
           <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas, "Credit watch item")} />
