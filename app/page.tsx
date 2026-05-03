@@ -20,7 +20,7 @@ function detail(item: Indicator | undefined, fallback = "context only") {
 }
 
 export default function Home() {
-  const { market, marketHistory, macro, stress, pipelineStatus, source } = getCockpitData();
+  const { market, marketHistory, macro, stress, pipelineStatus } = getCockpitData();
   const assets = market.assets ?? [];
   const bySymbol = Object.fromEntries(assets.map((asset) => [asset.symbol, asset]));
   const riskAssets = [bySymbol.SPY, bySymbol.QQQ, bySymbol["BTC-USD"]].filter(Boolean);
@@ -46,10 +46,10 @@ export default function Home() {
       <div className="mb-6 rounded-lg border border-line bg-panel/80 p-5 shadow-xl shadow-black/20">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">OpenBB + FRED local research cockpit</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Research home</p>
             <h1 className="mt-2 text-4xl font-semibold text-white sm:text-5xl">Macro-Watch</h1>
             <p className="mt-3 max-w-3xl text-sm text-slate-400">
-              Macro-first local research workbench. {source === "generated" ? "Generated data is active" : source === "mixed" ? "Generated and mock data are mixed" : "Mock fallback is active"}; context only, not scored.
+              Macro-first market context, pinned indicators, and stress watch items. Context only, not scored.
             </p>
           </div>
           <div className="rounded-lg border border-line bg-ink px-4 py-3 text-sm text-slate-400 xl:min-w-[320px]">
@@ -69,8 +69,8 @@ export default function Home() {
           <MetricTile label="VIX" value={value(vixStress)} detail="Watch item; not scored yet" badge={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} />
           <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Partial context" />
           <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas, "Credit watch item")} />
-          <MetricTile label="RRP" value={value(rrp) !== "Unavailable" ? value(rrp) : value(walcl)} detail={rrp?.real_data ? detail(rrp, "Liquidity watch item") : "Fed assets fallback"} />
-          <MetricTile label="Pipeline" value={<StatusBadge label={pipelineStatus.status} />} detail="Generated data path" />
+          <MetricTile label="RRP / Fed assets" value={value(rrp) !== "Unavailable" ? value(rrp) : value(walcl)} detail={rrp?.real_data ? detail(rrp, "Liquidity watch item") : "Liquidity context"} />
+          <MetricTile label="Data health" value={<StatusBadge label={freshness.isStale ? "stale" : "current"} real={!freshness.isStale} />} detail="Details in Data Lab" />
         </div>
       </Panel>
       <div className="mb-6 grid gap-3 md:grid-cols-4">

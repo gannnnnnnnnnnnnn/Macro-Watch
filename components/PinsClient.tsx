@@ -29,13 +29,21 @@ function savePins(pins: PinConfig[]) {
   window.dispatchEvent(new Event("macro-watch:pins-changed"));
 }
 
-export function PinButton({ target, className = "" }: { target: PinConfig; className?: string }) {
+export function PinButton({
+  target,
+  defaultPins = [],
+  className = "",
+}: {
+  target: PinConfig;
+  defaultPins?: PinConfig[];
+  className?: string;
+}) {
   const { t } = useLanguage();
   const [pinned, setPinned] = useState(false);
 
   useEffect(() => {
     const sync = () => {
-      const pins = readPins([]);
+      const pins = readPins(defaultPins);
       setPinned(pins.some((pin) => keyFor(pin) === keyFor(target)));
     };
     sync();
@@ -45,7 +53,7 @@ export function PinButton({ target, className = "" }: { target: PinConfig; class
       window.removeEventListener("macro-watch:pins-changed", sync);
       window.removeEventListener("storage", sync);
     };
-  }, [target.id, target.type]);
+  }, [defaultPins, target.id, target.type]);
 
   return (
     <button
@@ -54,7 +62,7 @@ export function PinButton({ target, className = "" }: { target: PinConfig; class
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        const pins = readPins([]);
+        const pins = readPins(defaultPins);
         const exists = pins.some((pin) => keyFor(pin) === keyFor(target));
         const next = exists ? pins.filter((pin) => keyFor(pin) !== keyFor(target)) : [...pins, target];
         savePins(next);
@@ -157,7 +165,7 @@ export function PinnedWorkbench({
             <p className="mt-2 text-xs text-slate-500">{pin.latest_date ? formatDate(pin.latest_date) : t("unavailable")}</p>
           </Link>
         ))}
-        {!pinnedItems.length ? <p className="text-sm text-slate-500">No pinned items yet.</p> : null}
+        {!pinnedItems.length ? <p className="text-sm text-slate-500">{t("noPinnedItems")}</p> : null}
       </div>
     </section>
   );

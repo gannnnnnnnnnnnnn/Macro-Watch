@@ -29,7 +29,7 @@ Status: in PR #1 on `feature/interactive-workbench`.
 
 ## Phase 2.2: Product Polish Follow-up
 
-Status: in progress on PR #1.
+Status: ready for user visual approval on PR #1.
 
 - Research-first information hierarchy with Data Lab as diagnostics home
 - Consistent number/date formatting

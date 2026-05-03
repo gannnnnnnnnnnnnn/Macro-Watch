@@ -121,3 +121,13 @@ Append-only lightweight project journal.
 - notes/risks: `npm install` still reports two moderate audit findings. Stress radar is context-percentile based and partial, not a complete stress score. Language coverage targets core interface labels; some longer technical notes remain English. Pin state is browser-local only and does not mutate config files.
 - next: User should visually review the listed routes before merge, especially Markets, asset details, indicator details, Stress radar, and mobile Data Lab.
 - commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-03 23:43 Australia/Melbourne
+
+- task: Final polish interactive workbench PR.
+- files changed: `app/page.tsx`, `app/markets/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `app/stress/page.tsx`, `components/LanguageProvider.tsx`, `components/MarketsClient.tsx`, `components/PinsClient.tsx`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`.
+- what changed: Softened Dashboard copy away from diagnostics, made Data Lab the diagnostics home, moved Stress Radar to the top of the Stress page, collapsed the full stress bucket list behind a secondary section, made pin buttons aware of default pins when localStorage has not been initialized, expanded the local EN / 中文 dictionary, and kept Markets/asset/indicator pin actions aligned with default pins.
+- validation: `npm install` passed with dependencies already up to date; `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched 28 market snapshots plus five-year market history; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run dev` started on port 3000; `npm run qa:routes` returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: PR body was updated to include Phase 2.2 follow-up scope and validation. `npm install` still reports two moderate audit findings. Stress radar remains partial context only, not a full score. Pin and language preferences remain localStorage-only.
+- next: User visual approval on Dashboard, Markets, asset details, indicator details, Stress, and Data Lab before merge.
+- commit hash if available: Pending; current commit hash backfill deferred.

@@ -3,7 +3,7 @@ import { LightweightChart } from "@/components/LightweightChart";
 import { Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
 import { TradingViewWidget } from "@/components/TradingViewWidget";
-import { getCockpitData, getEnabledAssetCatalog, resolveAsset } from "@/lib/data";
+import { getCockpitData, getEnabledAssetCatalog, getPinCatalog, resolveAsset } from "@/lib/data";
 import { formatCompact, formatDate, formatDateTime, formatNumber, formatPercent, formatValueWithUnit } from "@/lib/format";
 
 export default async function AssetDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
@@ -11,6 +11,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
   const symbol = decodeURIComponent(rawSymbol);
   const { market, marketHistory, pipelineStatus } = getCockpitData();
   const asset = resolveAsset(symbol, market);
+  const defaultPins = getPinCatalog();
   const history = asset.symbol ? marketHistory.symbols?.[asset.symbol]?.rows ?? [] : [];
   const recent = history.slice(-12).reverse();
   const change = formatPercent(asset.change);
@@ -21,7 +22,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
         <Link href="/markets" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Markets</Link>
         <StatusBadge label={asset.status} real={asset.real_data} />
-        {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} /> : null}
+        {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} defaultPins={defaultPins} /> : null}
       </div>
       <div className="grid gap-4 xl:grid-cols-[1fr_0.55fr]">
         <Panel title="Local history chart">

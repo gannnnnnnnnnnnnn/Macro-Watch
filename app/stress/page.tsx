@@ -35,12 +35,13 @@ export default function StressPage() {
   return (
     <>
       <ShellTitle title="Stress radar" eyebrow="Partial real stress context" />
-      <div className="mb-4 grid gap-3 md:grid-cols-3">
-        <MetricTile label="Credit stress" value="partial" detail="HY OAS and Baa spread wired" badge={<StatusBadge label="partial" />} />
-        <MetricTile label="Liquidity stress" value="partial" detail="Fed assets and RRP wired" badge={<StatusBadge label="partial" />} />
+      <StressRadarClient stress={stress} indicatorHistory={indicatorHistory} marketHistory={marketHistory} />
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <MetricTile label="Credit context" value="partial" detail="HY OAS and Baa spread wired" badge={<StatusBadge label="partial" />} />
+        <MetricTile label="Liquidity context" value="partial" detail="Fed assets and RRP wired" badge={<StatusBadge label="partial" />} />
         <MetricTile label="Pending buckets" value="3" detail="Banking, household, leverage" badge={<StatusBadge label="pending" />} />
       </div>
-      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas)} />
         <MetricTile label="Baa spread" value={value(baa)} detail={detail(baa)} />
         <MetricTile label="Fed assets" value={value(walcl)} detail={detail(walcl)} />
@@ -48,12 +49,14 @@ export default function StressPage() {
         <MetricTile label="10Y" value={value(tenYear)} detail={detail(tenYear)} />
         <MetricTile label="2Y" value={value(twoYear)} detail={detail(twoYear)} />
         <MetricTile label="10Y-2Y" value={value(curve)} detail={detail(curve, "Treasury context only")} />
-        <MetricTile label="Score" value="Not scored yet" detail="No fake stress score in v0" badge={<StatusBadge label="pending" />} />
+        <MetricTile label="Coverage" value="Partial" detail="No full stress score" badge={<StatusBadge label="partial" />} />
       </div>
-      <StressRadarClient stress={stress} indicatorHistory={indicatorHistory} marketHistory={marketHistory} />
-      <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {buckets.map((bucket) => <Panel key={bucket} title={bucket}><IndicatorList items={withIndicatorHrefs(stress.buckets?.[bucket])} /></Panel>)}
-      </div>
+      <details className="mt-4 rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+        <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">All stress buckets</summary>
+        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {buckets.map((bucket) => <Panel key={bucket} title={bucket}><IndicatorList items={withIndicatorHrefs(stress.buckets?.[bucket])} /></Panel>)}
+        </div>
+      </details>
     </>
   );
 }

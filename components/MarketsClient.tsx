@@ -7,10 +7,10 @@ import { LightweightChart } from "@/components/LightweightChart";
 import { PinButton } from "@/components/PinsClient";
 import { formatDate, formatPercent, formatValueWithUnit } from "@/lib/format";
 import { assetHref } from "@/lib/routes";
-import type { Asset, MarketHistory } from "@/lib/types";
+import type { Asset, MarketHistory, PinConfig } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
 
-export function MarketsClient({ assets, history }: { assets: Asset[]; history: MarketHistory }) {
+export function MarketsClient({ assets, history, defaultPins = [] }: { assets: Asset[]; history: MarketHistory; defaultPins?: PinConfig[] }) {
   const { t } = useLanguage();
   const defaultSymbol = assets[0]?.symbol ?? "";
   const [selectedSymbol, setSelectedSymbol] = useState(defaultSymbol);
@@ -29,7 +29,7 @@ export function MarketsClient({ assets, history }: { assets: Asset[]; history: M
       <Panel>
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Asset explorer</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">{t("assetExplorer")}</p>
             <h2 className="mt-2 text-2xl font-semibold text-white">Market workbench</h2>
             <p className="mt-1 text-sm text-slate-400">Browse macro-relevant assets, then open a focused detail view when needed.</p>
           </div>
@@ -53,13 +53,13 @@ export function MarketsClient({ assets, history }: { assets: Asset[]; history: M
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-3xl font-semibold text-white">{selected?.symbol ?? "N/A"}</p>
-                {selected?.symbol ? <PinButton target={{ type: "asset", id: selected.symbol }} /> : null}
+                {selected?.symbol ? <PinButton target={{ type: "asset", id: selected.symbol }} defaultPins={defaultPins} /> : null}
               </div>
               <p className="mt-1 text-sm text-slate-400">{selected?.name ?? "Unavailable"}{selected?.group ? ` · ${selected.group}` : ""}</p>
             </div>
             <div className="grid grid-cols-2 gap-2 text-sm md:min-w-[320px]">
-              <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Latest</p><p className="mt-1 text-xl font-semibold text-white">{formatValueWithUnit(selected?.value, selected?.unit)}</p></div>
-              <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Change</p><p className={`mt-1 text-xl ${typeof selected?.change === "number" && selected.change < 0 ? "text-loss" : "text-gain"}`}>{formatPercent(selected?.change)}</p></div>
+              <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">{t("latest")}</p><p className="mt-1 text-xl font-semibold text-white">{formatValueWithUnit(selected?.value, selected?.unit)}</p></div>
+              <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">{t("change")}</p><p className={`mt-1 text-xl ${typeof selected?.change === "number" && selected.change < 0 ? "text-loss" : "text-gain"}`}>{formatPercent(selected?.change)}</p></div>
             </div>
           </div>
           <LightweightChart market={selectedHistory?.rows} height={360} unit={selected?.unit} showOverlays />
@@ -105,7 +105,7 @@ export function MarketsClient({ assets, history }: { assets: Asset[]; history: M
                     className={`group rounded-lg border p-1 text-left transition ${active ? "border-cyan-400/50 bg-cyan-400/5" : "border-transparent hover:border-line"}`}
                   >
                     <div className="relative">
-                      {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100" /> : null}
+                      {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} defaultPins={defaultPins} className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100" /> : null}
                       <AssetCard asset={asset} history={history.symbols?.[asset.symbol ?? ""]} />
                     </div>
                   </button>

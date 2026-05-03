@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LightweightChart } from "@/components/LightweightChart";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
-import { getCockpitData, getEnabledIndicatorCatalog, indicatorHistoryFor, resolveIndicator } from "@/lib/data";
+import { getCockpitData, getEnabledIndicatorCatalog, getPinCatalog, indicatorHistoryFor, resolveIndicator } from "@/lib/data";
 import { formatDate, formatDateTime, formatDelta, formatValueWithUnit } from "@/lib/format";
 
 export function generateStaticParams() {
@@ -14,6 +14,7 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
   const id = decodeURIComponent(rawId);
   const { macro, stress, indicatorHistory, pipelineStatus } = getCockpitData();
   const indicator = resolveIndicator(id, macro, stress);
+  const defaultPins = getPinCatalog();
   const rows = indicatorHistoryFor(indicator.id ?? id, indicatorHistory);
 
   return (
@@ -22,7 +23,7 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
         <Link href="/macro" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Macro</Link>
         <StatusBadge label={indicator.status} real={indicator.real_data} />
-        {indicator.id ? <PinButton target={{ type: "indicator", id: indicator.id }} /> : null}
+        {indicator.id ? <PinButton target={{ type: "indicator", id: indicator.id }} defaultPins={defaultPins} /> : null}
       </div>
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="Latest" value={formatValueWithUnit(indicator.value, indicator.unit)} detail={indicator.latest_date ? formatDate(indicator.latest_date) : "Run pipeline"} />
