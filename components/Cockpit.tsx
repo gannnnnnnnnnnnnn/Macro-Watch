@@ -107,6 +107,7 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
             </div>
             <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
             <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${item.latest_date}` : ""}</p>
+            {item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label} · {item.one_year_delta_label ?? "context only"}</p> : null}
           </div>
           <p className="whitespace-nowrap text-sm text-slate-200">{item.value ?? "Unavailable"}{item.unit ? ` ${item.unit}` : ""}</p>
         </div>

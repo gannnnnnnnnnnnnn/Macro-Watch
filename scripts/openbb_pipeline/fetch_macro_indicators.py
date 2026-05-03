@@ -77,6 +77,36 @@ def _fetch_fred_csv(series_id, start_date, first_error):
         }
 
 
+def _history_values(history):
+    if history is None:
+        return []
+    if isinstance(history, list):
+        return history
+    return [(idx.date().isoformat(), float(value)) for idx, value in history.items()]
+
+
+def _delta_fields(result):
+    values = _history_values(result.get("history"))
+    if len(values) < 2:
+        return {"previous_value": None, "delta": None, "delta_label": "Δ previous unavailable", "one_year_delta": None, "one_year_delta_label": "1Y change unavailable"}
+    latest_value = values[-1][1]
+    previous_value = values[-2][1]
+    delta = latest_value - previous_value
+    latest_date = datetime.fromisoformat(values[-1][0]).date()
+    one_year_prior = next(
+        (value for raw_date, value in reversed(values[:-1]) if (latest_date - datetime.fromisoformat(raw_date).date()).days >= 330),
+        None,
+    )
+    one_year_delta = latest_value - one_year_prior if one_year_prior is not None else None
+    return {
+        "previous_value": round(previous_value, 4),
+        "delta": round(delta, 4),
+        "delta_label": f"Δ previous {delta:+.4f}",
+        "one_year_delta": round(one_year_delta, 4) if one_year_delta is not None else None,
+        "one_year_delta_label": f"1Y change {one_year_delta:+.4f}" if one_year_delta is not None else "1Y change unavailable",
+    }
+
+
 def _indicator(name, unit, result, note):
     return {
         "name": name,
@@ -87,10 +117,11 @@ def _indicator(name, unit, result, note):
         "real_data": bool(result.get("real_data")),
         "status": result.get("status", "unavailable"),
         "note": note,
+        **_delta_fields(result),
     }
 
 
-def _derived_indicator(name, value, unit, latest_date, real_data, status, note):
+def _derived_indicator(name, value, unit, latest_date, real_data, status, note, previous_value=None, delta=None, one_year_delta=None):
     return {
         "name": name,
         "value": round(value, 4) if isinstance(value, float) else value,
@@ -100,6 +131,11 @@ def _derived_indicator(name, value, unit, latest_date, real_data, status, note):
         "real_data": real_data,
         "status": status,
         "note": note,
+        "previous_value": round(previous_value, 4) if isinstance(previous_value, float) else previous_value,
+        "delta": round(delta, 4) if isinstance(delta, float) else delta,
+        "delta_label": f"Δ previous {delta:+.4f}" if isinstance(delta, float) else "Δ previous unavailable",
+        "one_year_delta": round(one_year_delta, 4) if isinstance(one_year_delta, float) else one_year_delta,
+        "one_year_delta_label": f"1Y change {one_year_delta:+.4f}" if isinstance(one_year_delta, float) else "1Y change unavailable",
     }
 
 
@@ -113,7 +149,13 @@ def _cpi_yoy(cpi_result):
         return _derived_indicator("CPI YoY", None, "%", None, False, "unavailable: prior CPI value is zero", "Calculated from CPIAUCSL latest value versus about 12 months prior.")
     value = ((latest / prior) - 1) * 100
     latest_date = history[-1][0] if isinstance(history, list) else history.index[-1].date().isoformat()
-    return _derived_indicator("CPI YoY", value, "%", latest_date, True, "real", "Calculated from CPIAUCSL latest value versus about 12 months prior.")
+    previous = None
+    if len(history) >= 14:
+        prev_latest = float(history[-2][1]) if isinstance(history, list) else float(history.iloc[-2])
+        prev_prior = float(history[-14][1]) if isinstance(history, list) else float(history.iloc[-14])
+        previous = ((prev_latest / prev_prior) - 1) * 100 if prev_prior else None
+    delta = value - previous if previous is not None else None
+    return _derived_indicator("CPI YoY", value, "%", latest_date, True, "real", "Calculated from CPIAUCSL latest value versus about 12 months prior.", previous, delta)
 
 
 def build_fred_macro_data():
@@ -124,7 +166,13 @@ def build_fred_macro_data():
     dgs2 = series["DGS2"]
     if dgs10.get("real_data") and dgs2.get("real_data"):
         spread = float(dgs10["value"]) - float(dgs2["value"])
-        spread_indicator = _derived_indicator("10Y-2Y spread", spread, "pp", dgs10.get("latest_date"), True, "real", "DGS10 minus DGS2.")
+        dgs10_delta = _delta_fields(dgs10)
+        dgs2_delta = _delta_fields(dgs2)
+        previous_spread = None
+        if dgs10_delta["previous_value"] is not None and dgs2_delta["previous_value"] is not None:
+            previous_spread = dgs10_delta["previous_value"] - dgs2_delta["previous_value"]
+        delta = spread - previous_spread if previous_spread is not None else None
+        spread_indicator = _derived_indicator("10Y-2Y spread", spread, "pp", dgs10.get("latest_date"), True, "real", "DGS10 minus DGS2.", previous_spread, delta)
     else:
         spread_indicator = _derived_indicator("10Y-2Y spread", None, "pp", None, False, "unavailable: DGS10 or DGS2 missing", "DGS10 minus DGS2.")
 

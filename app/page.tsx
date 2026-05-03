@@ -1,5 +1,6 @@
 import { AssetCard, IndicatorList, MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData } from "@/lib/data";
+import { getFreshness } from "@/lib/freshness";
 import type { Indicator } from "@/lib/types";
 
 function findIndicator(groups: Record<string, Indicator[]> | undefined, name: string) {
@@ -11,6 +12,10 @@ function value(item: Indicator | undefined) {
   return `${item.value ?? "Unavailable"}${item.unit ? ` ${item.unit}` : ""}`;
 }
 
+function detail(item: Indicator | undefined, fallback = "context only") {
+  return item?.delta_label ? `${item.delta_label} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
+}
+
 export default function Home() {
   const { market, marketHistory, macro, stress, pipelineStatus, source } = getCockpitData();
   const assets = market.assets ?? [];
@@ -19,6 +24,7 @@ export default function Home() {
   const commodities = [bySymbol.GLD, bySymbol.USO].filter(Boolean);
   const fredReal = Object.values(pipelineStatus.fred_series ?? {}).filter((series) => series.real_data).length;
   const realMarkets = assets.filter((asset) => asset.real_data).length;
+  const freshness = getFreshness(pipelineStatus.generated_at);
 
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
   const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
@@ -48,6 +54,7 @@ export default function Home() {
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real markets</p><p className="mt-2 text-slate-200">{realMarkets}/{assets.length}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real FRED series</p><p className="mt-2 text-slate-200">{fredReal}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><div className="mt-2"><StatusBadge label={freshness.label} real={!freshness.isStale} /></div></div>
           </div>
         </div>
       </div>
@@ -57,8 +64,8 @@ export default function Home() {
         <div className="grid gap-3 md:grid-cols-5">
           <MetricTile label="VIX" value={value(vixStress)} detail="Watch item; not scored yet" badge={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} />
           <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Partial context" />
-          <MetricTile label="HY OAS" value={value(hyOas)} detail="Credit watch item" />
-          <MetricTile label="RRP" value={value(rrp) !== "Unavailable" ? value(rrp) : value(walcl)} detail={rrp?.real_data ? "Liquidity watch item" : "Fed assets fallback"} />
+          <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas, "Credit watch item")} />
+          <MetricTile label="RRP" value={value(rrp) !== "Unavailable" ? value(rrp) : value(walcl)} detail={rrp?.real_data ? detail(rrp, "Liquidity watch item") : "Fed assets fallback"} />
           <MetricTile label="Pipeline" value={<StatusBadge label={pipelineStatus.status} />} detail="Generated data path" />
         </div>
       </Panel>
@@ -76,20 +83,20 @@ export default function Home() {
       <div className="mt-6 grid gap-4 xl:grid-cols-2">
         <Panel title="Macro snapshot">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <MetricTile label="10Y yield" value={value(tenYear)} detail={tenYear?.latest_date ?? "No date"} />
-            <MetricTile label="2Y yield" value={value(twoYear)} detail={twoYear?.latest_date ?? "No date"} />
-            <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Not a regime score" />
-            <MetricTile label="Fed funds" value={value(fedFunds)} detail={fedFunds?.latest_date ?? "No date"} />
-            <MetricTile label="CPI YoY" value={value(cpi)} detail={cpi?.latest_date ?? "No date"} />
-            <MetricTile label="Unemployment" value={value(unemployment)} detail={unemployment?.latest_date ?? "No date"} />
+            <MetricTile label="10Y yield" value={value(tenYear)} detail={detail(tenYear)} />
+            <MetricTile label="2Y yield" value={value(twoYear)} detail={detail(twoYear)} />
+            <MetricTile label="10Y-2Y spread" value={value(curve)} detail={detail(curve, "Not a regime score")} />
+            <MetricTile label="Fed funds" value={value(fedFunds)} detail={detail(fedFunds)} />
+            <MetricTile label="CPI YoY" value={value(cpi)} detail={detail(cpi)} />
+            <MetricTile label="Unemployment" value={value(unemployment)} detail={detail(unemployment)} />
           </div>
         </Panel>
         <Panel title="Stress snapshot">
           <div className="grid gap-3 sm:grid-cols-2">
-            <MetricTile label="HY OAS" value={value(hyOas)} detail={hyOas?.latest_date ?? "No date"} />
-            <MetricTile label="Baa spread" value={value(baa)} detail={baa?.latest_date ?? "No date"} />
-            <MetricTile label="Fed balance sheet" value={value(walcl)} detail={walcl?.latest_date ?? "No date"} />
-            <MetricTile label="RRP" value={value(rrp)} detail={rrp?.latest_date ?? "No date"} />
+            <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas)} />
+            <MetricTile label="Baa spread" value={value(baa)} detail={detail(baa)} />
+            <MetricTile label="Fed balance sheet" value={value(walcl)} detail={detail(walcl)} />
+            <MetricTile label="RRP" value={value(rrp)} detail={detail(rrp)} />
           </div>
           <p className="mt-4 text-sm text-slate-400">Volatility, banking, household, and leverage stress remain pending or partial, not scored.</p>
         </Panel>

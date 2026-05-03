@@ -43,6 +43,11 @@ export type Indicator = {
   latest_date?: string | null;
   provider?: string | null;
   real_data?: boolean;
+  previous_value?: number | string | null;
+  delta?: number | null;
+  delta_label?: string | null;
+  one_year_delta?: number | null;
+  one_year_delta_label?: string | null;
 };
 
 export type MarketSnapshot = {

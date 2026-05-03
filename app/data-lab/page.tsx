@@ -1,9 +1,11 @@
 import { MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData } from "@/lib/data";
+import { getFreshness } from "@/lib/freshness";
 
 export default function DataLabPage() {
   const { pipelineStatus, source, marketHistory, stress } = getCockpitData();
   const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
+  const freshness = getFreshness(pipelineStatus.generated_at);
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][] =
     Object.entries(pipelineStatus.files ?? {});
   const fredEntries: [string, { status?: string; provider?: string | null; latest_date?: string | null; real_data?: boolean }][] =
@@ -16,6 +18,7 @@ export default function DataLabPage() {
       <div className="mb-4 grid gap-3 md:grid-cols-4">
         <MetricTile label="Frontend source" value={<SourceBadge source={source} />} detail="generated first, mock fallback" />
         <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={pipelineStatus.generated_at ?? "Unavailable"} />
+        <MetricTile label="Freshness" value={<StatusBadge label={freshness.label} real={!freshness.isStale} />} detail={freshness.hasGenerated ? "generated timestamp present" : "generated status missing"} />
         <MetricTile label="Market history" value={Object.keys(marketHistory.symbols ?? {}).length} detail="symbols with history file entries" />
         <MetricTile label="FRED series" value={fredEntries.filter(([, item]) => item.real_data).length} detail="real series currently loaded" />
         <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />

@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Polished local macro cockpit shell with generated market, macro, and stress data.
+v0.1 local macro cockpit closeout.
 
 ## Current runnable path
 
@@ -14,8 +14,8 @@ Next.js, TypeScript, Tailwind CSS, local JSON files, embedded public TradingView
 
 ## Current data contract
 
-Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, and optional `pipeline_status.json`. Market assets include latest close, previous close, percentage change, provider, per-symbol status, and `real_data`; market history includes recent daily OHLCV rows by symbol; macro indicators include FRED rates, inflation, labor, liquidity, and credit series where available; stress buckets are partial, with real VIX, FRED credit/liquidity/Treasury context, and pending labels for unwired buckets.
+Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, and optional `pipeline_status.json`. Market assets include latest close, previous close, percentage change, provider, per-symbol status, and `real_data`; market history includes recent daily OHLCV rows by symbol; macro indicators include FRED rates, inflation, labor, liquidity, credit series, and neutral delta context where available; stress buckets are partial, with real VIX, FRED credit/liquidity/Treasury context, and pending labels for unwired buckets. The UI shows generated/mock/mixed source, generated timestamp, and stale warnings when generated data is older than 24 hours.
 
 ## Next step
 
-Add lightweight context deltas and richer market interactions while keeping the local JSON contract and avoiding fake scores.
+Start the next slice only after reviewing the v0.1 cockpit locally; likely next step is small historical context views, not new subsystems.

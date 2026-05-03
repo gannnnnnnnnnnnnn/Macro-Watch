@@ -10,7 +10,7 @@ Append-only lightweight project journal.
 - validation: `npm install` passed; `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`; `python3 -m venv .venv` passed; `pip install -r requirements.txt` passed; `python run_all.py` passed and wrote generated JSON plus `pipeline_status.json`.
 - notes/risks: `npm install` reported two moderate audit findings. OpenBB installed locally, but v0 live fetches are intentionally conservative and currently write generated fallback records with warning status.
 - next: Replace fallback pipeline records with real no-paid-key OpenBB fetches and add chart rendering once the data contract settles.
-- commit hash if available: Pending.
+- commit hash if available: `27a89a1`
 
 ## 2026-05-03 13:36 Australia/Melbourne
 
@@ -20,7 +20,7 @@ Append-only lightweight project journal.
 - validation: `npm run build` initially failed on a Data Lab TypeScript fallback tuple inference issue, then passed after the type fix; `python3 -m venv .venv` was not needed because `.venv` already existed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched real yfinance data through OpenBB for all market symbols; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
 - notes/risks: OpenBB real market fetch worked locally for all requested market proxies. No unavailable market symbols in local validation. Overall pipeline status is `warning` because macro and stress files are still placeholder/unavailable by design.
 - next: Add the first real no-key macro or stress indicator source, then consider simple market history charts.
-- commit hash if available: Pending.
+- commit hash if available: `e83b886`
 
 ## 2026-05-03 14:03 Australia/Melbourne
 
@@ -30,7 +30,7 @@ Append-only lightweight project journal.
 - validation: First `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
 - notes/risks: Market history real fetch worked locally for SPY, QQQ, VIX via `^VIX`, UUP, TLT, GLD, USO, and BTC-USD with 60 rows each. No unavailable market history symbols. Overall pipeline status remains `warning` because macro and stress files are still placeholder/unavailable by design.
 - next: Add one real no-key macro or stress data source, then refine historical chart interactions around the existing local JSON contract.
-- commit hash if available: Pending.
+- commit hash if available: `67fa47f`
 
 ## 2026-05-03 14:28 Australia/Melbourne
 
@@ -40,7 +40,7 @@ Append-only lightweight project journal.
 - validation: First `npm run build` failed on a typed fallback tuple in Data Lab, then passed after the type fix; `pip install -r requirements.txt` installed `pandas_datareader`; `python run_all.py` passed; `pandas_datareader` failed locally because Python lacked `distutils`, then the FRED CSV fallback fetched real data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
 - notes/risks: FRED series worked locally for `DGS10`, `DGS2`, `FEDFUNDS`, `CPIAUCSL`, `UNRATE`, `WALCL`, `RRPONTSYD`, `BAMLH0A0HYM2`, and `BAA10Y`. No FRED series failed after CSV fallback. Stress remains partial by design because volatility, banking, household, and leverage buckets are not fully wired.
 - next: Add historical context or simple deltas for FRED series, then wire VIX snapshot into volatility stress without creating fake scores.
-- commit hash if available: Pending.
+- commit hash if available: `367b63e`
 
 ## 2026-05-03 14:55 Australia/Melbourne
 
@@ -50,7 +50,7 @@ Append-only lightweight project journal.
 - validation: `npm run build` failed once on a Data Lab file warning type, then passed after the type fix; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
 - notes/risks: TradingView widget was added as a client-only public embed, not the proprietary Charting Library; if its external script fails, the widget shows a fallback card. UI remains server-rendered around local JSON and still has no interactive selected-symbol state beyond the first generated asset. Stress remains partial and not scored.
 - next: Add lightweight client-side selected asset switching on Markets, then wire VIX into volatility stress while keeping labels honest.
-- commit hash if available: Pending.
+- commit hash if available: `f58950b`
 
 ## 2026-05-03 15:21 Australia/Melbourne
 
@@ -60,4 +60,14 @@ Append-only lightweight project journal.
 - validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; generated `stress_indicators.json` contains real VIX value/status/provider; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
 - notes/risks: Selected asset switching works as a client component on `/markets` and defaults to the first generated asset. VIX stress wiring worked locally with VIX from yfinance/OpenBB. TradingView mapping uses `NASDAQ:TLT`, which is the common TradingView embed symbol; external widget loading can still fail independently of the local app.
 - next: Add small historical delta views for FRED and VIX context, still without fake scoring.
+- commit hash if available: `f2cb0ed`
+
+## 2026-05-03 15:48 Australia/Melbourne
+
+- task: Harden v0.1 local cockpit.
+- files changed: `scripts/openbb_pipeline/fetch_macro_indicators.py`, `lib/freshness.ts`, `lib/types.ts`, `components/AppShell.tsx`, `components/Cockpit.tsx`, `app/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`.
+- what changed: Added generated-data freshness and stale warning helpers, surfaced freshness in the top status strip, sidebar, dashboard, and Data Lab, added neutral FRED delta fields (`previous_value`, `delta`, `delta_label`, `one_year_delta`) where history supports them, showed delta context in macro/stress indicators and metric tiles, tightened Data Lab operating summary, and updated milestone docs for v0.1.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. `npm run dev` was not run because it was optional and build/pipeline validation covered the checkpoint.
+- notes/risks: UI now warns when generated data is older than 24 hours. Delta fields are context only and do not imply good/bad or regime scoring. Empty/missing data paths continue to render unavailable, pending, or run-pipeline states.
+- next: Review v0.1 locally, then add small historical context views only if the current cockpit feels solid.
 - commit hash if available: Pending.

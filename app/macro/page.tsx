@@ -13,6 +13,10 @@ function value(item: Indicator | undefined) {
   return `${item.value ?? "Unavailable"}${item.unit ? ` ${item.unit}` : ""}`;
 }
 
+function detail(item: Indicator | undefined, fallback = "context only") {
+  return item?.delta_label ? `${item.delta_label} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
+}
+
 export default function MacroPage() {
   const { macro, source } = getCockpitData();
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
@@ -26,12 +30,12 @@ export default function MacroPage() {
     <>
       <ShellTitle title="Macro" eyebrow="FRED generated indicators" source={source} />
       <div className="mb-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
-        <MetricTile label="10Y yield" value={value(tenYear)} detail={tenYear?.latest_date ?? "No date"} />
-        <MetricTile label="2Y yield" value={value(twoYear)} detail={twoYear?.latest_date ?? "No date"} />
-        <MetricTile label="10Y-2Y" value={value(curve)} detail="Curve spread, not a score" />
-        <MetricTile label="Fed funds" value={value(fedFunds)} detail={fedFunds?.latest_date ?? "No date"} />
-        <MetricTile label="CPI YoY" value={value(cpi)} detail={cpi?.latest_date ?? "No date"} />
-        <MetricTile label="Unemployment" value={value(unemployment)} detail={unemployment?.latest_date ?? "No date"} />
+        <MetricTile label="10Y yield" value={value(tenYear)} detail={detail(tenYear)} />
+        <MetricTile label="2Y yield" value={value(twoYear)} detail={detail(twoYear)} />
+        <MetricTile label="10Y-2Y" value={value(curve)} detail={detail(curve, "Curve spread, not a score")} />
+        <MetricTile label="Fed funds" value={value(fedFunds)} detail={detail(fedFunds)} />
+        <MetricTile label="CPI YoY" value={value(cpi)} detail={detail(cpi)} />
+        <MetricTile label="Unemployment" value={value(unemployment)} detail={detail(unemployment)} />
       </div>
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Panel title="FRED"><p className="text-sm text-slate-300">Rates, inflation, labor, liquidity, and credit are wired through FRED when available.</p></Panel>

@@ -13,6 +13,10 @@ function value(indicator: Indicator | undefined) {
   return `${indicator.value ?? "Unavailable"}${indicator.unit ? ` ${indicator.unit}` : ""}`;
 }
 
+function detail(indicator: Indicator | undefined, fallback = "context only") {
+  return indicator?.delta_label ? `${indicator.delta_label} · ${indicator.one_year_delta_label ?? fallback}` : indicator?.latest_date ?? fallback;
+}
+
 export default function StressPage() {
   const { stress, source } = getCockpitData();
   const credit = stress.buckets?.["Credit stress"];
@@ -35,13 +39,13 @@ export default function StressPage() {
         <MetricTile label="Pending buckets" value="4" detail="Volatility, banking, household, leverage" badge={<StatusBadge label="pending" />} />
       </div>
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label="HY OAS" value={value(hyOas)} detail={hyOas?.latest_date ?? "No date"} />
-        <MetricTile label="Baa spread" value={value(baa)} detail={baa?.latest_date ?? "No date"} />
-        <MetricTile label="Fed assets" value={value(walcl)} detail={walcl?.latest_date ?? "No date"} />
-        <MetricTile label="RRP" value={value(rrp)} detail={rrp?.latest_date ?? "No date"} />
-        <MetricTile label="10Y" value={value(tenYear)} detail={tenYear?.latest_date ?? "No date"} />
-        <MetricTile label="2Y" value={value(twoYear)} detail={twoYear?.latest_date ?? "No date"} />
-        <MetricTile label="10Y-2Y" value={value(curve)} detail="Treasury context only" />
+        <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas)} />
+        <MetricTile label="Baa spread" value={value(baa)} detail={detail(baa)} />
+        <MetricTile label="Fed assets" value={value(walcl)} detail={detail(walcl)} />
+        <MetricTile label="RRP" value={value(rrp)} detail={detail(rrp)} />
+        <MetricTile label="10Y" value={value(tenYear)} detail={detail(tenYear)} />
+        <MetricTile label="2Y" value={value(twoYear)} detail={detail(twoYear)} />
+        <MetricTile label="10Y-2Y" value={value(curve)} detail={detail(curve, "Treasury context only")} />
         <MetricTile label="Score" value="Not scored yet" detail="No fake stress score in v0" badge={<StatusBadge label="pending" />} />
       </div>
       <Panel title="Partial radar">
