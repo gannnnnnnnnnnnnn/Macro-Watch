@@ -142,12 +142,11 @@ export function PinnedWorkbench({
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {(pinnedItems.length ? pinnedItems : []).map((pin) => (
-          <Link key={`${pin.type}-${pin.id}`} href={pin.href} className="group relative rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
+          <div key={`${pin.type}-${pin.id}`} className="group relative rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
             <button
               type="button"
               aria-label={t("removePin")}
               onClick={(event) => {
-                event.preventDefault();
                 remove({ type: pin.type, id: pin.id });
               }}
               className="absolute right-2 top-2 hidden h-7 w-7 rounded border border-line bg-panel text-slate-400 hover:text-white group-hover:block"
@@ -155,7 +154,7 @@ export function PinnedWorkbench({
               ×
             </button>
             <div className="flex items-start justify-between gap-3 pr-7">
-              <p className="text-xs uppercase tracking-wide text-slate-500">{pin.label}</p>
+              <Link href={pin.href} className="text-xs uppercase tracking-wide text-slate-500 hover:text-cyan-300">{pin.label}</Link>
               <StatusBadge label={pin.status} real={pin.real_data} />
             </div>
             <p className="mt-3 text-2xl font-semibold text-white">{formatValueWithUnit(pin.value, pin.unit)}</p>
@@ -163,7 +162,10 @@ export function PinnedWorkbench({
               {pin.type === "asset" ? pin.delta_label ?? "context only" : pin.delta_label ?? "Δ previous unavailable"}
             </p>
             <p className="mt-2 text-xs text-slate-500">{pin.latest_date ? formatDate(pin.latest_date) : t("unavailable")}</p>
-          </Link>
+            <Link href={pin.href} className="mt-3 inline-flex rounded border border-line px-2.5 py-1.5 text-xs text-slate-300 hover:bg-panel hover:text-white">
+              {t("openDetail")}
+            </Link>
+          </div>
         ))}
         {!pinnedItems.length ? <p className="text-sm text-slate-500">{t("noPinnedItems")}</p> : null}
       </div>

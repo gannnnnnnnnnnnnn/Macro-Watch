@@ -26,35 +26,35 @@ export function StressRadarClient({
   const [selected, setSelected] = useState(bucketDefs[0].key);
   const buckets = useMemo(() => bucketDefs.map((bucket) => buildBucket(bucket, stress, indicatorHistory, marketHistory)), [indicatorHistory, marketHistory, stress]);
   const selectedBucket = buckets.find((bucket) => bucket.key === selected) ?? buckets[0];
-  const points = radarPoints(buckets.map((bucket) => bucket.value), 122, 122, 92).join(" ");
+  const points = radarPoints(buckets.map((bucket) => bucket.value), 140, 140, 92).join(" ");
 
   return (
     <section className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
       <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Coverage-aware stress radar</h2>
-          <p className="mt-1 text-sm text-slate-500">Context percentiles only. Partial coverage; no full stress score or trading advice.</p>
+          <p className="mt-1 text-sm text-slate-500">Context percentile only. Partial bucket coverage, provisional directions, and no complete stress score or trading advice.</p>
         </div>
         <StatusBadge label="partial" />
       </div>
       <div className="grid gap-4 xl:grid-cols-[360px_1fr]">
         <div className="rounded-lg border border-line bg-ink p-4">
-          <svg viewBox="0 0 244 244" className="mx-auto h-[300px] w-full max-w-[320px]" role="img" aria-label="Partial stress radar">
+          <svg viewBox="0 0 280 280" className="mx-auto h-[320px] w-full max-w-[340px]" role="img" aria-label="Partial stress radar">
             {[0.25, 0.5, 0.75, 1].map((scale) => (
-              <polygon key={scale} points={radarPoints(bucketDefs.map(() => scale * 100), 122, 122, 92).join(" ")} fill="none" stroke="rgba(148, 163, 184, 0.14)" />
+              <polygon key={scale} points={radarPoints(bucketDefs.map(() => scale * 100), 140, 140, 92).join(" ")} fill="none" stroke="rgba(148, 163, 184, 0.14)" />
             ))}
             {buckets.map((bucket, index) => {
-              const [x, y] = axisPoint(index, buckets.length, 122, 122, 96);
+              const [x, y] = axisPoint(index, buckets.length, 140, 140, 116);
               return (
                 <g key={bucket.key}>
-                  <line x1="122" y1="122" x2={x} y2={y} stroke="rgba(148, 163, 184, 0.16)" />
+                  <line x1="140" y1="140" x2={x} y2={y} stroke="rgba(148, 163, 184, 0.16)" />
                   <text
                     x={x}
                     y={y}
                     onClick={() => setSelected(bucket.key)}
                     textAnchor={x < 122 ? "end" : x > 122 ? "start" : "middle"}
                     dominantBaseline="middle"
-                    className={`cursor-pointer ${bucket.status === "pending" ? "fill-slate-600 text-[9px]" : "fill-slate-300 text-[9px]"}`}
+                    className={`cursor-pointer ${bucket.status === "pending" ? "fill-slate-600 text-[8px]" : "fill-slate-300 text-[8px]"}`}
                   >
                     {bucket.label}
                   </text>
@@ -62,7 +62,7 @@ export function StressRadarClient({
               );
             })}
             <polygon points={points} fill="rgba(34, 211, 238, 0.18)" stroke="#22d3ee" strokeWidth="2" />
-            {radarPoints(buckets.map((bucket) => bucket.value), 122, 122, 92).map((point, index) => (
+            {radarPoints(buckets.map((bucket) => bucket.value), 140, 140, 92).map((point, index) => (
               <circle key={buckets[index].key} cx={point.split(",")[0]} cy={point.split(",")[1]} r="3.5" className={buckets[index].status === "pending" ? "fill-slate-600" : "fill-cyan-300"} />
             ))}
           </svg>
@@ -81,7 +81,7 @@ export function StressRadarClient({
                   <StatusBadge label={bucket.status} real={bucket.status === "real"} />
                 </div>
                 <p className="mt-2 text-xs text-slate-500">{bucket.note}</p>
-                <p className="mt-2 text-lg font-semibold text-slate-200">{bucket.status === "pending" ? "Pending" : `${Math.round(bucket.value)} pctile`}</p>
+                <p className="mt-2 text-lg font-semibold text-slate-200">{bucket.status === "pending" ? "Pending" : `${Math.round(bucket.value)} context pctile`}</p>
               </button>
             ))}
           </div>
@@ -89,7 +89,7 @@ export function StressRadarClient({
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <p className="font-semibold text-white">{selectedBucket.label}</p>
-                <p className="text-xs text-slate-500">{selectedBucket.note}</p>
+                <p className="text-xs text-slate-500">{selectedBucket.note} Context only; not a score.</p>
               </div>
               <StatusBadge label={selectedBucket.status} real={selectedBucket.status === "real"} />
             </div>

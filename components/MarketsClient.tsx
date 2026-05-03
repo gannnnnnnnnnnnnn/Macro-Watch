@@ -98,17 +98,24 @@ export function MarketsClient({ assets, history, defaultPins = [] }: { assets: A
               {visibleAssets.map((asset, index) => {
                 const active = asset.symbol === selected?.symbol;
                 return (
-                  <button
+                  <div
                     key={`${asset.symbol}-${index}`}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedSymbol(asset.symbol ?? "")}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedSymbol(asset.symbol ?? "");
+                      }
+                    }}
                     className={`group rounded-lg border p-1 text-left transition ${active ? "border-cyan-400/50 bg-cyan-400/5" : "border-transparent hover:border-line"}`}
                   >
                     <div className="relative">
                       {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} defaultPins={defaultPins} className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100" /> : null}
                       <AssetCard asset={asset} history={history.symbols?.[asset.symbol ?? ""]} />
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

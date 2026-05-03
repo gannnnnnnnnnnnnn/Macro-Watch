@@ -131,3 +131,13 @@ Append-only lightweight project journal.
 - notes/risks: PR body was updated to include Phase 2.2 follow-up scope and validation. `npm install` still reports two moderate audit findings. Stress radar remains partial context only, not a full score. Pin and language preferences remain localStorage-only.
 - next: User visual approval on Dashboard, Markets, asset details, indicator details, Stress, and Data Lab before merge.
 - commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-04 00:24 Australia/Melbourne
+
+- task: Fix hydration issues and clarify stress radar.
+- files changed: `components/MarketsClient.tsx`, `components/PinsClient.tsx`, `components/StressRadarClient.tsx`, `components/LanguageProvider.tsx`, `docs/dev_journal.md`.
+- what changed: Fixed invalid nested interactive HTML by replacing the Markets asset-card wrapper `<button>` with a keyboard-accessible non-button container and by changing pinned cards from whole-card links with nested remove buttons to normal cards with separate detail links. Clarified Stress Radar wording as context percentile only, partial coverage, provisional directions, and not a complete stress score. Increased radar SVG padding/reduced label size to avoid clipped labels and added modest Chinese dictionary labels.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched 28 market snapshots plus five-year market history; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run qa:routes` returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: `npm run dev` found an existing Next dev server on port 3000; a second dev start reported the existing server and exited. Route smoke passed against the existing dev server. After clearing the ignored Next dev log and opening `/markets`, `/`, and `/stress` in the browser, no nested `<button>` hydration errors reappeared; only the React DevTools info message was logged.
+- next: User visual approval, then merge review when ready.
+- commit hash if available: Pending; current commit hash backfill deferred.
