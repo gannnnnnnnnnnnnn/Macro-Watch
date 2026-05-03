@@ -41,6 +41,7 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
           </div>
         </Panel>
       </div>
+      <div className="mt-4">
       <Panel title="Recent observations">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[420px] text-left text-sm">
@@ -56,6 +57,7 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
           </table>
         </div>
       </Panel>
+      </div>
     </>
   );
 }

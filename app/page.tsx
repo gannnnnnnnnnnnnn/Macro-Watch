@@ -53,7 +53,7 @@ export default function Home() {
           </div>
           <div className="grid gap-2 text-sm sm:grid-cols-2 xl:min-w-[620px] xl:grid-cols-5">
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Data source</p><div className="mt-2"><SourceBadge source={source} /></div></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 break-words text-xs text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real markets</p><p className="mt-2 text-slate-200">{realMarkets}/{assets.length}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real FRED series</p><p className="mt-2 text-slate-200">{fredReal}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><div className="mt-2"><StatusBadge label={freshness.label} real={!freshness.isStale} /></div></div>
@@ -61,21 +61,23 @@ export default function Home() {
         </div>
       </div>
 
-      <Panel title="Pinned indicators">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {pins.map((pin) => (
-            <Link key={`${pin.type}-${pin.id}`} href={pin.href} className="rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-xs uppercase tracking-wide text-slate-500">{pin.label}</p>
-                <StatusBadge label={pin.status} real={pin.real_data} />
-              </div>
-              <p className="mt-3 text-2xl font-semibold text-white">{pin.value ?? "Unavailable"}{pin.unit ? <span className="ml-1 text-sm text-slate-500">{pin.unit}</span> : null}</p>
-              <p className="mt-2 text-xs text-slate-400">{pin.delta_label ?? "context only"} · {pin.one_year_delta_label ?? "not scored"}</p>
-              <p className="mt-2 text-xs text-slate-500">{pin.provider ?? "Provider N/A"}{pin.latest_date ? ` · ${pin.latest_date}` : ""}</p>
-            </Link>
-          ))}
-        </div>
-      </Panel>
+      <div className="mb-6">
+        <Panel title="Pinned indicators">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {pins.map((pin) => (
+              <Link key={`${pin.type}-${pin.id}`} href={pin.href} className="rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-500">{pin.label}</p>
+                  <StatusBadge label={pin.status} real={pin.real_data} />
+                </div>
+                <p className="mt-3 text-2xl font-semibold text-white">{pin.value ?? "Unavailable"}{pin.unit ? <span className="ml-1 text-sm text-slate-500">{pin.unit}</span> : null}</p>
+                <p className="mt-2 text-xs text-slate-400">{pin.delta_label ?? "context only"} · {pin.one_year_delta_label ?? "not scored"}</p>
+                <p className="mt-2 text-xs text-slate-500">{pin.provider ?? "Provider N/A"}{pin.latest_date ? ` · ${pin.latest_date}` : ""}</p>
+              </Link>
+            ))}
+          </div>
+        </Panel>
+      </div>
 
       <ShellTitle title="Market pulse" source={source} />
       <Panel title="Focus now">

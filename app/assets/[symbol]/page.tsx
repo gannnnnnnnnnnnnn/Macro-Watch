@@ -8,6 +8,11 @@ export function generateStaticParams() {
   return getEnabledAssetCatalog().map((asset) => ({ symbol: asset.symbol }));
 }
 
+function formatNumber(value: number | null | undefined) {
+  if (typeof value !== "number") return "N/A";
+  return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
 export default async function AssetDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
   const { symbol: rawSymbol } = await params;
   const symbol = decodeURIComponent(rawSymbol);
@@ -38,7 +43,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Latest</p><p className="mt-1 text-3xl font-semibold text-white">{asset.value ?? "Unavailable"}{asset.unit ? <span className="ml-1 text-sm text-slate-500">{asset.unit}</span> : null}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Change</p><p className="mt-1 text-xl text-white">{change}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Provider/date</p><p className="mt-1 text-sm text-slate-300">{asset.provider ?? "N/A"} · {asset.latest_date ?? "N/A"}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><p className="mt-1 text-sm text-slate-300">{pipelineStatus.generated_at ?? "Run pipeline"}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><p className="mt-1 break-words text-xs text-slate-300">{pipelineStatus.generated_at ?? "Run pipeline"}</p></div>
           </div>
         </Panel>
       </div>
@@ -50,12 +55,12 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
               <tbody>
                 {(recent.length ? recent : [{ date: "Unavailable" }]).map((row, index) => (
                   <tr key={`${row.date}-${index}`} className="border-t border-line">
-                    <td className="py-3 font-medium text-white">{row.date ?? "N/A"}</td>
-                    <td>{row.open ?? "N/A"}</td>
-                    <td>{row.high ?? "N/A"}</td>
-                    <td>{row.low ?? "N/A"}</td>
-                    <td>{row.close ?? "N/A"}</td>
-                    <td className="text-slate-400">{row.volume ?? "N/A"}</td>
+                    <td className="whitespace-nowrap py-3 font-medium text-white">{row.date ?? "N/A"}</td>
+                    <td>{formatNumber(row.open)}</td>
+                    <td>{formatNumber(row.high)}</td>
+                    <td>{formatNumber(row.low)}</td>
+                    <td>{formatNumber(row.close)}</td>
+                    <td className="text-slate-400">{formatNumber(row.volume)}</td>
                   </tr>
                 ))}
               </tbody>

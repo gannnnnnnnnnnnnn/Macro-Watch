@@ -15,7 +15,7 @@ export default function DataLabPage() {
   return (
     <>
       <ShellTitle title="Data Lab" eyebrow="Local data operations" source={source} />
-      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-7">
         <MetricTile label="Frontend source" value={<SourceBadge source={source} />} detail="generated first, mock fallback" />
         <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={pipelineStatus.generated_at ?? "Unavailable"} />
         <MetricTile label="Freshness" value={<StatusBadge label={freshness.label} real={!freshness.isStale} />} detail={freshness.hasGenerated ? "generated timestamp present" : "generated status missing"} />

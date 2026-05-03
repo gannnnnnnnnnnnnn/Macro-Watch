@@ -69,7 +69,7 @@ export function LightweightChart({
 
   if (points.length < 2) {
     return (
-      <div className="flex h-72 items-center justify-center rounded border border-line bg-ink text-sm text-slate-500">
+      <div className="flex items-center justify-center rounded border border-line bg-ink p-4 text-center text-sm text-slate-500" style={{ height }}>
         No chart history available. Run the local pipeline for generated chart data.
       </div>
     );

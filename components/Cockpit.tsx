@@ -4,13 +4,13 @@ import type { Asset, HistoryRow, Indicator, SourceName, SymbolHistory } from "@/
 export function SourceBadge({ source }: { source: SourceName | string | undefined }) {
   const label = source ?? "unavailable";
   const tone = label === "generated" ? "bg-emerald-500/15 text-emerald-300" : label === "mixed" ? "bg-amber-500/15 text-amber-300" : "bg-slate-500/15 text-slate-300";
-  return <span className={`rounded px-2.5 py-1 text-xs font-medium uppercase tracking-wide ${tone}`}>{label}</span>;
+  return <span className={`inline-flex self-start rounded px-2.5 py-1 text-xs font-medium uppercase tracking-wide ${tone}`}>{label}</span>;
 }
 
 export function StatusBadge({ label, real }: { label?: string; real?: boolean }) {
   const text = label ?? "unavailable";
   const tone = real || text === "ok" || text === "generated" ? "bg-emerald-500/15 text-emerald-300" : text.includes("placeholder") || text.includes("pending") || text === "warning" ? "bg-amber-500/15 text-amber-300" : "bg-slate-500/15 text-slate-300";
-  return <span className={`rounded px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${tone}`}>{real ? "real" : text}</span>;
+  return <span className={`inline-flex self-start rounded px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${tone}`}>{real ? "real" : text}</span>;
 }
 
 export function ShellTitle({ title, eyebrow, source }: { title: string; eyebrow?: string; source?: SourceName | string }) {
@@ -41,8 +41,8 @@ export function MetricTile({ label, value, detail, badge }: { label: string; val
         <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
         {badge}
       </div>
-      <div className="mt-3 text-2xl font-semibold text-white">{value}</div>
-      {detail ? <p className="mt-1 text-sm text-slate-400">{detail}</p> : null}
+      <div className="mt-3 break-words text-2xl font-semibold text-white">{value}</div>
+      {detail ? <p className="mt-1 break-words text-sm text-slate-400">{detail}</p> : null}
     </div>
   );
 }

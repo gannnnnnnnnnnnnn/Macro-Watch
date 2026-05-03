@@ -15,7 +15,7 @@ export function MarketsClient({ assets, history }: { assets: Asset[]; history: M
   const groups = useMemo(() => ["All", ...Array.from(new Set(assets.map((asset) => asset.group).filter((item): item is string => Boolean(item))))], [assets]);
   const visibleAssets = group === "All" ? assets : assets.filter((asset) => asset.group === group);
   const selected = useMemo(
-    () => assets.find((asset) => asset.symbol === selectedSymbol) ?? visibleAssets[0] ?? assets[0],
+    () => visibleAssets.find((asset) => asset.symbol === selectedSymbol) ?? visibleAssets[0] ?? assets.find((asset) => asset.symbol === selectedSymbol) ?? assets[0],
     [assets, selectedSymbol, visibleAssets],
   );
   const selectedHistory = selected?.symbol ? history.symbols?.[selected.symbol] : undefined;

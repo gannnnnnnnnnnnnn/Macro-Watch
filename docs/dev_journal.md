@@ -100,4 +100,14 @@ Append-only lightweight project journal.
 - validation: `npm install` installed `lightweight-charts`; first `npm run build` failed because a client component imported server-only `fs` through `lib/data.ts`, then passed after moving route helpers to `lib/routes.ts`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed with 28 enabled assets, 28 market history entries, 24 enabled FRED indicators, 3 derived indicators, and `pipeline_status.status` `ok`; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, `/data-lab`, 28 asset detail pages, and 27 indicator detail pages; mock-fallback build also passed with generated JSON temporarily moved aside; existing `npm run dev` server on port 3000 returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/indicators/DGS10`, and `/data-lab`.
 - notes/risks: Pins are static config only; no database/auth/preference editor exists. Charts use local JSON and Lightweight Charts; external TradingView remains reference-only. No scoring, AI, Trader Reader, broker integration, or backend service was added.
 - next: Visual review the workbench pages, then consider a small refresh workflow or manual notes slice.
+- commit hash if available: `65d7ffc`
+
+## 2026-05-03 19:48 Australia/Melbourne
+
+- task: Visual QA for interactive workbench.
+- files changed: `app/globals.css`, `app/page.tsx`, `app/data-lab/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `components/AppShell.tsx`, `components/Cockpit.tsx`, `components/LightweightChart.tsx`, `components/MarketsClient.tsx`, `docs/dev_journal.md`.
+- what changed: Tightened mobile status strip layout, prevented horizontal overflow, kept source/status badges compact, added spacing around new workbench sections, aligned selected asset state with the active market group filter, formatted asset detail table numbers, and made empty chart states respect chart height.
+- validation: `npm run build` passed; visual screenshots checked Dashboard, Markets, `/assets/SPY`, `/indicators/cpi-yoy`, and mobile `/data-lab`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed for the expanded asset/indicator catalog; final `npm run build` passed and prerendered the cockpit plus asset and indicator detail pages.
+- notes/risks: External TradingView reference widgets can still show their own loading state independently of local Lightweight Charts. No feature, data contract, scoring, AI, Trader Reader, or backend changes were added.
+- next: Continue PR visual review on real browser/device before merge.
 - commit hash if available: Pending.
