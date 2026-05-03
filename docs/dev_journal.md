@@ -80,4 +80,14 @@ Append-only lightweight project journal.
 - validation: `npm install` passed and updated the lockfile; first `npm run build` passed; generated CSS was checked for utilities including `grid`, `border-line`, `bg-panel`, and `text-slate-*`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched/wrote market, macro, stress, history, and pipeline status data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`; `npm run dev` started on port 3001 because port 3000 was in use, and all five app routes returned HTTP 200.
 - notes/risks: Root cause was dependency drift to Tailwind v4 plus the v4 PostCSS plugin while the project uses a Tailwind v3 config/content/custom-color setup. `npm install` still reports two moderate audit findings. Visual rescue was intentionally focused and did not add new features, pages, data sources, or scoring.
 - next: Run the dev server and visually review all five pages; then keep the next slice small and local-first.
+- commit hash if available: `9f2cd3d`
+
+## 2026-05-03 19:10 Australia/Melbourne
+
+- task: Finalize v0.1 Local Macro Cockpit checkpoint.
+- files changed: `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `README.md`.
+- what changed: Marked v0.1 Local Macro Cockpit as ready for merge review, clarified working scope and explicit out-of-scope items, added Phase 2 Daily Use Layer candidates, and tightened README notes around generated JSON, mock fallback, and running the local pipeline for real data.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and wrote generated market, history, macro, stress, and pipeline status JSON; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. Optional `npm run dev` was not rerun for this docs-only checkpoint.
+- notes/risks: No feature, UI, or data-source changes in this checkpoint.
+- next: Merge review for v0.1, then choose one small Phase 2 daily-use slice.
 - commit hash if available: Pending.

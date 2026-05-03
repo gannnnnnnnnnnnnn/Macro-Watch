@@ -2,6 +2,8 @@
 
 ## v0.1 Local Macro Cockpit
 
+Status: ready for merge review.
+
 - Local-first market cockpit
 - OpenStock/OpenBB-inspired dark UI
 - Generated JSON data path
@@ -9,12 +11,17 @@
 - OpenBB/yfinance market snapshot and history
 - FRED macro and partial stress context
 - Data freshness and stale-state UX
+- Markets page selected asset switching
+- Data Lab operating page
 
-## Next
+## Phase 2: Daily Use Layer
 
-- Review the v0.1 cockpit locally
-- Add lightweight historical context views
-- Keep stress labels honest and unscored
+- Pinned indicators
+- Indicator detail page
+- Refresh workflow
+- Manual notes
+- Watchlist preferences
+- Small historical context views
 
 ## Later
 
@@ -22,6 +29,7 @@
 - AI-assisted research
 - Thesis validation
 - Broker integration
+- Full macro regime scoring
 
 ## Previous v0 scaffold
 

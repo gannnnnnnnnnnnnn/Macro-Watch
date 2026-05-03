@@ -32,6 +32,8 @@ python run_all.py
 
 The frontend prefers `data/generated/*.json`. If generated files are missing, invalid, or incomplete, it falls back to `data/mock/*.json` and labels unavailable fields clearly.
 
+Generated JSON files are ignored by git except for `data/generated/.gitkeep`. Run the pipeline locally when you want real market, macro, and stress data; otherwise the frontend uses the committed mock fallback data.
+
 The pipeline tries to use OpenBB when available. If OpenBB is missing or a fetch fails, it writes fallback generated JSON with warning status instead of failing silently.
 
 ## Current Shape
