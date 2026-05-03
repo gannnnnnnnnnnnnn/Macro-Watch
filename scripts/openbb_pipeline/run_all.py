@@ -2,7 +2,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fetch_macro_indicators import fetch_macro_indicators
+from catalog_utils import all_assets, enabled_assets, enabled_derived_indicators, enabled_indicators
+from fetch_macro_indicators import fetch_indicator_history, fetch_macro_indicators
 from fetch_market_history import fetch_market_history
 from fetch_market_snapshot import fetch_market_snapshot
 from fetch_stress_indicators import fetch_stress_indicators
@@ -42,6 +43,7 @@ def main():
         "market_snapshot.json": market_snapshot,
         "market_history.json": fetch_market_history(openbb_client),
         "macro_indicators.json": fetch_macro_indicators(openbb_client),
+        "indicator_history.json": fetch_indicator_history(openbb_client),
         "stress_indicators.json": fetch_stress_indicators(openbb_client, market_snapshot),
     }
 
@@ -77,6 +79,10 @@ def main():
     for file_name in ("macro_indicators.json", "stress_indicators.json"):
         for series_id, item in file_status.get(file_name, {}).get("series", {}).items():
             fred_series[series_id] = item
+    assets_all = all_assets()
+    assets_enabled = enabled_assets()
+    indicators_enabled = enabled_indicators()
+    derived_enabled = enabled_derived_indicators()
     status = {
         "source": "generated",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -85,6 +91,13 @@ def main():
         "files": file_status,
         "symbols": symbol_status,
         "fred_series": fred_series,
+        "config": {
+            "assets_total": len(assets_all),
+            "assets_enabled": len(assets_enabled),
+            "assets_disabled": len(assets_all) - len(assets_enabled),
+            "indicators_enabled": len(indicators_enabled),
+            "derived_indicators_enabled": len(derived_enabled),
+        },
         "providers": [
             {
                 "name": "OpenBB",

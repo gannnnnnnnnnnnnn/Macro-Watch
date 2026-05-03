@@ -1,8 +1,8 @@
 import { IndicatorList, MetricTile, Panel, ShellTitle } from "@/components/Cockpit";
-import { getCockpitData } from "@/lib/data";
+import { getCockpitData, withIndicatorHrefs } from "@/lib/data";
 import type { Indicator } from "@/lib/types";
 
-const groups = ["Rates", "Inflation", "Labor", "Liquidity", "Credit", "Dollar", "Commodities"];
+const groups = ["Rates", "Inflation", "Labor", "Liquidity", "Credit", "Growth", "Housing", "Dollar", "Commodities"];
 
 function findIndicator(groupsMap: Record<string, Indicator[]> | undefined, name: string) {
   return Object.values(groupsMap ?? {}).flat().find((item) => item.name === name);
@@ -43,7 +43,7 @@ export default function MacroPage() {
         <Panel title="Pending"><p className="text-sm text-slate-300">Dollar and commodity macro series remain pending; market proxies cover them elsewhere.</p></Panel>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {groups.map((group) => <Panel key={group} title={group}><IndicatorList items={macro.groups?.[group]} /></Panel>)}
+        {groups.map((group) => <Panel key={group} title={group}><IndicatorList items={withIndicatorHrefs(macro.groups?.[group])} /></Panel>)}
       </div>
     </>
   );

@@ -1,0 +1,56 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-03T19:30:00+10:00",
+  "provider": "mock",
+  "status": "warning",
+  "real_data": false,
+  "warnings": ["Mock indicator history fallback."],
+  "indicators": {
+    "DGS10": {
+      "id": "DGS10",
+      "series_id": "DGS10",
+      "label": "10Y Treasury yield",
+      "name": "10-Year Treasury Constant Maturity Rate",
+      "group": "Rates",
+      "unit": "%",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "rows": [
+        {"date": "2025-05-01", "value": 4.45},
+        {"date": "2025-11-01", "value": 4.2},
+        {"date": "2026-05-01", "value": 4.35}
+      ]
+    },
+    "10y-2y-spread": {
+      "id": "10y-2y-spread",
+      "label": "10Y-2Y spread",
+      "name": "10Y Treasury yield minus 2Y Treasury yield",
+      "group": "Rates",
+      "unit": "pp",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "rows": [
+        {"date": "2025-05-01", "value": -0.3},
+        {"date": "2025-11-01", "value": -0.1},
+        {"date": "2026-05-01", "value": 0.15}
+      ]
+    },
+    "cpi-yoy": {
+      "id": "cpi-yoy",
+      "label": "CPI YoY",
+      "name": "Consumer Price Index year-over-year change",
+      "group": "Inflation",
+      "unit": "%",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "rows": [
+        {"date": "2025-05-01", "value": 3.4},
+        {"date": "2025-11-01", "value": 3.0},
+        {"date": "2026-05-01", "value": 2.8}
+      ]
+    }
+  }
+}

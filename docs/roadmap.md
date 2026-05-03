@@ -14,14 +14,26 @@ Status: ready for merge review.
 - Markets page selected asset switching
 - Data Lab operating page
 
+## Phase 2.1: Interactive Research Workbench
+
+Status: in PR on `feature/interactive-workbench`.
+
+- Config-driven asset catalog
+- Config-driven macro/FRED indicator catalog
+- Static pinned indicators
+- Asset detail pages
+- Indicator detail pages
+- Local TradingView Lightweight Charts from generated JSON
+- Expanded market and macro data catalog
+- Data Lab catalog/chart status
+
 ## Phase 2: Daily Use Layer
 
-- Pinned indicators
-- Indicator detail page
 - Refresh workflow
 - Manual notes
-- Watchlist preferences
-- Small historical context views
+- Watchlist preferences UI
+- Pinned indicator editing
+- Richer historical context views
 
 ## Later
 

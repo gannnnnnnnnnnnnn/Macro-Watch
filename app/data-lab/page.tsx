@@ -1,9 +1,9 @@
 import { MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
-import { getCockpitData } from "@/lib/data";
+import { getAssetCatalog, getCockpitData, getEnabledAssetCatalog, getEnabledIndicatorCatalog } from "@/lib/data";
 import { getFreshness } from "@/lib/freshness";
 
 export default function DataLabPage() {
-  const { pipelineStatus, source, marketHistory, stress } = getCockpitData();
+  const { pipelineStatus, source, marketHistory, indicatorHistory, stress } = getCockpitData();
   const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
   const freshness = getFreshness(pipelineStatus.generated_at);
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][] =
@@ -19,8 +19,9 @@ export default function DataLabPage() {
         <MetricTile label="Frontend source" value={<SourceBadge source={source} />} detail="generated first, mock fallback" />
         <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={pipelineStatus.generated_at ?? "Unavailable"} />
         <MetricTile label="Freshness" value={<StatusBadge label={freshness.label} real={!freshness.isStale} />} detail={freshness.hasGenerated ? "generated timestamp present" : "generated status missing"} />
-        <MetricTile label="Market history" value={Object.keys(marketHistory.symbols ?? {}).length} detail="symbols with history file entries" />
-        <MetricTile label="FRED series" value={fredEntries.filter(([, item]) => item.real_data).length} detail="real series currently loaded" />
+        <MetricTile label="Assets enabled" value={`${getEnabledAssetCatalog().length}/${getAssetCatalog().length}`} detail="config-driven catalog" />
+        <MetricTile label="Indicator catalog" value={getEnabledIndicatorCatalog().length} detail="raw and derived enabled" />
+        <MetricTile label="Chart history" value={`${Object.keys(marketHistory.symbols ?? {}).length} / ${Object.keys(indicatorHistory.indicators ?? {}).length}`} detail="market / indicator files" />
         <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
@@ -42,6 +43,14 @@ export default function DataLabPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </Panel>
+        <Panel title="Catalog summary">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Enabled assets</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.assets_enabled ?? getEnabledAssetCatalog().length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Disabled assets</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.assets_disabled ?? 0}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">FRED indicators</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.indicators_enabled ?? getEnabledIndicatorCatalog().length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Derived indicators</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.derived_indicators_enabled ?? "N/A"}</p></div>
           </div>
         </Panel>
         <Panel title="Providers">

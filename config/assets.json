@@ -1,0 +1,38 @@
+{
+  "assets": [
+    {"symbol": "SPY", "label": "SPY", "name": "S&P 500 ETF", "group": "Core indices", "provider_symbol": "SPY", "tradingview_symbol": "AMEX:SPY", "enabled": true},
+    {"symbol": "QQQ", "label": "QQQ", "name": "Nasdaq 100 ETF", "group": "Core indices", "provider_symbol": "QQQ", "tradingview_symbol": "NASDAQ:QQQ", "enabled": true},
+    {"symbol": "DIA", "label": "DIA", "name": "Dow Industrials ETF", "group": "Core indices", "provider_symbol": "DIA", "tradingview_symbol": "AMEX:DIA", "enabled": true},
+    {"symbol": "IWM", "label": "IWM", "name": "Russell 2000 ETF", "group": "Core indices", "provider_symbol": "IWM", "tradingview_symbol": "AMEX:IWM", "enabled": true},
+
+    {"symbol": "VIX", "label": "VIX", "name": "CBOE Volatility Index", "group": "Volatility", "provider_symbol": "^VIX", "tradingview_symbol": "TVC:VIX", "enabled": true},
+
+    {"symbol": "TLT", "label": "TLT", "name": "20+ Year Treasury ETF", "group": "Rates / dollar proxies", "provider_symbol": "TLT", "tradingview_symbol": "NASDAQ:TLT", "enabled": true},
+    {"symbol": "IEF", "label": "IEF", "name": "7-10 Year Treasury ETF", "group": "Rates / dollar proxies", "provider_symbol": "IEF", "tradingview_symbol": "NASDAQ:IEF", "enabled": true},
+    {"symbol": "SHY", "label": "SHY", "name": "1-3 Year Treasury ETF", "group": "Rates / dollar proxies", "provider_symbol": "SHY", "tradingview_symbol": "NASDAQ:SHY", "enabled": true},
+    {"symbol": "UUP", "label": "UUP", "name": "US Dollar ETF", "group": "Rates / dollar proxies", "provider_symbol": "UUP", "tradingview_symbol": "AMEX:UUP", "enabled": true},
+
+    {"symbol": "HYG", "label": "HYG", "name": "High Yield Corporate Bond ETF", "group": "Credit / financial stress proxies", "provider_symbol": "HYG", "tradingview_symbol": "AMEX:HYG", "enabled": true},
+    {"symbol": "LQD", "label": "LQD", "name": "Investment Grade Corporate Bond ETF", "group": "Credit / financial stress proxies", "provider_symbol": "LQD", "tradingview_symbol": "AMEX:LQD", "enabled": true},
+    {"symbol": "KRE", "label": "KRE", "name": "Regional Bank ETF", "group": "Credit / financial stress proxies", "provider_symbol": "KRE", "tradingview_symbol": "AMEX:KRE", "enabled": true},
+    {"symbol": "XLF", "label": "XLF", "name": "Financial Sector ETF", "group": "Credit / financial stress proxies", "provider_symbol": "XLF", "tradingview_symbol": "AMEX:XLF", "enabled": true},
+
+    {"symbol": "AAPL", "label": "AAPL", "name": "Apple", "group": "Mega cap / semis", "provider_symbol": "AAPL", "tradingview_symbol": "NASDAQ:AAPL", "enabled": true},
+    {"symbol": "MSFT", "label": "MSFT", "name": "Microsoft", "group": "Mega cap / semis", "provider_symbol": "MSFT", "tradingview_symbol": "NASDAQ:MSFT", "enabled": true},
+    {"symbol": "NVDA", "label": "NVDA", "name": "NVIDIA", "group": "Mega cap / semis", "provider_symbol": "NVDA", "tradingview_symbol": "NASDAQ:NVDA", "enabled": true},
+    {"symbol": "AMZN", "label": "AMZN", "name": "Amazon", "group": "Mega cap / semis", "provider_symbol": "AMZN", "tradingview_symbol": "NASDAQ:AMZN", "enabled": true},
+    {"symbol": "META", "label": "META", "name": "Meta Platforms", "group": "Mega cap / semis", "provider_symbol": "META", "tradingview_symbol": "NASDAQ:META", "enabled": true},
+    {"symbol": "GOOGL", "label": "GOOGL", "name": "Alphabet", "group": "Mega cap / semis", "provider_symbol": "GOOGL", "tradingview_symbol": "NASDAQ:GOOGL", "enabled": true},
+    {"symbol": "TSLA", "label": "TSLA", "name": "Tesla", "group": "Mega cap / semis", "provider_symbol": "TSLA", "tradingview_symbol": "NASDAQ:TSLA", "enabled": true},
+    {"symbol": "SMH", "label": "SMH", "name": "VanEck Semiconductor ETF", "group": "Mega cap / semis", "provider_symbol": "SMH", "tradingview_symbol": "NASDAQ:SMH", "enabled": true},
+    {"symbol": "SOXX", "label": "SOXX", "name": "iShares Semiconductor ETF", "group": "Mega cap / semis", "provider_symbol": "SOXX", "tradingview_symbol": "NASDAQ:SOXX", "enabled": true},
+
+    {"symbol": "GLD", "label": "GLD", "name": "Gold ETF", "group": "Commodities", "provider_symbol": "GLD", "tradingview_symbol": "AMEX:GLD", "enabled": true},
+    {"symbol": "SLV", "label": "SLV", "name": "Silver ETF", "group": "Commodities", "provider_symbol": "SLV", "tradingview_symbol": "AMEX:SLV", "enabled": true},
+    {"symbol": "USO", "label": "USO", "name": "Oil ETF", "group": "Commodities", "provider_symbol": "USO", "tradingview_symbol": "AMEX:USO", "enabled": true},
+    {"symbol": "CPER", "label": "CPER", "name": "Copper ETF", "group": "Commodities", "provider_symbol": "CPER", "tradingview_symbol": "AMEX:CPER", "enabled": true},
+
+    {"symbol": "BTC-USD", "label": "BTC", "name": "Bitcoin", "group": "Crypto", "provider_symbol": "BTC-USD", "tradingview_symbol": "COINBASE:BTCUSD", "enabled": true},
+    {"symbol": "ETH-USD", "label": "ETH", "name": "Ethereum", "group": "Crypto", "provider_symbol": "ETH-USD", "tradingview_symbol": "COINBASE:ETHUSD", "enabled": true}
+  ]
+}

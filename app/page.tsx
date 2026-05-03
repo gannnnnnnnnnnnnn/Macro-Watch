@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { AssetCard, IndicatorList, MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
-import { getCockpitData } from "@/lib/data";
+import { getCockpitData, resolvePinnedItems } from "@/lib/data";
 import { getFreshness } from "@/lib/freshness";
 import type { Indicator } from "@/lib/types";
 
@@ -25,6 +26,7 @@ export default function Home() {
   const fredReal = Object.values(pipelineStatus.fred_series ?? {}).filter((series) => series.real_data).length;
   const realMarkets = assets.filter((asset) => asset.real_data).length;
   const freshness = getFreshness(pipelineStatus.generated_at);
+  const pins = resolvePinnedItems();
 
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
   const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
@@ -58,6 +60,22 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <Panel title="Pinned indicators">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {pins.map((pin) => (
+            <Link key={`${pin.type}-${pin.id}`} href={pin.href} className="rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-xs uppercase tracking-wide text-slate-500">{pin.label}</p>
+                <StatusBadge label={pin.status} real={pin.real_data} />
+              </div>
+              <p className="mt-3 text-2xl font-semibold text-white">{pin.value ?? "Unavailable"}{pin.unit ? <span className="ml-1 text-sm text-slate-500">{pin.unit}</span> : null}</p>
+              <p className="mt-2 text-xs text-slate-400">{pin.delta_label ?? "context only"} · {pin.one_year_delta_label ?? "not scored"}</p>
+              <p className="mt-2 text-xs text-slate-500">{pin.provider ?? "Provider N/A"}{pin.latest_date ? ` · ${pin.latest_date}` : ""}</p>
+            </Link>
+          ))}
+        </div>
+      </Panel>
 
       <ShellTitle title="Market pulse" source={source} />
       <Panel title="Focus now">

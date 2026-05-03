@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta, timezone
 
-from fetch_market_snapshot import TARGETS, _endpoint
+from catalog_utils import enabled_assets
+from fetch_market_snapshot import _endpoint, _provider_symbol
 
 
 def _value(row, field):
@@ -30,9 +31,11 @@ def _history_row(row):
 
 def _empty_history(target, status):
     return {
-        "symbol": target.get("display_symbol", target["symbol"]),
-        "proxy": target["symbol"],
-        "name": target["name"],
+        "symbol": target["symbol"],
+        "proxy": _provider_symbol(target),
+        "name": target.get("name", target["symbol"]),
+        "group": target.get("group"),
+        "tradingview_symbol": target.get("tradingview_symbol"),
         "provider": None,
         "status": status,
         "real_data": False,
@@ -41,9 +44,8 @@ def _empty_history(target, status):
 
 
 def _fetch_history(openbb_client, target):
-    start = (date.today() - timedelta(days=90)).isoformat()
-    endpoint = _endpoint(openbb_client, target["kind"])
-    result = endpoint(symbol=target["symbol"], start_date=start, provider="yfinance", interval="1d")
+    start = (date.today() - timedelta(days=400)).isoformat()
+    result = _endpoint(openbb_client, target)(symbol=_provider_symbol(target), start_date=start, provider="yfinance", interval="1d")
     rows = [_history_row(row) for row in (getattr(result, "results", None) or [])]
     rows = [row for row in rows if row.get("date") and row.get("close") is not None]
     if not rows:
@@ -51,27 +53,30 @@ def _fetch_history(openbb_client, target):
 
     provider = getattr(result, "provider", None) or "yfinance"
     return {
-        "symbol": target.get("display_symbol", target["symbol"]),
-        "proxy": target["symbol"],
-        "name": target["name"],
+        "symbol": target["symbol"],
+        "proxy": _provider_symbol(target),
+        "name": target.get("name", target["symbol"]),
+        "group": target.get("group"),
+        "tradingview_symbol": target.get("tradingview_symbol"),
         "provider": provider,
         "status": "ok",
         "real_data": True,
-        "rows": rows[-60:],
+        "rows": rows,
     }
 
 
 def fetch_market_history(openbb_client=None):
     warnings = []
     symbols = {}
+    targets = enabled_assets()
 
     if openbb_client is None:
         warnings.append("OpenBB unavailable; wrote market history fallback records.")
-        for target in TARGETS:
-            symbols[target.get("display_symbol", target["symbol"])] = _empty_history(target, "fallback: OpenBB unavailable")
+        for target in targets:
+            symbols[target["symbol"]] = _empty_history(target, "fallback: OpenBB unavailable")
     else:
-        for target in TARGETS:
-            symbol = target.get("display_symbol", target["symbol"])
+        for target in targets:
+            symbol = target["symbol"]
             try:
                 history = _fetch_history(openbb_client, target)
                 print(f"Fetched history for {symbol} via {history['provider']}: {len(history['rows'])} rows")
@@ -87,7 +92,7 @@ def fetch_market_history(openbb_client=None):
         "source": "generated",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "provider": "yfinance" if real_count else None,
-        "status": "ok" if real_count == len(TARGETS) else "warning",
+        "status": "ok" if targets and real_count == len(targets) else "warning",
         "real_data": real_count > 0,
         "warnings": warnings,
         "symbols": symbols,

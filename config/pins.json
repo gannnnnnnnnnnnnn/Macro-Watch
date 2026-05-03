@@ -1,0 +1,14 @@
+{
+  "pins": [
+    {"type": "asset", "id": "SPY"},
+    {"type": "asset", "id": "QQQ"},
+    {"type": "asset", "id": "VIX"},
+    {"type": "indicator", "id": "DGS10"},
+    {"type": "indicator", "id": "10y-2y-spread"},
+    {"type": "indicator", "id": "FEDFUNDS"},
+    {"type": "indicator", "id": "cpi-yoy"},
+    {"type": "indicator", "id": "BAMLH0A0HYM2"},
+    {"type": "indicator", "id": "RRPONTSYD"},
+    {"type": "indicator", "id": "WALCL"}
+  ]
+}

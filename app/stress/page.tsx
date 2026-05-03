@@ -1,5 +1,5 @@
 import { IndicatorList, MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
-import { getCockpitData } from "@/lib/data";
+import { getCockpitData, withIndicatorHrefs } from "@/lib/data";
 import type { Indicator } from "@/lib/types";
 
 const buckets = ["Volatility stress", "Credit stress", "Liquidity stress", "Banking stress", "Household stress", "Leverage stress", "Treasury market stress"];
@@ -36,7 +36,7 @@ export default function StressPage() {
       <div className="mb-4 grid gap-3 md:grid-cols-3">
         <MetricTile label="Credit stress" value="partial" detail="HY OAS and Baa spread wired" badge={<StatusBadge label="partial" />} />
         <MetricTile label="Liquidity stress" value="partial" detail="Fed assets and RRP wired" badge={<StatusBadge label="partial" />} />
-        <MetricTile label="Pending buckets" value="4" detail="Volatility, banking, household, leverage" badge={<StatusBadge label="pending" />} />
+        <MetricTile label="Pending buckets" value="3" detail="Banking, household, leverage" badge={<StatusBadge label="pending" />} />
       </div>
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas)} />
@@ -67,7 +67,7 @@ export default function StressPage() {
         </div>
       </Panel>
       <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {buckets.map((bucket) => <Panel key={bucket} title={bucket}><IndicatorList items={stress.buckets?.[bucket]} /></Panel>)}
+        {buckets.map((bucket) => <Panel key={bucket} title={bucket}><IndicatorList items={withIndicatorHrefs(stress.buckets?.[bucket])} /></Panel>)}
       </div>
     </>
   );

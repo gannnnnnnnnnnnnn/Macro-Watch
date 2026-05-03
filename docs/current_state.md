@@ -2,7 +2,7 @@
 
 ## Current phase
 
-v0.1 Local Macro Cockpit is ready for merge review on `feature/local-scaffold-v0`.
+Phase 2.1 Interactive Research Workbench is in progress on `feature/interactive-workbench`.
 
 ## Current runnable path
 
@@ -10,28 +10,28 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 ## What works
 
-- OpenStock/OpenBB-inspired dark local macro cockpit with AppShell, sidebar navigation, and top status strip.
-- Dashboard, Markets, Macro, Stress, and Data Lab pages render locally.
-- Markets page supports selected asset switching, sparklines from local history JSON, and a public TradingView widget panel.
-- OpenBB/yfinance pipeline writes market snapshot and recent market history for the tracked proxies.
-- FRED macro/stress indicators are generated through `pandas_datareader` with no-key CSV fallback.
-- Macro page shows real FRED values and neutral delta context where available.
-- Stress page shows partial real context for VIX, credit, liquidity, and Treasury data without fake scores.
-- Data Lab shows generated/mock source, pipeline status, providers, symbols, FRED series, warnings, commands, and freshness/stale state.
-- UI tolerates missing generated data and falls back to mock JSON with unavailable/pending labels.
+- v0.1 OpenStock/OpenBB-inspired dark local macro cockpit remains intact.
+- Static config catalogs define enabled market assets, FRED indicators, derived indicators, and default pins.
+- Dashboard shows pinned workbench items with detail links and neutral context only.
+- Markets explorer uses config-driven groups, selected asset switching, local Lightweight Charts, and asset detail links.
+- Asset detail pages show latest local snapshot data, local history chart, recent rows, and optional external TradingView reference.
+- Indicator detail pages support raw FRED indicators and derived indicators such as CPI YoY, 10Y-2Y spread, and 10Y-3M spread.
+- OpenBB/yfinance pipeline reads `config/assets.json` and writes expanded market snapshot/history.
+- FRED pipeline reads `config/indicators.json`, writes macro/stress data, and adds `indicator_history.json` for charting.
+- Data Lab shows catalog counts, generated file status, chart data status, provider status, warnings, and local refresh commands.
 
 ## Current stack
 
-Next.js, TypeScript, Tailwind CSS v3, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market snapshot and history fetches plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
+Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market data plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
 
 ## Current data contract
 
-Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, and optional `pipeline_status.json`. Market assets include latest close, previous close, percentage change, provider, per-symbol status, and `real_data`; market history includes recent daily OHLCV rows by symbol; macro indicators include FRED rates, inflation, labor, liquidity, credit series, and neutral delta context where available; stress buckets are partial, with real VIX, FRED credit/liquidity/Treasury context, and pending labels for unwired buckets. The UI shows generated/mock/mixed source, generated timestamp, and stale warnings when generated data is older than 24 hours.
+Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, `indicator_history.json`, and optional `pipeline_status.json`. Catalog inputs live in `config/assets.json`, `config/indicators.json`, and `config/pins.json`. Chart components use local generated/mock JSON only; the external TradingView widget remains reference-only.
 
 ## Out of scope
 
-Trader Reader, AI chat, thesis validation, broker integration, deployment, database/auth, backend service, and full macro regime scoring remain out of scope for v0.1.
+Trader Reader, AI chat, thesis validation, broker integration, deployment, database/auth, backend service, email automation, UI preference editor, and full macro regime scoring remain out of scope.
 
 ## Next phase candidates
 
-Phase 2 candidates: pinned indicators, indicator detail page, refresh workflow, manual notes, watchlist preferences, and later Trader Reader once the cockpit remains stable in daily local use.
+After Phase 2.1 review: manual notes, refresh workflow polish, persisted watchlist preferences, richer indicator detail ergonomics, and later Trader Reader.

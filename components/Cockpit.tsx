@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Asset, HistoryRow, Indicator, SourceName, SymbolHistory } from "@/lib/types";
 
 export function SourceBadge({ source }: { source: SourceName | string | undefined }) {
@@ -79,7 +80,7 @@ export function AssetCard({ asset, history }: { asset: Asset; history?: SymbolHi
     <div className="rounded-lg border border-line bg-[#0c1018] p-4 shadow-lg shadow-black/10">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">{asset.symbol ?? asset.proxy ?? "N/A"}</p>
+          <p className="text-sm font-semibold text-white">{asset.label ?? asset.symbol ?? asset.proxy ?? "N/A"}</p>
           <p className="mt-1 text-xs text-slate-400">{asset.name ?? "Unavailable"}</p>
         </div>
         <span className={tone}>{change === null ? "N/A" : `${change > 0 ? "+" : ""}${change.toFixed(2)}%`}</span>
@@ -102,7 +103,11 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
         <div key={`${item.name ?? "indicator"}-${index}`} className="flex items-center justify-between gap-4 border-b border-line pb-3 last:border-0 last:pb-0">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-medium text-white">{item.name ?? "Unavailable"}</p>
+              {item.href ? (
+                <Link href={item.href} className="font-medium text-white hover:text-cyan-300">{item.name ?? item.label ?? "Unavailable"}</Link>
+              ) : (
+                <p className="font-medium text-white">{item.name ?? item.label ?? "Unavailable"}</p>
+              )}
               <StatusBadge label={item.status} real={item.real_data} />
             </div>
             <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>

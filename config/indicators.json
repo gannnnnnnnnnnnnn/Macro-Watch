@@ -1,0 +1,39 @@
+{
+  "indicators": [
+    {"id": "DGS3MO", "series_id": "DGS3MO", "label": "3M Treasury yield", "name": "3-Month Treasury Constant Maturity Rate", "group": "Rates", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "DGS2", "series_id": "DGS2", "label": "2Y Treasury yield", "name": "2-Year Treasury Constant Maturity Rate", "group": "Rates", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "DGS10", "series_id": "DGS10", "label": "10Y Treasury yield", "name": "10-Year Treasury Constant Maturity Rate", "group": "Rates", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "DGS30", "series_id": "DGS30", "label": "30Y Treasury yield", "name": "30-Year Treasury Constant Maturity Rate", "group": "Rates", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "FEDFUNDS", "series_id": "FEDFUNDS", "label": "Effective fed funds", "name": "Effective Federal Funds Rate", "group": "Rates", "unit": "%", "provider": "FRED", "enabled": true},
+
+    {"id": "CPIAUCSL", "series_id": "CPIAUCSL", "label": "CPI index", "name": "Consumer Price Index for All Urban Consumers", "group": "Inflation", "unit": "index", "provider": "FRED", "enabled": true},
+    {"id": "T10YIE", "series_id": "T10YIE", "label": "10Y breakeven inflation", "name": "10-Year Breakeven Inflation Rate", "group": "Inflation", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "T5YIE", "series_id": "T5YIE", "label": "5Y breakeven inflation", "name": "5-Year Breakeven Inflation Rate", "group": "Inflation", "unit": "%", "provider": "FRED", "enabled": true},
+
+    {"id": "UNRATE", "series_id": "UNRATE", "label": "Unemployment rate", "name": "Unemployment Rate", "group": "Labor", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "PAYEMS", "series_id": "PAYEMS", "label": "Nonfarm payrolls", "name": "All Employees, Total Nonfarm", "group": "Labor", "unit": "thousands", "provider": "FRED", "enabled": true},
+    {"id": "ICSA", "series_id": "ICSA", "label": "Initial jobless claims", "name": "Initial Claims", "group": "Labor", "unit": "claims", "provider": "FRED", "enabled": true},
+
+    {"id": "WALCL", "series_id": "WALCL", "label": "Fed total assets", "name": "Federal Reserve Total Assets", "group": "Liquidity", "unit": "USD millions", "provider": "FRED", "enabled": true},
+    {"id": "RRPONTSYD", "series_id": "RRPONTSYD", "label": "Overnight reverse repos", "name": "Overnight Reverse Repurchase Agreements", "group": "Liquidity", "unit": "USD billions", "provider": "FRED", "enabled": true},
+    {"id": "WRESBAL", "series_id": "WRESBAL", "label": "Reserve balances", "name": "Reserve Balances with Federal Reserve Banks", "group": "Liquidity", "unit": "USD billions", "provider": "FRED", "enabled": true},
+
+    {"id": "BAMLH0A0HYM2", "series_id": "BAMLH0A0HYM2", "label": "High yield OAS", "name": "ICE BofA US High Yield Option-Adjusted Spread", "group": "Credit", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "BAMLC0A4CBBB", "series_id": "BAMLC0A4CBBB", "label": "BBB OAS", "name": "ICE BofA BBB US Corporate Option-Adjusted Spread", "group": "Credit", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "BAA10Y", "series_id": "BAA10Y", "label": "Baa spread vs 10Y", "name": "Moody's Baa Corporate Bond Yield Relative to 10Y Treasury", "group": "Credit", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "STLFSI", "series_id": "STLFSI", "label": "St. Louis Fed stress index", "name": "St. Louis Fed Financial Stress Index", "group": "Credit", "unit": "index", "provider": "FRED", "enabled": true},
+    {"id": "NFCI", "series_id": "NFCI", "label": "Chicago Fed NFCI", "name": "National Financial Conditions Index", "group": "Credit", "unit": "index", "provider": "FRED", "enabled": true},
+
+    {"id": "INDPRO", "series_id": "INDPRO", "label": "Industrial production", "name": "Industrial Production Index", "group": "Growth", "unit": "index", "provider": "FRED", "enabled": true},
+    {"id": "RSAFS", "series_id": "RSAFS", "label": "Retail sales", "name": "Advance Retail Sales", "group": "Growth", "unit": "USD millions", "provider": "FRED", "enabled": true},
+
+    {"id": "MORTGAGE30US", "series_id": "MORTGAGE30US", "label": "30Y mortgage rate", "name": "30-Year Fixed Rate Mortgage Average", "group": "Housing", "unit": "%", "provider": "FRED", "enabled": true},
+    {"id": "HOUST", "series_id": "HOUST", "label": "Housing starts", "name": "Housing Starts", "group": "Housing", "unit": "thousands", "provider": "FRED", "enabled": true},
+    {"id": "PERMIT", "series_id": "PERMIT", "label": "Building permits", "name": "New Privately-Owned Housing Units Authorized", "group": "Housing", "unit": "thousands", "provider": "FRED", "enabled": true}
+  ],
+  "derived": [
+    {"id": "10y-2y-spread", "label": "10Y-2Y spread", "name": "10Y Treasury yield minus 2Y Treasury yield", "group": "Rates", "unit": "pp", "depends_on": ["DGS10", "DGS2"], "enabled": true},
+    {"id": "10y-3m-spread", "label": "10Y-3M spread", "name": "10Y Treasury yield minus 3M Treasury yield", "group": "Rates", "unit": "pp", "depends_on": ["DGS10", "DGS3MO"], "enabled": true},
+    {"id": "cpi-yoy", "label": "CPI YoY", "name": "Consumer Price Index year-over-year change", "group": "Inflation", "unit": "%", "depends_on": ["CPIAUCSL"], "enabled": true}
+  ]
+}
