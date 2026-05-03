@@ -226,3 +226,43 @@ export function resolvePinnedItems(): ResolvedResearchItem[] {
     };
   });
 }
+
+export function resolveAllResearchItems(): ResolvedResearchItem[] {
+  const { market, macro, stress } = getCockpitData();
+  const assets = getEnabledAssetCatalog().map((config) => {
+    const asset = resolveAsset(config.symbol, market);
+    return {
+      id: asset.symbol ?? config.symbol,
+      type: "asset" as const,
+      label: asset.label ?? asset.symbol ?? config.symbol,
+      value: asset.value ?? null,
+      unit: asset.unit,
+      provider: asset.provider,
+      latest_date: asset.latest_date,
+      status: asset.status,
+      real_data: asset.real_data,
+      delta_label: typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "Δ previous unavailable",
+      note: "Market watch item; context only, not scored.",
+      href: assetHref(asset.symbol ?? config.symbol),
+    };
+  });
+  const indicators = getEnabledIndicatorCatalog().map((config) => {
+    const indicator = resolveIndicator(config.id, macro, stress);
+    return {
+      id: indicator.id ?? config.id,
+      type: "indicator" as const,
+      label: indicator.label ?? indicator.name ?? config.label ?? config.id,
+      value: indicator.value ?? null,
+      unit: indicator.unit,
+      provider: indicator.provider,
+      latest_date: indicator.latest_date,
+      status: indicator.status,
+      real_data: indicator.real_data,
+      delta_label: indicator.delta_label,
+      one_year_delta_label: indicator.one_year_delta_label,
+      note: indicator.note ?? "Indicator watch item; context only, not scored.",
+      href: indicator.href ?? indicatorHref(config.id),
+    };
+  });
+  return [...assets, ...indicators];
+}

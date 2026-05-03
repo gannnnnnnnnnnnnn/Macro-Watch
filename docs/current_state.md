@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Phase 2.1 Interactive Research Workbench is in progress on `feature/interactive-workbench`.
+Phase 2.2 Interactive Workbench polish is in progress on `feature/interactive-workbench` as a follow-up commit to PR #1.
 
 ## Current runnable path
 
@@ -12,26 +12,28 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 - v0.1 OpenStock/OpenBB-inspired dark local macro cockpit remains intact.
 - Static config catalogs define enabled market assets, FRED indicators, derived indicators, and default pins.
-- Dashboard shows pinned workbench items with detail links and neutral context only.
-- Markets explorer uses config-driven groups, selected asset switching, local Lightweight Charts, and asset detail links.
-- Asset detail pages show latest local snapshot data, local history chart, recent rows, and optional external TradingView reference.
-- Indicator detail pages support raw FRED indicators and derived indicators such as CPI YoY, 10Y-2Y spread, and 10Y-3M spread.
-- OpenBB/yfinance pipeline reads `config/assets.json` and writes expanded market snapshot/history.
+- Dashboard uses localStorage-backed pins with default pins from `config/pins.json`.
+- Markets explorer is card/chart-first with grouped assets, selected asset switching, local Lightweight Charts, optional table view, and asset detail links.
+- Asset detail pages show latest local snapshot data, chart range controls, optional technical overlays, recent rows, and a lower-priority external TradingView reference.
+- Indicator detail pages support raw FRED indicators and derived indicators such as CPI YoY, 10Y-2Y spread, and 10Y-3M spread with chart range controls.
+- Stress has a coverage-aware SVG radar visualization using partial context only, not a full stress score.
+- UI language can toggle locally between English and Chinese for core interface labels.
+- OpenBB/yfinance pipeline reads `config/assets.json` and writes expanded market snapshot/history with a longer market-history window.
 - FRED pipeline reads `config/indicators.json`, writes macro/stress data, and adds `indicator_history.json` for charting.
 - Data Lab shows catalog counts, generated file status, chart data status, provider status, warnings, and local refresh commands.
 
 ## Current stack
 
-Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market data plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
+Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON files, localStorage pins/language preference, embedded public TradingView widget reference on asset detail pages, Python pipeline with OpenBB/yfinance market data plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
 
 ## Current data contract
 
-Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, `indicator_history.json`, and optional `pipeline_status.json`. Catalog inputs live in `config/assets.json`, `config/indicators.json`, and `config/pins.json`. Chart components use local generated/mock JSON only; the external TradingView widget remains reference-only.
+Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, `indicator_history.json`, and optional `pipeline_status.json`. Catalog inputs live in `config/assets.json`, `config/indicators.json`, and `config/pins.json`. Chart components use local generated/mock JSON only; generated market history is now intended to support multi-year chart ranges.
 
 ## Out of scope
 
-Trader Reader, AI chat, thesis validation, broker integration, deployment, database/auth, backend service, email automation, UI preference editor, and full macro regime scoring remain out of scope.
+Trader Reader implementation, AI chat, thesis validation, broker integration, deployment, database/auth, backend service, email automation, and full macro regime scoring remain out of scope.
 
 ## Next phase candidates
 
-After Phase 2.1 review: manual notes, refresh workflow polish, persisted watchlist preferences, richer indicator detail ergonomics, and later Trader Reader.
+After Phase 2.2 review: manual notes, refresh workflow polish, watchlist preference editing, richer indicator detail ergonomics, and later Trader Reader.

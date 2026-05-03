@@ -1,5 +1,6 @@
 import { IndicatorList, MetricTile, Panel, ShellTitle } from "@/components/Cockpit";
 import { getCockpitData, withIndicatorHrefs } from "@/lib/data";
+import { formatDelta, formatValueWithUnit } from "@/lib/format";
 import type { Indicator } from "@/lib/types";
 
 const groups = ["Rates", "Inflation", "Labor", "Liquidity", "Credit", "Growth", "Housing", "Dollar", "Commodities"];
@@ -10,15 +11,15 @@ function findIndicator(groupsMap: Record<string, Indicator[]> | undefined, name:
 
 function value(item: Indicator | undefined) {
   if (!item) return "Unavailable";
-  return `${item.value ?? "Unavailable"}${item.unit ? ` ${item.unit}` : ""}`;
+  return formatValueWithUnit(item.value, item.unit);
 }
 
 function detail(item: Indicator | undefined, fallback = "context only") {
-  return item?.delta_label ? `${item.delta_label} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
+  return typeof item?.delta === "number" ? `Δ previous ${formatDelta(item.delta, item.unit ?? "")} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
 }
 
 export default function MacroPage() {
-  const { macro, source } = getCockpitData();
+  const { macro } = getCockpitData();
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
   const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
   const curve = findIndicator(macro.groups, "10Y-2Y spread");
@@ -28,7 +29,7 @@ export default function MacroPage() {
 
   return (
     <>
-      <ShellTitle title="Macro" eyebrow="FRED generated indicators" source={source} />
+      <ShellTitle title="Macro" eyebrow="Macro indicators" />
       <div className="mb-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
         <MetricTile label="10Y yield" value={value(tenYear)} detail={detail(tenYear)} />
         <MetricTile label="2Y yield" value={value(twoYear)} detail={detail(twoYear)} />

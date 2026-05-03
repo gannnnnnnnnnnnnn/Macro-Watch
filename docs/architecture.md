@@ -6,14 +6,18 @@ Macro-Watch is intentionally local-first.
 
 Next.js renders the cockpit pages and reads local JSON files on the server. It checks `data/generated` first and falls back to `data/mock` when generated data is missing, invalid, or incomplete.
 
-Phase 2.1 adds an interactive workbench layer:
+Phase 2.1 adds an interactive workbench layer, and Phase 2.2 polishes that layer:
 
 - `/assets/[symbol]` detail pages
 - `/indicators/[id]` detail pages
 - client-side selected asset exploration on `/markets`
 - TradingView Lightweight Charts rendered from local JSON history
+- chart time ranges sliced from local JSON
+- lightweight frontend-computed overlays for market charts
+- localStorage pin and language preferences
+- coverage-aware stress radar visualization
 
-The public TradingView widget remains an optional external reference; it is not the primary charting path.
+The public TradingView widget remains an optional external reference on asset detail pages; it is not the primary charting path.
 
 ## Config
 
@@ -23,7 +27,7 @@ Static catalogs live under `config/`:
 - `indicators.json` controls enabled FRED indicators and derived indicators.
 - `pins.json` controls default dashboard pins.
 
-Pins are static config for now. There is no database, auth, account model, or UI editor.
+Pins use static config as defaults and localStorage for browser-side add/remove/reset. There is no database, auth, account model, or backend preference service.
 
 ## Data
 
@@ -37,6 +41,8 @@ The frontend expects:
 - `pipeline_status.json` when generated
 
 Missing fields must render as unavailable instead of crashing the UI.
+
+Normal research pages should avoid pipeline-console detail. Data Lab is the diagnostics home for source, provider, freshness, generated/mock, and warning details.
 
 ## Pipeline
 

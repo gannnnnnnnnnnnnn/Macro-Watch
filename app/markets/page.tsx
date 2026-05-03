@@ -3,11 +3,11 @@ import { MarketsClient } from "@/components/MarketsClient";
 import { getCockpitData } from "@/lib/data";
 
 export default function MarketsPage() {
-  const { market, marketHistory, source } = getCockpitData();
+  const { market, marketHistory } = getCockpitData();
   const assets = market.assets ?? [];
   return (
     <>
-      <ShellTitle title="Markets" eyebrow="Generated market data" source={source} />
+      <ShellTitle title="Markets" eyebrow="Interactive asset explorer" />
       <MarketsClient assets={assets} history={marketHistory} />
     </>
   );

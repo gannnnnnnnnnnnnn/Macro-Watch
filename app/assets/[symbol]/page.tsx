@@ -1,49 +1,42 @@
 import Link from "next/link";
 import { LightweightChart } from "@/components/LightweightChart";
-import { Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
+import { Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
+import { PinButton } from "@/components/PinsClient";
 import { TradingViewWidget } from "@/components/TradingViewWidget";
 import { getCockpitData, getEnabledAssetCatalog, resolveAsset } from "@/lib/data";
-
-export function generateStaticParams() {
-  return getEnabledAssetCatalog().map((asset) => ({ symbol: asset.symbol }));
-}
-
-function formatNumber(value: number | null | undefined) {
-  if (typeof value !== "number") return "N/A";
-  return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
-}
+import { formatCompact, formatDate, formatDateTime, formatNumber, formatPercent, formatValueWithUnit } from "@/lib/format";
 
 export default async function AssetDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
   const { symbol: rawSymbol } = await params;
   const symbol = decodeURIComponent(rawSymbol);
-  const { market, marketHistory, pipelineStatus, source } = getCockpitData();
+  const { market, marketHistory, pipelineStatus } = getCockpitData();
   const asset = resolveAsset(symbol, market);
   const history = asset.symbol ? marketHistory.symbols?.[asset.symbol]?.rows ?? [] : [];
   const recent = history.slice(-12).reverse();
-  const change = typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "Unavailable";
+  const change = formatPercent(asset.change);
 
   return (
     <>
-      <ShellTitle title={asset.symbol ?? symbol} eyebrow={asset.group ?? "Asset detail"} source={source} />
+      <ShellTitle title={asset.symbol ?? symbol} eyebrow={asset.group ?? "Asset detail"} />
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
         <Link href="/markets" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Markets</Link>
-        <SourceBadge source={source} />
         <StatusBadge label={asset.status} real={asset.real_data} />
+        {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} /> : null}
       </div>
       <div className="grid gap-4 xl:grid-cols-[1fr_0.55fr]">
         <Panel title="Local history chart">
           <div className="mb-4">
             <p className="text-2xl font-semibold text-white">{asset.name ?? "Unavailable"}</p>
-            <p className="mt-1 text-sm text-slate-400">{asset.proxy ? `Provider symbol ${asset.proxy}` : "Provider symbol unavailable"}</p>
+            <p className="mt-1 text-sm text-slate-400">{asset.latest_date ? `Updated ${formatDate(asset.latest_date)}` : "Run pipeline for fresh local history"}</p>
           </div>
-          <LightweightChart market={history} height={360} />
+          <LightweightChart market={history} height={420} unit={asset.unit} defaultRange="3Y" showOverlays defaultOverlays={["SMA50", "SMA200"]} />
         </Panel>
         <Panel title="Latest context">
           <div className="space-y-3">
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Latest</p><p className="mt-1 text-3xl font-semibold text-white">{asset.value ?? "Unavailable"}{asset.unit ? <span className="ml-1 text-sm text-slate-500">{asset.unit}</span> : null}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Latest</p><p className="mt-1 text-3xl font-semibold text-white">{formatValueWithUnit(asset.value, asset.unit)}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Change</p><p className="mt-1 text-xl text-white">{change}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Provider/date</p><p className="mt-1 text-sm text-slate-300">{asset.provider ?? "N/A"} · {asset.latest_date ?? "N/A"}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><p className="mt-1 break-words text-xs text-slate-300">{pipelineStatus.generated_at ?? "Run pipeline"}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Updated</p><p className="mt-1 text-sm text-slate-300">{asset.latest_date ? formatDate(asset.latest_date) : "N/A"}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Local run</p><p className="mt-1 break-words text-xs text-slate-300">{formatDateTime(pipelineStatus.generated_at)}</p></div>
           </div>
         </Panel>
       </div>
@@ -60,18 +53,25 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
                     <td>{formatNumber(row.high)}</td>
                     <td>{formatNumber(row.low)}</td>
                     <td>{formatNumber(row.close)}</td>
-                    <td className="text-slate-400">{formatNumber(row.volume)}</td>
+                    <td className="text-slate-400">{formatCompact(row.volume)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </Panel>
-        <Panel title="TradingView reference">
-          <TradingViewWidget symbol={asset.symbol} />
-          <p className="mt-3 text-xs text-slate-500">External public reference only. Primary chart uses local generated JSON.</p>
-        </Panel>
+        <details className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+          <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">External TradingView reference</summary>
+          <div className="mt-3">
+            <TradingViewWidget symbol={asset.symbol} />
+            <p className="mt-3 text-xs text-slate-500">External public reference only. Primary chart uses local generated JSON.</p>
+          </div>
+        </details>
       </div>
     </>
   );
+}
+
+export function generateStaticParams() {
+  return getEnabledAssetCatalog().map((asset) => ({ symbol: asset.symbol }));
 }

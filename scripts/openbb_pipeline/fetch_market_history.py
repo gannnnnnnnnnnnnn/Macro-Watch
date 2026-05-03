@@ -44,7 +44,7 @@ def _empty_history(target, status):
 
 
 def _fetch_history(openbb_client, target):
-    start = (date.today() - timedelta(days=400)).isoformat()
+    start = (date.today() - timedelta(days=(365 * 5) + 30)).isoformat()
     result = _endpoint(openbb_client, target)(symbol=_provider_symbol(target), start_date=start, provider="yfinance", interval="1d")
     rows = [_history_row(row) for row in (getattr(result, "results", None) or [])]
     rows = [row for row in rows if row.get("date") and row.get("close") is not None]

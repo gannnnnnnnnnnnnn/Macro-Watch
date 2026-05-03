@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatDate, formatDelta, formatPercent, formatValueWithUnit } from "@/lib/format";
 import type { Asset, HistoryRow, Indicator, SourceName, SymbolHistory } from "@/lib/types";
 
 export function SourceBadge({ source }: { source: SourceName | string | undefined }) {
@@ -83,12 +84,12 @@ export function AssetCard({ asset, history }: { asset: Asset; history?: SymbolHi
           <p className="text-sm font-semibold text-white">{asset.label ?? asset.symbol ?? asset.proxy ?? "N/A"}</p>
           <p className="mt-1 text-xs text-slate-400">{asset.name ?? "Unavailable"}</p>
         </div>
-        <span className={tone}>{change === null ? "N/A" : `${change > 0 ? "+" : ""}${change.toFixed(2)}%`}</span>
+        <span className={tone}>{change === null ? "N/A" : formatPercent(change)}</span>
       </div>
-      <p className="mt-4 text-2xl font-semibold text-white">{asset.value ?? "Unavailable"}{asset.unit ? <span className="text-sm text-slate-400"> {asset.unit}</span> : null}</p>
+      <p className="mt-4 text-2xl font-semibold text-white">{formatValueWithUnit(asset.value, asset.unit)}</p>
       <div className="mt-3"><Sparkline rows={history?.rows} positive={(change ?? 0) >= 0} /></div>
       <div className="mt-2 flex items-center justify-between gap-2 text-xs text-slate-500">
-        <span>{asset.provider ? `via ${asset.provider}` : "provider N/A"}</span>
+        <span>{asset.latest_date ? formatDate(asset.latest_date) : "date N/A"}</span>
         <StatusBadge label={asset.status} real={asset.real_data} />
       </div>
     </div>
@@ -111,10 +112,10 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
               <StatusBadge label={item.status} real={item.real_data} />
             </div>
             <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
-            <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${item.latest_date}` : ""}</p>
-            {item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label} · {item.one_year_delta_label ?? "context only"}</p> : null}
+            <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${formatDate(item.latest_date)}` : ""}</p>
+            {typeof item.delta === "number" ? <p className="mt-1 text-xs text-slate-500">Δ previous {formatDelta(item.delta, item.unit ?? "")} · {item.one_year_delta_label ?? "context only"}</p> : item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label}</p> : null}
           </div>
-          <p className="whitespace-nowrap text-sm text-slate-200">{item.value ?? "Unavailable"}{item.unit ? ` ${item.unit}` : ""}</p>
+          <p className="whitespace-nowrap text-sm text-slate-200">{formatValueWithUnit(item.value, item.unit)}</p>
         </div>
       ))}
     </div>
@@ -134,10 +135,10 @@ export function WatchlistTable({ assets, history }: { assets: Asset[] | undefine
             <tr key={`${asset.symbol}-${index}`} className="border-t border-line">
               <td className="py-3 font-medium text-white">{asset.symbol ?? asset.proxy ?? "N/A"}</td>
               <td className="text-slate-300">{asset.name ?? "Unavailable"}</td>
-              <td>{asset.value ?? "N/A"}{asset.unit ? ` ${asset.unit}` : ""}</td>
-              <td className={typeof asset.change === "number" && asset.change < 0 ? "text-loss" : "text-gain"}>{typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "N/A"}</td>
+              <td>{formatValueWithUnit(asset.value, asset.unit)}</td>
+              <td className={typeof asset.change === "number" && asset.change < 0 ? "text-loss" : "text-gain"}>{typeof asset.change === "number" ? formatPercent(asset.change) : "N/A"}</td>
               <td className="text-slate-400">{asset.provider ?? "N/A"}</td>
-              <td className="text-slate-400">{asset.latest_date ?? "N/A"}</td>
+              <td className="text-slate-400">{asset.latest_date ? formatDate(asset.latest_date) : "N/A"}</td>
               <td><StatusBadge label={asset.status} real={asset.real_data} /></td>
               <td className="w-32"><Sparkline rows={history?.[asset.symbol ?? ""]?.rows} positive={(asset.change ?? 0) >= 0} /></td>
             </tr>

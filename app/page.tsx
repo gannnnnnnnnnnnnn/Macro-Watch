@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { AssetCard, IndicatorList, MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
-import { getCockpitData, resolvePinnedItems } from "@/lib/data";
+import { AssetCard, IndicatorList, MetricTile, Panel, StatusBadge } from "@/components/Cockpit";
+import { PinnedWorkbench } from "@/components/PinsClient";
+import { getCockpitData, getPinCatalog, resolveAllResearchItems } from "@/lib/data";
 import { getFreshness } from "@/lib/freshness";
+import { formatDateTime, formatDelta, formatPercent, formatValueWithUnit } from "@/lib/format";
 import type { Indicator } from "@/lib/types";
 
 function findIndicator(groups: Record<string, Indicator[]> | undefined, name: string) {
@@ -10,11 +12,11 @@ function findIndicator(groups: Record<string, Indicator[]> | undefined, name: st
 
 function value(item: Indicator | undefined) {
   if (!item) return "Unavailable";
-  return `${item.value ?? "Unavailable"}${item.unit ? ` ${item.unit}` : ""}`;
+  return formatValueWithUnit(item.value, item.unit);
 }
 
 function detail(item: Indicator | undefined, fallback = "context only") {
-  return item?.delta_label ? `${item.delta_label} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
+  return typeof item?.delta === "number" ? `Δ previous ${formatDelta(item.delta, item.unit ?? "")} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
 }
 
 export default function Home() {
@@ -23,10 +25,9 @@ export default function Home() {
   const bySymbol = Object.fromEntries(assets.map((asset) => [asset.symbol, asset]));
   const riskAssets = [bySymbol.SPY, bySymbol.QQQ, bySymbol["BTC-USD"]].filter(Boolean);
   const commodities = [bySymbol.GLD, bySymbol.USO].filter(Boolean);
-  const fredReal = Object.values(pipelineStatus.fred_series ?? {}).filter((series) => series.real_data).length;
-  const realMarkets = assets.filter((asset) => asset.real_data).length;
   const freshness = getFreshness(pipelineStatus.generated_at);
-  const pins = resolvePinnedItems();
+  const defaultPins = getPinCatalog();
+  const researchItems = resolveAllResearchItems();
 
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
   const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
@@ -48,38 +49,21 @@ export default function Home() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">OpenBB + FRED local research cockpit</p>
             <h1 className="mt-2 text-4xl font-semibold text-white sm:text-5xl">Macro-Watch</h1>
             <p className="mt-3 max-w-3xl text-sm text-slate-400">
-              Generated market, macro, and stress JSON is active. The cockpit is not scoring regimes yet; pending areas stay labeled.
+              Macro-first local research workbench. {source === "generated" ? "Generated data is active" : source === "mixed" ? "Generated and mock data are mixed" : "Mock fallback is active"}; context only, not scored.
             </p>
           </div>
-          <div className="grid gap-2 text-sm sm:grid-cols-2 xl:min-w-[620px] xl:grid-cols-5">
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Data source</p><div className="mt-2"><SourceBadge source={source} /></div></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 break-words text-xs text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real markets</p><p className="mt-2 text-slate-200">{realMarkets}/{assets.length}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real FRED series</p><p className="mt-2 text-slate-200">{fredReal}</p></div>
-            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Freshness</p><div className="mt-2"><StatusBadge label={freshness.label} real={!freshness.isStale} /></div></div>
+          <div className="rounded-lg border border-line bg-ink px-4 py-3 text-sm text-slate-400 xl:min-w-[320px]">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Updated</p>
+            <p className="mt-1 text-slate-200">{formatDateTime(pipelineStatus.generated_at)}{freshness.isStale ? " · stale" : ""}</p>
+            <Link href="/data-lab" className="mt-2 inline-flex text-xs text-cyan-300 hover:text-cyan-100">View diagnostics</Link>
           </div>
         </div>
       </div>
 
       <div className="mb-6">
-        <Panel title="Pinned indicators">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {pins.map((pin) => (
-              <Link key={`${pin.type}-${pin.id}`} href={pin.href} className="rounded-lg border border-line bg-ink p-4 transition hover:border-cyan-400/40 hover:bg-[#0c1018]">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-xs uppercase tracking-wide text-slate-500">{pin.label}</p>
-                  <StatusBadge label={pin.status} real={pin.real_data} />
-                </div>
-                <p className="mt-3 text-2xl font-semibold text-white">{pin.value ?? "Unavailable"}{pin.unit ? <span className="ml-1 text-sm text-slate-500">{pin.unit}</span> : null}</p>
-                <p className="mt-2 text-xs text-slate-400">{pin.delta_label ?? "context only"} · {pin.one_year_delta_label ?? "not scored"}</p>
-                <p className="mt-2 text-xs text-slate-500">{pin.provider ?? "Provider N/A"}{pin.latest_date ? ` · ${pin.latest_date}` : ""}</p>
-              </Link>
-            ))}
-          </div>
-        </Panel>
+        <PinnedWorkbench defaultPins={defaultPins} items={researchItems} />
       </div>
 
-      <ShellTitle title="Market pulse" source={source} />
       <Panel title="Focus now">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           <MetricTile label="VIX" value={value(vixStress)} detail="Watch item; not scored yet" badge={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} />
@@ -92,7 +76,7 @@ export default function Home() {
       <div className="mb-6 grid gap-3 md:grid-cols-4">
         <MetricTile label="Risk assets" value={`${riskAssets.filter((asset) => typeof asset?.change === "number" && asset.change >= 0).length}/${riskAssets.length} green`} detail="SPY, QQQ, BTC proxy tone" badge={<StatusBadge label="not scored yet" />} />
         <MetricTile label="Volatility" value={bySymbol.VIX?.value ?? "Unavailable"} detail="VIX via ^VIX market proxy" badge={<StatusBadge label={bySymbol.VIX?.status} real={bySymbol.VIX?.real_data} />} />
-        <MetricTile label="Dollar/rates proxy" value={`UUP ${bySymbol.UUP?.change ?? "N/A"}% / TLT ${bySymbol.TLT?.change ?? "N/A"}%`} detail="Dollar and Treasury duration proxies" />
+          <MetricTile label="Dollar/rates proxy" value={`UUP ${formatPercent(bySymbol.UUP?.change)} / TLT ${formatPercent(bySymbol.TLT?.change)}`} detail="Dollar and Treasury duration proxies" />
         <MetricTile label="Commodities" value={`${commodities.filter((asset) => typeof asset?.change === "number" && asset.change >= 0).length}/${commodities.length} green`} detail="GLD and USO proxies" />
       </div>
 
