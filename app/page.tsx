@@ -1,44 +1,93 @@
-import { AssetCard, IndicatorList, Panel, ShellTitle, SourceBadge, StatusBadge, WatchlistTable } from "@/components/Cockpit";
+import { AssetCard, IndicatorList, MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData } from "@/lib/data";
+import type { Indicator } from "@/lib/types";
+
+function findIndicator(groups: Record<string, Indicator[]> | undefined, name: string) {
+  return Object.values(groups ?? {}).flat().find((item) => item.name === name);
+}
+
+function value(item: Indicator | undefined) {
+  if (!item) return "Unavailable";
+  return `${item.value ?? "Unavailable"}${item.unit ? ` ${item.unit}` : ""}`;
+}
 
 export default function Home() {
-  const { market, marketHistory, macro, stress, source } = getCockpitData();
+  const { market, marketHistory, macro, stress, pipelineStatus, source } = getCockpitData();
   const assets = market.assets ?? [];
   const bySymbol = Object.fromEntries(assets.map((asset) => [asset.symbol, asset]));
   const riskAssets = [bySymbol.SPY, bySymbol.QQQ, bySymbol["BTC-USD"]].filter(Boolean);
   const commodities = [bySymbol.GLD, bySymbol.USO].filter(Boolean);
+  const fredReal = Object.values(pipelineStatus.fred_series ?? {}).filter((series) => series.real_data).length;
+  const realMarkets = assets.filter((asset) => asset.real_data).length;
+
+  const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
+  const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
+  const curve = findIndicator(macro.groups, "10Y-2Y spread");
+  const fedFunds = findIndicator(macro.groups, "Effective fed funds");
+  const cpi = findIndicator(macro.groups, "CPI YoY");
+  const unemployment = findIndicator(macro.groups, "Unemployment rate");
+  const hyOas = stress.buckets?.["Credit stress"]?.find((item) => item.name === "High yield OAS");
+  const baa = stress.buckets?.["Credit stress"]?.find((item) => item.name === "Baa spread vs 10Y");
+  const walcl = stress.buckets?.["Liquidity stress"]?.find((item) => item.name === "Fed total assets");
+  const rrp = stress.buckets?.["Liquidity stress"]?.find((item) => item.name === "Overnight reverse repos");
+
   return (
     <>
       <div className="mb-6 rounded-lg border border-line bg-panel/80 p-5 shadow-xl shadow-black/20">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">OpenBB-powered local cockpit</p>
-            <h1 className="mt-2 text-3xl font-semibold text-white sm:text-5xl">Market pulse, macro context, stress watch.</h1>
-            <p className="mt-3 max-w-3xl text-sm text-slate-400">Generated JSON first, mock fallback second. Built for quick local scanning without broker, auth, database, or AI layers.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">OpenBB + FRED local research cockpit</p>
+            <h1 className="mt-2 text-4xl font-semibold text-white sm:text-5xl">Macro-Watch</h1>
+            <p className="mt-3 max-w-3xl text-sm text-slate-400">
+              Generated market, macro, and stress JSON is active. The cockpit is not scoring regimes yet; pending areas stay labeled.
+            </p>
           </div>
-          <SourceBadge source={source} />
-        </div>
-        <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Risk assets</p><p className="mt-1 text-lg text-white">{riskAssets.length ? "Tracking" : "Unavailable"}</p></div>
-          <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Volatility</p><p className="mt-1 text-lg text-white">{bySymbol.VIX?.value ?? "Unavailable"}</p></div>
-          <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Dollar/rates</p><p className="mt-1 text-lg text-white">UUP {bySymbol.UUP?.value ?? "N/A"} · TLT {bySymbol.TLT?.value ?? "N/A"}</p></div>
-          <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">History</p><p className="mt-1"><StatusBadge label={marketHistory.status} real={marketHistory.real_data} /></p></div>
+          <div className="grid gap-2 text-sm sm:grid-cols-2 xl:min-w-[520px]">
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Data source</p><div className="mt-2"><SourceBadge source={source} /></div></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Last generated</p><p className="mt-2 text-slate-200">{pipelineStatus.generated_at ?? "Unavailable"}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real markets</p><p className="mt-2 text-slate-200">{realMarkets}/{assets.length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Real FRED series</p><p className="mt-2 text-slate-200">{fredReal}</p></div>
+          </div>
         </div>
       </div>
-      <ShellTitle title="Market regime" source={source} />
+
+      <ShellTitle title="Market pulse" source={source} />
       <div className="mb-6 grid gap-3 md:grid-cols-4">
-        <Panel title="Risk assets"><p className="text-2xl font-semibold text-white">{riskAssets.map((asset) => asset?.change).filter((v) => typeof v === "number" && v >= 0).length}/{riskAssets.length} green</p><p className="mt-1 text-sm text-slate-400">SPY, QQQ, BTC proxy tone</p></Panel>
-        <Panel title="Volatility"><p className="text-2xl font-semibold text-white">{bySymbol.VIX?.value ?? "Unavailable"}</p><p className="mt-1 text-sm text-slate-400">VIX via ^VIX when available</p></Panel>
-        <Panel title="Dollar/rates"><p className="text-2xl font-semibold text-white">{bySymbol.UUP?.change ?? "N/A"}% / {bySymbol.TLT?.change ?? "N/A"}%</p><p className="mt-1 text-sm text-slate-400">UUP and TLT proxies</p></Panel>
-        <Panel title="Commodities"><p className="text-2xl font-semibold text-white">{commodities.map((asset) => asset?.change).filter((v) => typeof v === "number" && v >= 0).length}/{commodities.length} green</p><p className="mt-1 text-sm text-slate-400">Gold and oil proxies</p></Panel>
+        <MetricTile label="Risk assets" value={`${riskAssets.filter((asset) => typeof asset?.change === "number" && asset.change >= 0).length}/${riskAssets.length} green`} detail="SPY, QQQ, BTC proxy tone" badge={<StatusBadge label="not scored yet" />} />
+        <MetricTile label="Volatility" value={bySymbol.VIX?.value ?? "Unavailable"} detail="VIX via ^VIX market proxy" badge={<StatusBadge label={bySymbol.VIX?.status} real={bySymbol.VIX?.real_data} />} />
+        <MetricTile label="Dollar/rates proxy" value={`UUP ${bySymbol.UUP?.change ?? "N/A"}% / TLT ${bySymbol.TLT?.change ?? "N/A"}%`} detail="Dollar and Treasury duration proxies" />
+        <MetricTile label="Commodities" value={`${commodities.filter((asset) => typeof asset?.change === "number" && asset.change >= 0).length}/${commodities.length} green`} detail="GLD and USO proxies" />
       </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {assets.slice(0, 8).map((asset, index) => <AssetCard key={`${asset.symbol}-${index}`} asset={asset} history={marketHistory.symbols?.[asset.symbol ?? ""]} />)}
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <Panel title="Watchlist preview"><WatchlistTable assets={market.watchlist?.slice(0, 5)} history={marketHistory.symbols} /></Panel>
-        <Panel title="Macro status preview"><IndicatorList items={macro.groups?.Rates?.slice(0, 3) ?? macro.groups?.Liquidity?.slice(0, 3)} /></Panel>
-        <Panel title="Stress radar preview"><IndicatorList items={stress.buckets?.["Volatility stress"]?.slice(0, 3)} /></Panel>
+
+      <div className="mt-6 grid gap-4 xl:grid-cols-2">
+        <Panel title="Macro snapshot">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <MetricTile label="10Y yield" value={value(tenYear)} detail={tenYear?.latest_date ?? "No date"} />
+            <MetricTile label="2Y yield" value={value(twoYear)} detail={twoYear?.latest_date ?? "No date"} />
+            <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Not a regime score" />
+            <MetricTile label="Fed funds" value={value(fedFunds)} detail={fedFunds?.latest_date ?? "No date"} />
+            <MetricTile label="CPI YoY" value={value(cpi)} detail={cpi?.latest_date ?? "No date"} />
+            <MetricTile label="Unemployment" value={value(unemployment)} detail={unemployment?.latest_date ?? "No date"} />
+          </div>
+        </Panel>
+        <Panel title="Stress snapshot">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <MetricTile label="HY OAS" value={value(hyOas)} detail={hyOas?.latest_date ?? "No date"} />
+            <MetricTile label="Baa spread" value={value(baa)} detail={baa?.latest_date ?? "No date"} />
+            <MetricTile label="Fed balance sheet" value={value(walcl)} detail={walcl?.latest_date ?? "No date"} />
+            <MetricTile label="RRP" value={value(rrp)} detail={rrp?.latest_date ?? "No date"} />
+          </div>
+          <p className="mt-4 text-sm text-slate-400">Volatility, banking, household, and leverage stress remain pending or partial, not scored.</p>
+        </Panel>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <Panel title="Macro detail"><IndicatorList items={[tenYear, twoYear, curve, fedFunds, cpi, unemployment].filter(Boolean) as Indicator[]} /></Panel>
+        <Panel title="Stress detail"><IndicatorList items={[hyOas, baa, walcl, rrp].filter(Boolean) as Indicator[]} /></Panel>
       </div>
     </>
   );

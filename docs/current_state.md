@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Local market cockpit with first-pass FRED macro/stress data.
+Polished local macro cockpit shell with generated market, macro, and stress data.
 
 ## Current runnable path
 
@@ -10,7 +10,7 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 ## Current stack
 
-Next.js, TypeScript, Tailwind CSS, local JSON files, Python pipeline with OpenBB/yfinance market snapshot and history fetches plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
+Next.js, TypeScript, Tailwind CSS, local JSON files, embedded public TradingView widget panel, Python pipeline with OpenBB/yfinance market snapshot and history fetches plus FRED macro/stress data through `pandas_datareader` with no-key CSV fallback.
 
 ## Current data contract
 
@@ -18,4 +18,4 @@ Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicato
 
 ## Next step
 
-Use the real macro/stress series to add richer context views without pretending the stress radar is complete.
+Use the real macro/stress series to add richer context views and optionally wire VIX into volatility stress without pretending the stress radar is complete.

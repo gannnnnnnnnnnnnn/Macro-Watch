@@ -41,3 +41,13 @@ Append-only lightweight project journal.
 - notes/risks: FRED series worked locally for `DGS10`, `DGS2`, `FEDFUNDS`, `CPIAUCSL`, `UNRATE`, `WALCL`, `RRPONTSYD`, `BAMLH0A0HYM2`, and `BAA10Y`. No FRED series failed after CSV fallback. Stress remains partial by design because volatility, banking, household, and leverage buckets are not fully wired.
 - next: Add historical context or simple deltas for FRED series, then wire VIX snapshot into volatility stress without creating fake scores.
 - commit hash if available: Pending.
+
+## 2026-05-03 14:55 Australia/Melbourne
+
+- task: Polish cockpit shell and data views.
+- files changed: `components/AppShell.tsx`, `components/TradingViewWidget.tsx`, `components/Cockpit.tsx`, `app/layout.tsx`, `app/page.tsx`, `app/markets/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added a reusable app shell with sidebar navigation and top status strip, upgraded the dashboard with generated-data freshness, market pulse, macro snapshot, and stress snapshot, expanded Markets with selected asset detail and a public TradingView embed, improved Macro and Stress views around real/pending badges, and reshaped Data Lab into an operations-style page with files, providers, market symbols, FRED series, warnings, commands, and source contract.
+- validation: `npm run build` failed once on a Data Lab file warning type, then passed after the type fix; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: TradingView widget was added as a client-only public embed, not the proprietary Charting Library; if its external script fails, the widget shows a fallback card. UI remains server-rendered around local JSON and still has no interactive selected-symbol state beyond the first generated asset. Stress remains partial and not scored.
+- next: Add lightweight client-side selected asset switching on Markets, then wire VIX into volatility stress while keeping labels honest.
+- commit hash if available: Pending.

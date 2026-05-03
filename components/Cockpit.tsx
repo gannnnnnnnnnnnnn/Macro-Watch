@@ -33,6 +33,27 @@ export function Panel({ children, title }: { children: React.ReactNode; title?: 
   );
 }
 
+export function MetricTile({ label, value, detail, badge }: { label: string; value: React.ReactNode; detail?: string; badge?: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-line bg-panel p-4 shadow-lg shadow-black/10">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
+        {badge}
+      </div>
+      <div className="mt-3 text-2xl font-semibold text-white">{value}</div>
+      {detail ? <p className="mt-1 text-sm text-slate-400">{detail}</p> : null}
+    </div>
+  );
+}
+
+export function MiniLineChart({ rows, positive }: { rows?: HistoryRow[]; positive?: boolean }) {
+  return (
+    <div className="rounded border border-line bg-ink p-4">
+      <Sparkline rows={rows} positive={positive} />
+    </div>
+  );
+}
+
 export function Sparkline({ rows, positive }: { rows?: HistoryRow[]; positive?: boolean }) {
   const values = (rows ?? []).map((row) => row.close).filter((value): value is number => typeof value === "number");
   if (values.length < 2) return <div className="flex h-12 items-center text-xs text-slate-500">No history</div>;
