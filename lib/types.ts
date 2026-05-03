@@ -1,5 +1,24 @@
 export type SourceName = "generated" | "mock" | "mixed";
 
+export type HistoryRow = {
+  date?: string;
+  open?: number | null;
+  high?: number | null;
+  low?: number | null;
+  close?: number | null;
+  volume?: number | null;
+};
+
+export type SymbolHistory = {
+  symbol?: string;
+  proxy?: string;
+  name?: string;
+  provider?: string | null;
+  status?: string;
+  real_data?: boolean;
+  rows?: HistoryRow[];
+};
+
 export type Asset = {
   symbol?: string;
   name?: string;
@@ -30,6 +49,16 @@ export type MarketSnapshot = {
   watchlist?: Asset[];
 };
 
+export type MarketHistory = {
+  source?: string;
+  generated_at?: string;
+  provider?: string | null;
+  status?: string;
+  real_data?: boolean;
+  warnings?: string[];
+  symbols?: Record<string, SymbolHistory>;
+};
+
 export type MacroIndicators = {
   source?: string;
   generated_at?: string;
@@ -48,6 +77,6 @@ export type PipelineStatus = {
   status?: string;
   warnings?: string[];
   files?: Record<string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }>;
-  symbols?: { symbol?: string; provider?: string | null; status?: string; real_data?: boolean; error?: string | null }[];
+  symbols?: { symbol?: string; provider?: string | null; status?: string; real_data?: boolean; history_status?: string; history_rows?: number; error?: string | null }[];
   providers?: { name?: string; status?: string; note?: string }[];
 };

@@ -21,3 +21,13 @@ Append-only lightweight project journal.
 - notes/risks: OpenBB real market fetch worked locally for all requested market proxies. No unavailable market symbols in local validation. Overall pipeline status is `warning` because macro and stress files are still placeholder/unavailable by design.
 - next: Add the first real no-key macro or stress indicator source, then consider simple market history charts.
 - commit hash if available: Pending.
+
+## 2026-05-03 14:03 Australia/Melbourne
+
+- task: Polish market cockpit and add history data.
+- files changed: `scripts/openbb_pipeline/fetch_market_history.py`, `scripts/openbb_pipeline/run_all.py`, `data/mock/market_history.json`, `lib/data.ts`, `lib/types.ts`, `components/Cockpit.tsx`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx`, `app/markets/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added generated/mock `market_history.json` support, exported 60 recent daily rows per symbol through OpenBB/yfinance, included history status in `pipeline_status.json`, added SVG sparklines to market cards and tables, strengthened the home dashboard/regime strip, upgraded market detail and watchlist views, and made macro/stress placeholders and Data Lab warnings more intentional.
+- validation: First `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: Market history real fetch worked locally for SPY, QQQ, VIX via `^VIX`, UUP, TLT, GLD, USO, and BTC-USD with 60 rows each. No unavailable market history symbols. Overall pipeline status remains `warning` because macro and stress files are still placeholder/unavailable by design.
+- next: Add one real no-key macro or stress data source, then refine historical chart interactions around the existing local JSON contract.
+- commit hash if available: Pending.

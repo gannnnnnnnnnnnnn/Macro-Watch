@@ -1,0 +1,46 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-03T13:45:00+10:00",
+  "provider": "mock",
+  "status": "warning",
+  "real_data": false,
+  "warnings": ["Mock market history fallback."],
+  "symbols": {
+    "SPY": {
+      "symbol": "SPY",
+      "proxy": "SPY",
+      "name": "S&P 500 proxy",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "rows": [
+        {"date": "2026-04-24", "open": 504, "high": 508, "low": 501, "close": 506, "volume": 72000000},
+        {"date": "2026-04-27", "open": 506, "high": 511, "low": 505, "close": 510, "volume": 68000000},
+        {"date": "2026-04-28", "open": 510, "high": 514, "low": 508, "close": 512, "volume": 65000000},
+        {"date": "2026-04-29", "open": 512, "high": 516, "low": 511, "close": 515, "volume": 61000000},
+        {"date": "2026-04-30", "open": 515, "high": 517, "low": 510, "close": 513, "volume": 70000000}
+      ]
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "proxy": "QQQ",
+      "name": "Nasdaq 100 proxy",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "rows": [
+        {"date": "2026-04-24", "open": 432, "high": 436, "low": 430, "close": 434, "volume": 44000000},
+        {"date": "2026-04-27", "open": 434, "high": 439, "low": 433, "close": 438, "volume": 42000000},
+        {"date": "2026-04-28", "open": 438, "high": 441, "low": 436, "close": 440, "volume": 40000000},
+        {"date": "2026-04-29", "open": 440, "high": 444, "low": 439, "close": 443, "volume": 39000000},
+        {"date": "2026-04-30", "open": 443, "high": 445, "low": 437, "close": 439, "volume": 45000000}
+      ]
+    },
+    "VIX": {"symbol": "VIX", "proxy": "^VIX", "name": "VIX proxy", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 18}, {"date": "2026-04-27", "close": 17.4}, {"date": "2026-04-28", "close": 17.1}, {"date": "2026-04-29", "close": 16.7}, {"date": "2026-04-30", "close": 16.9}]},
+    "UUP": {"symbol": "UUP", "proxy": "UUP", "name": "US dollar proxy", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 28.0}, {"date": "2026-04-27", "close": 28.1}, {"date": "2026-04-28", "close": 28.0}, {"date": "2026-04-29", "close": 28.2}, {"date": "2026-04-30", "close": 28.1}]},
+    "TLT": {"symbol": "TLT", "proxy": "TLT", "name": "US10Y/Treasury proxy", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 92.1}, {"date": "2026-04-27", "close": 91.8}, {"date": "2026-04-28", "close": 91.7}, {"date": "2026-04-29", "close": 91.4}, {"date": "2026-04-30", "close": 91.6}]},
+    "GLD": {"symbol": "GLD", "proxy": "GLD", "name": "Gold proxy", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 214}, {"date": "2026-04-27", "close": 215}, {"date": "2026-04-28", "close": 216}, {"date": "2026-04-29", "close": 216.2}, {"date": "2026-04-30", "close": 216.5}]},
+    "USO": {"symbol": "USO", "proxy": "USO", "name": "Oil proxy", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 75}, {"date": "2026-04-27", "close": 74.8}, {"date": "2026-04-28", "close": 74.4}, {"date": "2026-04-29", "close": 74.6}, {"date": "2026-04-30", "close": 74.2}]},
+    "BTC-USD": {"symbol": "BTC-USD", "proxy": "BTC-USD", "name": "Bitcoin", "provider": "mock", "status": "mock", "real_data": false, "rows": [{"date": "2026-04-24", "close": 63200}, {"date": "2026-04-27", "close": 64100}, {"date": "2026-04-28", "close": 63800}, {"date": "2026-04-29", "close": 64600}, {"date": "2026-04-30", "close": 64800}]}
+  }
+}

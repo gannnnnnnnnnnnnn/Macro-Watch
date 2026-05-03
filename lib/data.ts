@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import type { MacroIndicators, MarketSnapshot, PipelineStatus, SourceName, StressIndicators } from "./types";
+import type { MacroIndicators, MarketHistory, MarketSnapshot, PipelineStatus, SourceName, StressIndicators } from "./types";
 
 const root = process.cwd();
 
@@ -33,6 +33,7 @@ function choose<T>(file: string, complete: (value: T) => boolean): { data: T; so
 
 export function getCockpitData() {
   const market = choose<MarketSnapshot>("market_snapshot.json", (d) => hasArray(d.assets));
+  const marketHistory = choose<MarketHistory>("market_history.json", (d) => Boolean(d.symbols && Object.values(d.symbols).some((item) => hasArray(item.rows))));
   const macro = choose<MacroIndicators>("macro_indicators.json", (d) => hasGroups(d.groups));
   const stress = choose<StressIndicators>("stress_indicators.json", (d) => hasGroups(d.buckets));
   const pipelineStatus = readJson<PipelineStatus>("generated", "pipeline_status.json") ?? {
@@ -41,12 +42,12 @@ export function getCockpitData() {
     warnings: ["Run the local pipeline to create generated data."],
     providers: [],
   };
-  const sources = [market.source, macro.source, stress.source];
+  const sources = [market.source, marketHistory.source, macro.source, stress.source];
   const source: SourceName = sources.every((s) => s === "generated")
     ? "generated"
     : sources.every((s) => s === "mock")
       ? "mock"
       : "mixed";
 
-  return { market: market.data, macro: macro.data, stress: stress.data, pipelineStatus, source };
+  return { market: market.data, marketHistory: marketHistory.data, macro: macro.data, stress: stress.data, pipelineStatus, source };
 }

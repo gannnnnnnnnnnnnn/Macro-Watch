@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fetch_macro_indicators import fetch_macro_indicators
+from fetch_market_history import fetch_market_history
 from fetch_market_snapshot import fetch_market_snapshot
 from fetch_stress_indicators import fetch_stress_indicators
 
@@ -38,6 +39,7 @@ def main():
 
     outputs = {
         "market_snapshot.json": fetch_market_snapshot(openbb_client),
+        "market_history.json": fetch_market_history(openbb_client),
         "macro_indicators.json": fetch_macro_indicators(openbb_client),
         "stress_indicators.json": fetch_stress_indicators(openbb_client),
     }
@@ -54,12 +56,15 @@ def main():
         write_json(name, payload)
 
     market_assets = outputs["market_snapshot.json"].get("assets", [])
+    market_history_symbols = outputs["market_history.json"].get("symbols", {})
     symbol_status = [
         {
             "symbol": asset.get("symbol"),
             "provider": asset.get("provider"),
             "status": asset.get("status"),
             "real_data": bool(asset.get("real_data")),
+            "history_status": market_history_symbols.get(asset.get("symbol"), {}).get("status"),
+            "history_rows": len(market_history_symbols.get(asset.get("symbol"), {}).get("rows", [])),
             "error": None if asset.get("status") == "ok" else asset.get("status"),
         }
         for asset in market_assets
