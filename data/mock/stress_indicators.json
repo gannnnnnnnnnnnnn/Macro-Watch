@@ -1,0 +1,13 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-03T13:04:00+10:00",
+  "buckets": {
+    "Volatility stress": [{"name": "VIX level", "value": 16.8, "status": "mock", "note": "Calm to moderate"}],
+    "Credit stress": [{"name": "HY spreads", "value": 3.4, "unit": "%", "status": "mock", "note": "Contained"}],
+    "Liquidity stress": [{"name": "Funding pressure", "value": "Unavailable", "status": "mock", "note": "Awaiting live source"}],
+    "Banking stress": [{"name": "Bank equity proxy", "value": "Stable", "status": "mock", "note": "Placeholder"}],
+    "Household stress": [{"name": "Delinquency proxy", "value": "Unavailable", "status": "mock", "note": "Awaiting source"}],
+    "Leverage stress": [{"name": "Margin pressure", "value": "Unavailable", "status": "mock", "note": "Awaiting source"}],
+    "Treasury market stress": [{"name": "Treasury liquidity", "value": "Unavailable", "status": "mock", "note": "Awaiting source"}]
+  }
+}
