@@ -40,7 +40,7 @@ export function AssetCard({ asset }: { asset: Asset }) {
         <span className={tone}>{change === null ? "N/A" : `${change > 0 ? "+" : ""}${change.toFixed(2)}%`}</span>
       </div>
       <p className="mt-4 text-2xl font-semibold text-white">{asset.value ?? "Unavailable"}{asset.unit ? <span className="text-sm text-slate-400"> {asset.unit}</span> : null}</p>
-      <p className="mt-2 text-xs text-slate-500">{asset.status ?? "ready"}</p>
+      <p className="mt-2 text-xs text-slate-500">{asset.status ?? "ready"}{asset.provider ? ` via ${asset.provider}` : ""}</p>
     </div>
   );
 }
@@ -68,7 +68,7 @@ export function WatchlistTable({ assets }: { assets: Asset[] | undefined }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[520px] text-left text-sm">
         <thead className="text-xs uppercase tracking-wide text-slate-500">
-          <tr><th className="py-2">Symbol</th><th>Name</th><th>Value</th><th>Change</th><th>Status</th></tr>
+          <tr><th className="py-2">Symbol</th><th>Name</th><th>Value</th><th>Change</th><th>Status</th><th>Provider</th></tr>
         </thead>
         <tbody>
           {rows.map((asset, index) => (
@@ -78,6 +78,7 @@ export function WatchlistTable({ assets }: { assets: Asset[] | undefined }) {
               <td>{asset.value ?? "N/A"}{asset.unit ? ` ${asset.unit}` : ""}</td>
               <td className={typeof asset.change === "number" && asset.change < 0 ? "text-loss" : "text-gain"}>{typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "N/A"}</td>
               <td className="text-slate-400">{asset.status ?? "ready"}</td>
+              <td className="text-slate-400">{asset.provider ?? "N/A"}</td>
             </tr>
           ))}
         </tbody>

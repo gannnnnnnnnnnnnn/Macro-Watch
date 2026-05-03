@@ -42,20 +42,47 @@ def main():
         "stress_indicators.json": fetch_stress_indicators(openbb_client),
     }
 
+    file_status = {}
     for name, payload in outputs.items():
         warnings.extend(payload.get("warnings", []))
+        file_status[name] = {
+            "status": payload.get("status", "unknown"),
+            "provider": payload.get("provider"),
+            "real_data": bool(payload.get("real_data")),
+            "warnings": payload.get("warnings", []),
+        }
         write_json(name, payload)
 
+    market_assets = outputs["market_snapshot.json"].get("assets", [])
+    symbol_status = [
+        {
+            "symbol": asset.get("symbol"),
+            "provider": asset.get("provider"),
+            "status": asset.get("status"),
+            "real_data": bool(asset.get("real_data")),
+            "error": None if asset.get("status") == "ok" else asset.get("status"),
+        }
+        for asset in market_assets
+    ]
+    has_errors = any(item["status"] == "error" for item in file_status.values())
+    has_warnings = bool(warnings) or any(item["status"] == "warning" for item in file_status.values())
     status = {
         "source": "generated",
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "status": "warning" if warnings else "ok",
+        "status": "error" if has_errors else "warning" if has_warnings else "ok",
         "warnings": warnings,
+        "files": file_status,
+        "symbols": symbol_status,
         "providers": [
             {
                 "name": "OpenBB",
                 "status": "available" if openbb_client is not None else "unavailable",
-                "note": "No paid API keys required for v0; fallback records are written when live fetches are not available.",
+                "note": "Uses yfinance through OpenBB for no-key market history when available.",
+            },
+            {
+                "name": "yfinance",
+                "status": "used" if any(item.get("provider") == "yfinance" for item in symbol_status) else "unused",
+                "note": "Provider for first-pass market snapshot symbols.",
             }
         ],
     }

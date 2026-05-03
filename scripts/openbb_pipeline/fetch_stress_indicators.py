@@ -12,10 +12,15 @@ BUCKETS = [
 
 
 def fetch_stress_indicators(openbb_client=None):
-    warning = "fallback: OpenBB unavailable" if openbb_client is None else "fallback: live fetch not wired in v0"
+    warning = "placeholder: direct stress data fetch not wired in v0"
+    if openbb_client is None:
+        warning = "placeholder: OpenBB unavailable; direct stress data fetch not wired in v0"
     return {
         "source": "generated",
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "provider": None,
+        "status": "warning",
+        "real_data": False,
         "warnings": [f"{warning}; wrote stress placeholder indicators."],
         "buckets": {
             bucket: [{"name": bucket, "value": None, "status": warning, "note": "Generated fallback placeholder"}]
