@@ -40,6 +40,9 @@ export type Indicator = {
   status?: string;
   note?: string;
   bucket?: string;
+  latest_date?: string | null;
+  provider?: string | null;
+  real_data?: boolean;
 };
 
 export type MarketSnapshot = {
@@ -78,5 +81,6 @@ export type PipelineStatus = {
   warnings?: string[];
   files?: Record<string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }>;
   symbols?: { symbol?: string; provider?: string | null; status?: string; real_data?: boolean; history_status?: string; history_rows?: number; error?: string | null }[];
+  fred_series?: Record<string, { provider?: string | null; status?: string; real_data?: boolean; latest_date?: string | null }>;
   providers?: { name?: string; status?: string; note?: string }[];
 };

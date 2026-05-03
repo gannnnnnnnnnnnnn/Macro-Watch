@@ -80,8 +80,12 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
       {safeItems.map((item, index) => (
         <div key={`${item.name ?? "indicator"}-${index}`} className="flex items-center justify-between gap-4 border-b border-line pb-3 last:border-0 last:pb-0">
           <div>
-            <p className="font-medium text-white">{item.name ?? "Unavailable"}</p>
-            <p className="text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-medium text-white">{item.name ?? "Unavailable"}</p>
+              <StatusBadge label={item.status} real={item.real_data} />
+            </div>
+            <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
+            <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${item.latest_date}` : ""}</p>
           </div>
           <p className="whitespace-nowrap text-sm text-slate-200">{item.value ?? "Unavailable"}{item.unit ? ` ${item.unit}` : ""}</p>
         </div>

@@ -5,6 +5,12 @@ export default function DataLabPage() {
   const { pipelineStatus, source, marketHistory } = getCockpitData();
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean }][] =
     Object.entries(pipelineStatus.files ?? {});
+  const fredEntries: [string, { status?: string; provider?: string | null; latest_date?: string | null; real_data?: boolean }][] =
+    Object.entries(pipelineStatus.fred_series ?? {});
+  const fallbackFredEntries: [string, { status?: string; provider?: string | null; latest_date?: string | null; real_data?: boolean }][] = [
+    ["N/A", { status: "unavailable", provider: "FRED", latest_date: null, real_data: false }],
+  ];
+  const fredRows = fredEntries.length ? fredEntries : fallbackFredEntries;
   const fallbackFiles: [string, { status?: string; provider?: string | null; real_data?: boolean }][] = [
     ["No files", { status: "unavailable", real_data: false }],
   ];
@@ -36,6 +42,26 @@ export default function DataLabPage() {
                 <p className="mt-1 text-sm text-slate-400">{provider.note ?? "No note available"}</p>
               </div>
             ))}
+          </div>
+        </Panel>
+        <Panel title="FRED series">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[520px] text-left text-sm">
+              <thead className="text-xs uppercase tracking-wide text-slate-500">
+                <tr><th className="py-2">Series</th><th>Status</th><th>Provider</th><th>Latest</th><th>Data</th></tr>
+              </thead>
+              <tbody>
+                {fredRows.map(([series, item]) => (
+                  <tr key={series} className="border-t border-line">
+                    <td className="py-3 font-medium text-white">{series}</td>
+                    <td className="text-slate-300">{item.status ?? "unknown"}</td>
+                    <td className="text-slate-400">{item.provider ?? "N/A"}</td>
+                    <td className="text-slate-400">{item.latest_date ?? "N/A"}</td>
+                    <td className={item.real_data ? "text-gain" : "text-warn"}>{item.real_data ? "real" : "fallback"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </Panel>
         <Panel title="Generated files">

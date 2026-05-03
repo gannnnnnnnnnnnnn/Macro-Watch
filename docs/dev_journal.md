@@ -31,3 +31,13 @@ Append-only lightweight project journal.
 - notes/risks: Market history real fetch worked locally for SPY, QQQ, VIX via `^VIX`, UUP, TLT, GLD, USO, and BTC-USD with 60 rows each. No unavailable market history symbols. Overall pipeline status remains `warning` because macro and stress files are still placeholder/unavailable by design.
 - next: Add one real no-key macro or stress data source, then refine historical chart interactions around the existing local JSON contract.
 - commit hash if available: Pending.
+
+## 2026-05-03 14:28 Australia/Melbourne
+
+- task: Wire first FRED macro indicators.
+- files changed: `scripts/openbb_pipeline/requirements.txt`, `scripts/openbb_pipeline/fetch_macro_indicators.py`, `scripts/openbb_pipeline/fetch_stress_indicators.py`, `scripts/openbb_pipeline/run_all.py`, `lib/types.ts`, `components/Cockpit.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added `pandas_datareader` plus a no-key FRED CSV fallback, generated real FRED macro indicators for rates, CPI, unemployment, Fed assets, reverse repos, and credit spreads, calculated 10Y-2Y spread and CPI YoY, made stress buckets partial with real credit/liquidity/Treasury context, added per-series FRED status to `pipeline_status.json`, and surfaced provider/date/real-vs-pending labels in Macro, Stress, and Data Lab.
+- validation: First `npm run build` failed on a typed fallback tuple in Data Lab, then passed after the type fix; `pip install -r requirements.txt` installed `pandas_datareader`; `python run_all.py` passed; `pandas_datareader` failed locally because Python lacked `distutils`, then the FRED CSV fallback fetched real data; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: FRED series worked locally for `DGS10`, `DGS2`, `FEDFUNDS`, `CPIAUCSL`, `UNRATE`, `WALCL`, `RRPONTSYD`, `BAMLH0A0HYM2`, and `BAA10Y`. No FRED series failed after CSV fallback. Stress remains partial by design because volatility, banking, household, and leverage buckets are not fully wired.
+- next: Add historical context or simple deltas for FRED series, then wire VIX snapshot into volatility stress without creating fake scores.
+- commit hash if available: Pending.

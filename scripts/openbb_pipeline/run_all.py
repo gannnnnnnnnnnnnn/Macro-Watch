@@ -52,6 +52,7 @@ def main():
             "provider": payload.get("provider"),
             "real_data": bool(payload.get("real_data")),
             "warnings": payload.get("warnings", []),
+            "series": payload.get("series", {}),
         }
         write_json(name, payload)
 
@@ -71,6 +72,10 @@ def main():
     ]
     has_errors = any(item["status"] == "error" for item in file_status.values())
     has_warnings = bool(warnings) or any(item["status"] == "warning" for item in file_status.values())
+    fred_series = {}
+    for file_name in ("macro_indicators.json", "stress_indicators.json"):
+        for series_id, item in file_status.get(file_name, {}).get("series", {}).items():
+            fred_series[series_id] = item
     status = {
         "source": "generated",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -78,6 +83,7 @@ def main():
         "warnings": warnings,
         "files": file_status,
         "symbols": symbol_status,
+        "fred_series": fred_series,
         "providers": [
             {
                 "name": "OpenBB",
@@ -88,6 +94,11 @@ def main():
                 "name": "yfinance",
                 "status": "used" if any(item.get("provider") == "yfinance" for item in symbol_status) else "unused",
                 "note": "Provider for first-pass market snapshot symbols.",
+            },
+            {
+                "name": "FRED",
+                "status": "used" if any(item.get("real_data") for item in fred_series.values()) else "unavailable",
+                "note": "Fetched through pandas_datareader without API keys for first-pass macro and stress indicators.",
             }
         ],
     }
