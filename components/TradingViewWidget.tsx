@@ -9,6 +9,9 @@ const widgetMap: Record<string, string> = {
   GLD: "AMEX:GLD",
   USO: "AMEX:USO",
   "BTC-USD": "COINBASE:BTCUSD",
+  UUP: "AMEX:UUP",
+  // TLT is commonly available as NASDAQ:TLT in TradingView embeds.
+  TLT: "NASDAQ:TLT",
 };
 
 export function TradingViewWidget({ symbol = "SPY" }: { symbol?: string }) {

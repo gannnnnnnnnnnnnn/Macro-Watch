@@ -51,3 +51,13 @@ Append-only lightweight project journal.
 - notes/risks: TradingView widget was added as a client-only public embed, not the proprietary Charting Library; if its external script fails, the widget shows a fallback card. UI remains server-rendered around local JSON and still has no interactive selected-symbol state beyond the first generated asset. Stress remains partial and not scored.
 - next: Add lightweight client-side selected asset switching on Markets, then wire VIX into volatility stress while keeping labels honest.
 - commit hash if available: Pending.
+
+## 2026-05-03 15:21 Australia/Melbourne
+
+- task: Add market selection and VIX stress context.
+- files changed: `components/MarketsClient.tsx`, `components/TradingViewWidget.tsx`, `app/markets/page.tsx`, `app/page.tsx`, `app/data-lab/page.tsx`, `scripts/openbb_pipeline/fetch_stress_indicators.py`, `scripts/openbb_pipeline/run_all.py`, `docs/current_state.md`, `docs/dev_journal.md`.
+- what changed: Added client-side selected asset switching for Markets without global state, made watchlist rows selectable with selected-row highlighting, updated selected asset detail/sparkline/TradingView widget from the selected symbol, expanded TradingView symbol mapping for UUP and TLT, passed market snapshot data into stress generation, and wired real VIX from OpenBB/yfinance into the Volatility stress bucket without creating a score.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed; generated `stress_indicators.json` contains real VIX value/status/provider; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`.
+- notes/risks: Selected asset switching works as a client component on `/markets` and defaults to the first generated asset. VIX stress wiring worked locally with VIX from yfinance/OpenBB. TradingView mapping uses `NASDAQ:TLT`, which is the common TradingView embed symbol; external widget loading can still fail independently of the local app.
+- next: Add small historical delta views for FRED and VIX context, still without fake scoring.
+- commit hash if available: Pending.

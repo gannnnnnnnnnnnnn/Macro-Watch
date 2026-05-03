@@ -37,11 +37,12 @@ def main():
     if openbb_warning:
         warnings.append(openbb_warning)
 
+    market_snapshot = fetch_market_snapshot(openbb_client)
     outputs = {
-        "market_snapshot.json": fetch_market_snapshot(openbb_client),
+        "market_snapshot.json": market_snapshot,
         "market_history.json": fetch_market_history(openbb_client),
         "macro_indicators.json": fetch_macro_indicators(openbb_client),
-        "stress_indicators.json": fetch_stress_indicators(openbb_client),
+        "stress_indicators.json": fetch_stress_indicators(openbb_client, market_snapshot),
     }
 
     file_status = {}

@@ -30,6 +30,7 @@ export default function Home() {
   const baa = stress.buckets?.["Credit stress"]?.find((item) => item.name === "Baa spread vs 10Y");
   const walcl = stress.buckets?.["Liquidity stress"]?.find((item) => item.name === "Fed total assets");
   const rrp = stress.buckets?.["Liquidity stress"]?.find((item) => item.name === "Overnight reverse repos");
+  const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
 
   return (
     <>
@@ -52,6 +53,15 @@ export default function Home() {
       </div>
 
       <ShellTitle title="Market pulse" source={source} />
+      <Panel title="Focus now">
+        <div className="grid gap-3 md:grid-cols-5">
+          <MetricTile label="VIX" value={value(vixStress)} detail="Watch item; not scored yet" badge={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} />
+          <MetricTile label="10Y-2Y spread" value={value(curve)} detail="Partial context" />
+          <MetricTile label="HY OAS" value={value(hyOas)} detail="Credit watch item" />
+          <MetricTile label="RRP" value={value(rrp) !== "Unavailable" ? value(rrp) : value(walcl)} detail={rrp?.real_data ? "Liquidity watch item" : "Fed assets fallback"} />
+          <MetricTile label="Pipeline" value={<StatusBadge label={pipelineStatus.status} />} detail="Generated data path" />
+        </div>
+      </Panel>
       <div className="mb-6 grid gap-3 md:grid-cols-4">
         <MetricTile label="Risk assets" value={`${riskAssets.filter((asset) => typeof asset?.change === "number" && asset.change >= 0).length}/${riskAssets.length} green`} detail="SPY, QQQ, BTC proxy tone" badge={<StatusBadge label="not scored yet" />} />
         <MetricTile label="Volatility" value={bySymbol.VIX?.value ?? "Unavailable"} detail="VIX via ^VIX market proxy" badge={<StatusBadge label={bySymbol.VIX?.status} real={bySymbol.VIX?.real_data} />} />

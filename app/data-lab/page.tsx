@@ -2,7 +2,8 @@ import { MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/compo
 import { getCockpitData } from "@/lib/data";
 
 export default function DataLabPage() {
-  const { pipelineStatus, source, marketHistory } = getCockpitData();
+  const { pipelineStatus, source, marketHistory, stress } = getCockpitData();
+  const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][] =
     Object.entries(pipelineStatus.files ?? {});
   const fredEntries: [string, { status?: string; provider?: string | null; latest_date?: string | null; real_data?: boolean }][] =
@@ -17,6 +18,7 @@ export default function DataLabPage() {
         <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={pipelineStatus.generated_at ?? "Unavailable"} />
         <MetricTile label="Market history" value={Object.keys(marketHistory.symbols ?? {}).length} detail="symbols with history file entries" />
         <MetricTile label="FRED series" value={fredEntries.filter(([, item]) => item.real_data).length} detail="real series currently loaded" />
+        <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title="Generated files">

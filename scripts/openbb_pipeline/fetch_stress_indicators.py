@@ -13,7 +13,24 @@ BUCKETS = [
 ]
 
 
-def fetch_stress_indicators(openbb_client=None):
+def _vix_indicator(market_snapshot=None):
+    assets = (market_snapshot or {}).get("assets", [])
+    vix = next((asset for asset in assets if asset.get("symbol") == "VIX"), None)
+    if not vix:
+        return _derived_indicator("VIX", None, "", None, False, "unavailable", "Market-implied volatility proxy from OpenBB/yfinance.")
+    return {
+        "name": "VIX",
+        "value": vix.get("value"),
+        "unit": "",
+        "latest_date": vix.get("latest_date"),
+        "provider": vix.get("provider"),
+        "real_data": bool(vix.get("real_data")),
+        "status": "real" if vix.get("real_data") else "unavailable",
+        "note": "Market-implied volatility proxy from OpenBB/yfinance.",
+    }
+
+
+def fetch_stress_indicators(openbb_client=None, market_snapshot=None):
     macro_groups, series, warnings, real_count, total = build_fred_macro_data()
     credit_items = [
         _indicator("High yield OAS", "%", series["BAMLH0A0HYM2"], "Real credit stress proxy from FRED."),
@@ -24,9 +41,10 @@ def fetch_stress_indicators(openbb_client=None):
         _indicator("Overnight reverse repos", "USD billions", series["RRPONTSYD"], "Partial liquidity context from FRED."),
     ]
     treasury_items = macro_groups["Rates"][:3]
+    volatility_items = [_vix_indicator(market_snapshot)]
     real_bucket_count = sum(
         any(item.get("real_data") for item in items)
-        for items in [credit_items, liquidity_items, treasury_items]
+        for items in [volatility_items, credit_items, liquidity_items, treasury_items]
     )
     status = "partial" if real_bucket_count else "warning"
     return {
@@ -46,7 +64,7 @@ def fetch_stress_indicators(openbb_client=None):
             for series_id, result in series.items()
         },
         "buckets": {
-            "Volatility stress": [_derived_indicator("VIX stress", None, "", None, False, "pending", "Use market VIX snapshot later; not wired into stress file yet.")],
+            "Volatility stress": volatility_items,
             "Credit stress": credit_items,
             "Liquidity stress": liquidity_items,
             "Banking stress": [_derived_indicator("Banking stress", None, "", None, False, "pending", "Banking indicators not wired yet.")],
