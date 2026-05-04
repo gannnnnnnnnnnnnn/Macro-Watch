@@ -38,6 +38,14 @@ Generated JSON files are ignored by git except for `data/generated/.gitkeep`. Ru
 
 The pipeline tries to use OpenBB when available. If OpenBB is missing or a fetch fails, it writes fallback generated JSON with warning status instead of failing silently.
 
+You can refresh local generated data from the repo root with:
+
+```bash
+npm run data:refresh
+```
+
+Data does not update automatically. If you are running `npm run dev`, refresh the browser after the command finishes. If you are serving a production build, run `npm run build` after refreshing data.
+
 ## Catalogs
 
 - `config/assets.json` defines tracked market assets.

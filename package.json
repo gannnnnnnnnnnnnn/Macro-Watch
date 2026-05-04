@@ -4,7 +4,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "qa:routes": "node scripts/qa/route_smoke.mjs"
+    "qa:routes": "node scripts/qa/route_smoke.mjs",
+    "data:refresh": "bash scripts/refresh_data.sh"
   },
   "dependencies": {
     "@types/node": "25.6.0",

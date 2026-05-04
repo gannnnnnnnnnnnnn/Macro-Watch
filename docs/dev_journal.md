@@ -141,3 +141,13 @@ Append-only lightweight project journal.
 - notes/risks: `npm run dev` found an existing Next dev server on port 3000; a second dev start reported the existing server and exited. Route smoke passed against the existing dev server. After clearing the ignored Next dev log and opening `/markets`, `/`, and `/stress` in the browser, no nested `<button>` hydration errors reappeared; only the React DevTools info message was logged.
 - next: User visual approval, then merge review when ready.
 - commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-04 18:28 Australia/Melbourne
+
+- task: Polish dashboard IA and local refresh workflow.
+- files changed: `app/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `components/StressRadarClient.tsx`, `scripts/refresh_data.sh`, `package.json`, `package-lock.json`, `README.md`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `docs/architecture.md`.
+- what changed: Simplified Dashboard information architecture into a slim hero, pinned indicators, compact market pulse, compact stress radar preview, and one macro snapshot. Removed repeated dashboard detail sections and kept Data Lab-style metadata out of normal pages. Updated Stress radar labels to short axis labels with a legend to avoid Household/Leverage clipping. Added `npm run data:refresh` through `scripts/refresh_data.sh` and documented the local refresh/update workflow in Data Lab and README.
+- validation: `npm install` passed with dependencies already up to date; initial `npm run build` caught a Stress radar type issue, then passed after the fix. Full validation passed with `npm run build`, `npm run data:refresh`, final `npm run build`, and `npm run qa:routes`. Route smoke returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: Refresh remains local/manual by design; no browser button, backend API, cron, or automatic refresh was added. Stress radar remains context percentile only with partial coverage and no full score. Opened `/`, `/stress`, `/markets`, and `/data-lab` against the running dev server after clearing the ignored Next dev log; no hydration errors appeared, only the React DevTools info message.
+- next: User visual review of `/`, `/stress`, `/markets`, and `/data-lab`, then merge review when ready.
+- commit hash if available: Pending; current commit hash backfill deferred.

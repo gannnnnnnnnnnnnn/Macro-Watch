@@ -26,6 +26,11 @@ export default function DataLabPage() {
         <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
+        <Panel title="Refresh local data">
+          <p className="text-sm text-slate-300">Data does not update automatically. Generated data is local pipeline output; mock data is the committed fallback demo set.</p>
+          <pre className="mt-3 overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">npm run data:refresh</pre>
+          <p className="mt-3 text-sm text-slate-400">When using `npm run dev`, refresh the browser after the command finishes. If serving a production build, run `npm run build` after refreshing data.</p>
+        </Panel>
         <Panel title="Generated files">
           <p className="mb-3 text-sm text-slate-400">Generated files are local pipeline output. Mock files are committed fallbacks for empty or missing generated data.</p>
           <div className="overflow-x-auto">
@@ -114,7 +119,10 @@ export default function DataLabPage() {
           </ul>
         </Panel>
         <Panel title="Local run commands">
-          <pre className="overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">{`cd scripts/openbb_pipeline
+          <pre className="overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">{`npm run data:refresh
+
+# or manually:
+cd scripts/openbb_pipeline
 source .venv/bin/activate
 pip install -r requirements.txt
 python run_all.py`}</pre>

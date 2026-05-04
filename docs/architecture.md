@@ -16,6 +16,7 @@ Phase 2.1 adds an interactive workbench layer, and Phase 2.2 polishes that layer
 - lightweight frontend-computed overlays for market charts
 - localStorage pin and language preferences
 - coverage-aware stress radar visualization
+- compact dashboard stress radar preview that links to the full `/stress` page
 
 The public TradingView widget remains an optional external reference on asset detail pages; it is not the primary charting path.
 
@@ -47,6 +48,8 @@ Normal research pages should avoid pipeline-console detail. Data Lab is the diag
 ## Pipeline
 
 Python scripts under `scripts/openbb_pipeline` try to fetch market data through OpenBB/yfinance and macro/stress data through FRED. If a symbol or series fails, the pipeline keeps that record with warning/unavailable status and continues.
+
+`npm run data:refresh` wraps `scripts/refresh_data.sh` for local refreshes. It runs the same Python pipeline and writes ignored `data/generated/*.json`; the browser must be refreshed manually, and production builds should be rebuilt after refreshing data.
 
 ## Avoided
 

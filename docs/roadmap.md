@@ -39,6 +39,8 @@ Status: ready for user visual approval on PR #1.
 - localStorage pin management
 - EN / 中文 UI language toggle
 - Coverage-aware stress radar visualization
+- Compact Dashboard stress radar preview
+- Local `npm run data:refresh` workflow
 - Trader Reader future claim schema note only
 
 ## Phase 2: Daily Use Layer

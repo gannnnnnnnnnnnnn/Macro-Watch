@@ -12,15 +12,15 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 - v0.1 OpenStock/OpenBB-inspired dark local macro cockpit remains intact.
 - Static config catalogs define enabled market assets, FRED indicators, derived indicators, and default pins.
-- Dashboard uses localStorage-backed pins with default pins from `config/pins.json` and keeps diagnostic wording discreet.
+- Dashboard uses localStorage-backed pins with default pins from `config/pins.json`, a compact market pulse, a compact stress radar preview, and a focused macro snapshot.
 - Markets explorer is card/chart-first with grouped assets, selected asset switching, local Lightweight Charts, optional table view, and asset detail links.
 - Asset detail pages show latest local snapshot data, chart range controls, optional technical overlays, recent rows, and a lower-priority external TradingView reference.
 - Indicator detail pages support raw FRED indicators and derived indicators such as CPI YoY, 10Y-2Y spread, and 10Y-3M spread with chart range controls.
-- Stress has a coverage-aware SVG radar hero using partial context only, not a full stress score.
+- Stress has a coverage-aware SVG radar hero using partial context only, not a full stress score; Dashboard uses a compact preview that links to `/stress`.
 - UI language can toggle locally between English and Chinese for core interface labels.
 - OpenBB/yfinance pipeline reads `config/assets.json` and writes expanded market snapshot/history with a longer market-history window.
 - FRED pipeline reads `config/indicators.json`, writes macro/stress data, and adds `indicator_history.json` for charting.
-- Data Lab shows catalog counts, generated file status, chart data status, provider status, warnings, and local refresh commands.
+- Data Lab shows catalog counts, generated file status, chart data status, provider status, warnings, local refresh commands, and the `npm run data:refresh` workflow.
 
 ## Current stack
 

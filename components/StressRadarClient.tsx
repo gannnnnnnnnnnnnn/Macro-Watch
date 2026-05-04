@@ -1,27 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { IndicatorList, StatusBadge } from "@/components/Cockpit";
 import type { Indicator, IndicatorHistory, MarketHistory, StressIndicators } from "@/lib/types";
 
 const bucketDefs = [
-  { key: "Volatility stress", label: "Volatility", ids: ["VIX"], market: "VIX" },
-  { key: "Credit stress", label: "Credit", ids: ["BAMLH0A0HYM2", "BAA10Y"] },
-  { key: "Liquidity stress", label: "Liquidity", ids: ["WALCL", "RRPONTSYD"] },
-  { key: "Treasury market stress", label: "Treasury", ids: ["10y-2y-spread", "10y-3m-spread", "DGS10"] },
-  { key: "Banking stress", label: "Banking", ids: [] },
-  { key: "Household stress", label: "Household", ids: [] },
-  { key: "Leverage stress", label: "Leverage", ids: [] },
+  { key: "Volatility stress", label: "Volatility", axis: "Vol", ids: ["VIX"], market: "VIX" },
+  { key: "Credit stress", label: "Credit", axis: "Credit", ids: ["BAMLH0A0HYM2", "BAA10Y"] },
+  { key: "Liquidity stress", label: "Liquidity", axis: "Liquid", ids: ["WALCL", "RRPONTSYD"] },
+  { key: "Treasury market stress", label: "Treasury", axis: "Rates", ids: ["10y-2y-spread", "10y-3m-spread", "DGS10"] },
+  { key: "Banking stress", label: "Banking", axis: "Bank", ids: [] },
+  { key: "Household stress", label: "Household", axis: "House", ids: [] },
+  { key: "Leverage stress", label: "Leverage", axis: "Leverage", ids: [] },
 ];
 
 export function StressRadarClient({
   stress,
   indicatorHistory,
   marketHistory,
+  compact = false,
 }: {
   stress: StressIndicators;
   indicatorHistory: IndicatorHistory;
   marketHistory: MarketHistory;
+  compact?: boolean;
 }) {
   const [selected, setSelected] = useState(bucketDefs[0].key);
   const buckets = useMemo(() => bucketDefs.map((bucket) => buildBucket(bucket, stress, indicatorHistory, marketHistory)), [indicatorHistory, marketHistory, stress]);
@@ -32,19 +35,19 @@ export function StressRadarClient({
     <section className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
       <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Coverage-aware stress radar</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">{compact ? "Stress radar preview" : "Coverage-aware stress radar"}</h2>
           <p className="mt-1 text-sm text-slate-500">Context percentile only. Partial bucket coverage, provisional directions, and no complete stress score or trading advice.</p>
         </div>
-        <StatusBadge label="partial" />
+        {compact ? <Link href="/stress" className="text-sm text-cyan-300 hover:text-cyan-100">Open Stress</Link> : <StatusBadge label="partial" />}
       </div>
-      <div className="grid gap-4 xl:grid-cols-[360px_1fr]">
+      <div className={`grid gap-4 ${compact ? "" : "xl:grid-cols-[360px_1fr]"}`}>
         <div className="rounded-lg border border-line bg-ink p-4">
-          <svg viewBox="0 0 280 280" className="mx-auto h-[320px] w-full max-w-[340px]" role="img" aria-label="Partial stress radar">
+          <svg viewBox="0 0 292 292" className={`mx-auto w-full ${compact ? "h-[220px] max-w-[260px]" : "h-[330px] max-w-[360px]"}`} role="img" aria-label="Partial stress radar">
             {[0.25, 0.5, 0.75, 1].map((scale) => (
               <polygon key={scale} points={radarPoints(bucketDefs.map(() => scale * 100), 140, 140, 92).join(" ")} fill="none" stroke="rgba(148, 163, 184, 0.14)" />
             ))}
             {buckets.map((bucket, index) => {
-              const [x, y] = axisPoint(index, buckets.length, 140, 140, 116);
+              const [x, y] = axisPoint(index, buckets.length, 140, 140, 124);
               return (
                 <g key={bucket.key}>
                   <line x1="140" y1="140" x2={x} y2={y} stroke="rgba(148, 163, 184, 0.16)" />
@@ -52,11 +55,11 @@ export function StressRadarClient({
                     x={x}
                     y={y}
                     onClick={() => setSelected(bucket.key)}
-                    textAnchor={x < 122 ? "end" : x > 122 ? "start" : "middle"}
+                    textAnchor={x < 140 ? "end" : x > 140 ? "start" : "middle"}
                     dominantBaseline="middle"
                     className={`cursor-pointer ${bucket.status === "pending" ? "fill-slate-600 text-[8px]" : "fill-slate-300 text-[8px]"}`}
                   >
-                    {bucket.label}
+                    {bucket.axis}
                   </text>
                 </g>
               );
@@ -66,7 +69,20 @@ export function StressRadarClient({
               <circle key={buckets[index].key} cx={point.split(",")[0]} cy={point.split(",")[1]} r="3.5" className={buckets[index].status === "pending" ? "fill-slate-600" : "fill-cyan-300"} />
             ))}
           </svg>
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-500 sm:grid-cols-4">
+            {buckets.map((bucket) => <span key={bucket.key}><span className="text-slate-300">{bucket.axis}</span> {bucket.label}</span>)}
+          </div>
         </div>
+        {compact ? (
+          <div className="grid gap-2 sm:grid-cols-3">
+            {buckets.filter((bucket) => bucket.status !== "pending").slice(0, 3).map((bucket) => (
+              <div key={bucket.key} className="rounded border border-line bg-ink p-3">
+                <p className="text-xs uppercase tracking-wide text-slate-500">{bucket.label}</p>
+                <p className="mt-1 text-lg font-semibold text-white">{Math.round(bucket.value)} pctile</p>
+              </div>
+            ))}
+          </div>
+        ) : (
         <div className="space-y-3">
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
             {buckets.map((bucket) => (
@@ -96,13 +112,14 @@ export function StressRadarClient({
             <IndicatorList items={selectedBucket.items} />
           </div>
         </div>
+        )}
       </div>
     </section>
   );
 }
 
 function buildBucket(
-  bucket: { key: string; label: string; ids: string[]; market?: string },
+  bucket: { key: string; label: string; axis: string; ids: string[]; market?: string },
   stress: StressIndicators,
   indicatorHistory: IndicatorHistory,
   marketHistory: MarketHistory,
