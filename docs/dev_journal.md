@@ -151,3 +151,13 @@ Append-only lightweight project journal.
 - notes/risks: Refresh remains local/manual by design; no browser button, backend API, cron, or automatic refresh was added. Stress radar remains context percentile only with partial coverage and no full score. Opened `/`, `/stress`, `/markets`, and `/data-lab` against the running dev server after clearing the ignored Next dev log; no hydration errors appeared, only the React DevTools info message.
 - next: User visual review of `/`, `/stress`, `/markets`, and `/data-lab`, then merge review when ready.
 - commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-07 19:45 Australia/Melbourne
+
+- task: Add stress engine foundation docs.
+- files changed: `docs/stress_engine_design.md`, `docs/local_research_store.md`, `app/stress/page.tsx`, `docs/current_state.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/dev_journal.md`.
+- what changed: Documented the future transparent stress engine boundary, bucket definitions, directionality and coverage concepts, future `stress_engine.json` output contract, and local research storage evolution. Clarified the current Stress Radar wording as context percentile only, partial coverage, not a full stress score, and future AI/advanced engine work.
+- validation: `npm run build` passed and prerendered 62 pages; `npm run qa:routes` passed against the running dev server with HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: This is a docs-first foundation branch. No full scoring model, AI stress analyst, Trader Reader ingestion, SQLite/database implementation, trading signals, or broker integration was added.
+- next: Validate build and route smoke, then open Phase 2.3 PR.
+- commit hash if available: Pending.

@@ -36,7 +36,7 @@ export default function StressPage() {
     <>
       <ShellTitle title="Stress radar" eyebrow="Partial real stress context" />
       <p className="mb-4 max-w-3xl text-sm text-slate-400">
-        This is a current context percentile view with partial bucket coverage. It is not a full stress score; some directionality remains provisional until a later analytics layer exists.
+        Context percentile only. Partial coverage. Not a full stress score. Some directionality remains provisional, and AI/advanced stress engine work comes later.
       </p>
       <StressRadarClient stress={stress} indicatorHistory={indicatorHistory} marketHistory={marketHistory} />
       <div className="mt-4 grid gap-3 md:grid-cols-3">
