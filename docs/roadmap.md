@@ -29,7 +29,7 @@ Status: in PR #1 on `feature/interactive-workbench`.
 
 ## Phase 2.2: Product Polish Follow-up
 
-Status: ready for user visual approval on PR #1.
+Status: merged to `main` and tagged `v0.2-interactive-workbench`.
 
 - Research-first information hierarchy with Data Lab as diagnostics home
 - Consistent number/date formatting
@@ -42,6 +42,17 @@ Status: ready for user visual approval on PR #1.
 - Compact Dashboard stress radar preview
 - Local `npm run data:refresh` workflow
 - Trader Reader future claim schema note only
+
+## Phase 2.3: Stress Engine Foundation
+
+Status: in progress on `feature/stress-engine-foundation`.
+
+- Transparent stress engine design doc
+- Explicit current Stress Radar limitations
+- Future `data/generated/stress_engine.json` output contract
+- Bucket coverage, confidence, and directionality concepts
+- Local research store design boundary
+- No full scoring model, AI analyst, database, or Trader Reader ingestion
 
 ## Phase 2: Daily Use Layer
 

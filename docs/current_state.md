@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Phase 2.2 Interactive Workbench polish is ready for user visual approval on `feature/interactive-workbench` as a follow-up to PR #1.
+v0.2 Interactive Research Workbench has been merged to `main` and tagged as `v0.2-interactive-workbench`. The current branch is `feature/stress-engine-foundation` for Phase 2.3 design groundwork.
 
 ## Current runnable path
 
@@ -36,4 +36,4 @@ Trader Reader implementation, AI chat, thesis validation, broker integration, de
 
 ## Next phase candidates
 
-After user visual approval: merge review, then manual notes, refresh workflow polish, watchlist preference editing, richer indicator detail ergonomics, and later Trader Reader.
+Phase 2.3 candidates: transparent stress engine output contract, local research store boundaries, manual notes, watchlist preference editing, richer indicator detail ergonomics, and later Trader Reader.
