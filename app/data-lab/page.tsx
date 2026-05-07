@@ -1,9 +1,10 @@
 import { MetricTile, Panel, ShellTitle, SourceBadge, StatusBadge } from "@/components/Cockpit";
-import { getCockpitData } from "@/lib/data";
+import { getAssetCatalog, getCockpitData, getEnabledAssetCatalog, getEnabledIndicatorCatalog } from "@/lib/data";
 import { getFreshness } from "@/lib/freshness";
+import { formatDate, formatDateTime } from "@/lib/format";
 
 export default function DataLabPage() {
-  const { pipelineStatus, source, marketHistory, stress } = getCockpitData();
+  const { pipelineStatus, source, marketHistory, indicatorHistory, stress } = getCockpitData();
   const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
   const freshness = getFreshness(pipelineStatus.generated_at);
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][] =
@@ -15,16 +16,23 @@ export default function DataLabPage() {
   return (
     <>
       <ShellTitle title="Data Lab" eyebrow="Local data operations" source={source} />
-      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-7">
         <MetricTile label="Frontend source" value={<SourceBadge source={source} />} detail="generated first, mock fallback" />
-        <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={pipelineStatus.generated_at ?? "Unavailable"} />
+        <MetricTile label="Pipeline status" value={<StatusBadge label={pipelineStatus.status} />} detail={formatDateTime(pipelineStatus.generated_at)} />
         <MetricTile label="Freshness" value={<StatusBadge label={freshness.label} real={!freshness.isStale} />} detail={freshness.hasGenerated ? "generated timestamp present" : "generated status missing"} />
-        <MetricTile label="Market history" value={Object.keys(marketHistory.symbols ?? {}).length} detail="symbols with history file entries" />
-        <MetricTile label="FRED series" value={fredEntries.filter(([, item]) => item.real_data).length} detail="real series currently loaded" />
+        <MetricTile label="Assets enabled" value={`${getEnabledAssetCatalog().length}/${getAssetCatalog().length}`} detail="config-driven catalog" />
+        <MetricTile label="Indicator catalog" value={getEnabledIndicatorCatalog().length} detail="raw and derived enabled" />
+        <MetricTile label="Chart history" value={`${Object.keys(marketHistory.symbols ?? {}).length} / ${Object.keys(indicatorHistory.indicators ?? {}).length}`} detail="market / indicator files" />
         <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
+        <Panel title="Refresh local data">
+          <p className="text-sm text-slate-300">Data does not update automatically. Generated data is local pipeline output; mock data is the committed fallback demo set.</p>
+          <pre className="mt-3 overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">npm run data:refresh</pre>
+          <p className="mt-3 text-sm text-slate-400">When using `npm run dev`, refresh the browser after the command finishes. If serving a production build, run `npm run build` after refreshing data.</p>
+        </Panel>
         <Panel title="Generated files">
+          <p className="mb-3 text-sm text-slate-400">Generated files are local pipeline output. Mock files are committed fallbacks for empty or missing generated data.</p>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[620px] text-left text-sm">
               <thead className="text-xs uppercase tracking-wide text-slate-500">
@@ -44,6 +52,14 @@ export default function DataLabPage() {
             </table>
           </div>
         </Panel>
+        <Panel title="Catalog summary">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Enabled assets</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.assets_enabled ?? getEnabledAssetCatalog().length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Disabled assets</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.assets_disabled ?? 0}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">FRED indicators</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.indicators_enabled ?? getEnabledIndicatorCatalog().length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Derived indicators</p><p className="mt-1 text-2xl font-semibold text-white">{pipelineStatus.config?.derived_indicators_enabled ?? "N/A"}</p></div>
+          </div>
+        </Panel>
         <Panel title="Providers">
           <div className="space-y-3">
             {(pipelineStatus.providers?.length ? pipelineStatus.providers : [{ name: "OpenBB", status: "unavailable", note: "Run the local pipeline." }]).map((provider, index) => (
@@ -54,8 +70,9 @@ export default function DataLabPage() {
             ))}
           </div>
         </Panel>
-        <Panel title="Market symbols">
-          <div className="overflow-x-auto">
+        <details open className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+          <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">Market symbols</summary>
+          <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[680px] text-left text-sm">
               <thead className="text-xs uppercase tracking-wide text-slate-500">
                 <tr><th className="py-2">Symbol</th><th>Status</th><th>Provider</th><th>Data</th><th>History</th><th>Error</th></tr>
@@ -74,9 +91,10 @@ export default function DataLabPage() {
               </tbody>
             </table>
           </div>
-        </Panel>
-        <Panel title="FRED series">
-          <div className="overflow-x-auto">
+        </details>
+        <details open className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+          <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">FRED series</summary>
+          <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[620px] text-left text-sm">
               <thead className="text-xs uppercase tracking-wide text-slate-500">
                 <tr><th className="py-2">Series</th><th>Status</th><th>Provider</th><th>Latest</th><th>Data</th></tr>
@@ -87,21 +105,24 @@ export default function DataLabPage() {
                     <td className="py-3 font-medium text-white">{series}</td>
                     <td className="text-slate-300">{item.status ?? "unknown"}</td>
                     <td className="text-slate-400">{item.provider ?? "N/A"}</td>
-                    <td className="text-slate-400">{item.latest_date ?? "N/A"}</td>
+                    <td className="text-slate-400">{item.latest_date ? formatDate(item.latest_date) : "N/A"}</td>
                     <td className={item.real_data ? "text-gain" : "text-warn"}>{item.real_data ? "real" : "fallback"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </Panel>
+        </details>
         <Panel title="Warnings">
           <ul className="space-y-2 text-sm">
             {(pipelineStatus.warnings?.length ? pipelineStatus.warnings : ["No warnings reported."]).map((warning) => <li className="rounded border border-amber-400/20 bg-amber-400/5 p-2 text-amber-100" key={warning}>{warning}</li>)}
           </ul>
         </Panel>
         <Panel title="Local run commands">
-          <pre className="overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">{`cd scripts/openbb_pipeline
+          <pre className="overflow-x-auto rounded bg-ink p-4 text-sm text-slate-300">{`npm run data:refresh
+
+# or manually:
+cd scripts/openbb_pipeline
 source .venv/bin/activate
 pip install -r requirements.txt
 python run_all.py`}</pre>

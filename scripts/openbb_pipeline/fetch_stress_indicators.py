@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from fetch_macro_indicators import _derived_indicator, _indicator, build_fred_macro_data
+from fetch_macro_indicators import build_fred_macro_data
 
 BUCKETS = [
     "Volatility stress",
@@ -17,9 +17,10 @@ def _vix_indicator(market_snapshot=None):
     assets = (market_snapshot or {}).get("assets", [])
     vix = next((asset for asset in assets if asset.get("symbol") == "VIX"), None)
     if not vix:
-        return _derived_indicator("VIX", None, "", None, False, "unavailable", "Market-implied volatility proxy from OpenBB/yfinance.")
+        return _pending("VIX", "Market-implied volatility proxy from OpenBB/yfinance.", "unavailable")
     return {
         "name": "VIX",
+        "id": "VIX",
         "value": vix.get("value"),
         "unit": "",
         "latest_date": vix.get("latest_date"),
@@ -30,17 +31,40 @@ def _vix_indicator(market_snapshot=None):
     }
 
 
+def _pending(name, note, status="pending"):
+    return {
+        "id": name.lower().replace(" ", "-"),
+        "name": name,
+        "value": None,
+        "unit": "",
+        "latest_date": None,
+        "provider": None,
+        "real_data": False,
+        "status": status,
+        "note": note,
+        "delta_label": "Δ previous unavailable",
+        "one_year_delta_label": "1Y change unavailable",
+    }
+
+
 def fetch_stress_indicators(openbb_client=None, market_snapshot=None):
-    macro_groups, series, warnings, real_count, total = build_fred_macro_data()
+    macro_groups, series, warnings, real_count, total, _indicator_history = build_fred_macro_data()
+    by_name = {item.get("name"): item for items in macro_groups.values() for item in items}
     credit_items = [
-        _indicator("High yield OAS", "%", series["BAMLH0A0HYM2"], "Real credit stress proxy from FRED."),
-        _indicator("Baa spread vs 10Y", "%", series["BAA10Y"], "Real credit stress proxy from FRED."),
+        by_name.get("High yield OAS"),
+        by_name.get("BBB OAS"),
+        by_name.get("Baa spread vs 10Y"),
+        by_name.get("St. Louis Fed stress index"),
+        by_name.get("Chicago Fed NFCI"),
     ]
     liquidity_items = [
-        _indicator("Fed total assets", "USD millions", series["WALCL"], "Partial liquidity context from FRED."),
-        _indicator("Overnight reverse repos", "USD billions", series["RRPONTSYD"], "Partial liquidity context from FRED."),
+        by_name.get("Fed total assets"),
+        by_name.get("Overnight reverse repos"),
+        by_name.get("Reserve balances"),
     ]
-    treasury_items = macro_groups["Rates"][:3]
+    credit_items = [item for item in credit_items if item]
+    liquidity_items = [item for item in liquidity_items if item]
+    treasury_items = [item for item in macro_groups.get("Rates", []) if item.get("name") in ("10Y Treasury yield", "2Y Treasury yield", "3M Treasury yield", "10Y-2Y spread", "10Y-3M spread")]
     volatility_items = [_vix_indicator(market_snapshot)]
     real_bucket_count = sum(
         any(item.get("real_data") for item in items)
@@ -67,9 +91,9 @@ def fetch_stress_indicators(openbb_client=None, market_snapshot=None):
             "Volatility stress": volatility_items,
             "Credit stress": credit_items,
             "Liquidity stress": liquidity_items,
-            "Banking stress": [_derived_indicator("Banking stress", None, "", None, False, "pending", "Banking indicators not wired yet.")],
-            "Household stress": [_derived_indicator("Household stress", None, "", None, False, "pending", "Household stress indicators not wired yet.")],
-            "Leverage stress": [_derived_indicator("Leverage stress", None, "", None, False, "pending", "Leverage indicators not wired yet.")],
+            "Banking stress": [_pending("Banking stress", "Banking indicators not wired yet.")],
+            "Household stress": [_pending("Household stress", "Household stress indicators not wired yet.")],
+            "Leverage stress": [_pending("Leverage stress", "Leverage indicators not wired yet.")],
             "Treasury market stress": treasury_items,
         },
     }

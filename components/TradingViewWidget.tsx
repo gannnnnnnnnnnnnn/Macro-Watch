@@ -12,6 +12,26 @@ const widgetMap: Record<string, string> = {
   UUP: "AMEX:UUP",
   // TLT is commonly available as NASDAQ:TLT in TradingView embeds.
   TLT: "NASDAQ:TLT",
+  DIA: "AMEX:DIA",
+  IWM: "AMEX:IWM",
+  IEF: "NASDAQ:IEF",
+  SHY: "NASDAQ:SHY",
+  HYG: "AMEX:HYG",
+  LQD: "AMEX:LQD",
+  KRE: "AMEX:KRE",
+  XLF: "AMEX:XLF",
+  AAPL: "NASDAQ:AAPL",
+  MSFT: "NASDAQ:MSFT",
+  NVDA: "NASDAQ:NVDA",
+  AMZN: "NASDAQ:AMZN",
+  META: "NASDAQ:META",
+  GOOGL: "NASDAQ:GOOGL",
+  TSLA: "NASDAQ:TSLA",
+  SMH: "NASDAQ:SMH",
+  SOXX: "NASDAQ:SOXX",
+  SLV: "AMEX:SLV",
+  CPER: "AMEX:CPER",
+  "ETH-USD": "COINBASE:ETHUSD",
 };
 
 export function TradingViewWidget({ symbol = "SPY" }: { symbol?: string }) {

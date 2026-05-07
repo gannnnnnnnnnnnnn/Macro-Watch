@@ -1,15 +1,17 @@
+import Link from "next/link";
+import { formatDate, formatDelta, formatPercent, formatValueWithUnit } from "@/lib/format";
 import type { Asset, HistoryRow, Indicator, SourceName, SymbolHistory } from "@/lib/types";
 
 export function SourceBadge({ source }: { source: SourceName | string | undefined }) {
   const label = source ?? "unavailable";
   const tone = label === "generated" ? "bg-emerald-500/15 text-emerald-300" : label === "mixed" ? "bg-amber-500/15 text-amber-300" : "bg-slate-500/15 text-slate-300";
-  return <span className={`rounded px-2.5 py-1 text-xs font-medium uppercase tracking-wide ${tone}`}>{label}</span>;
+  return <span className={`inline-flex self-start rounded px-2.5 py-1 text-xs font-medium uppercase tracking-wide ${tone}`}>{label}</span>;
 }
 
 export function StatusBadge({ label, real }: { label?: string; real?: boolean }) {
   const text = label ?? "unavailable";
   const tone = real || text === "ok" || text === "generated" ? "bg-emerald-500/15 text-emerald-300" : text.includes("placeholder") || text.includes("pending") || text === "warning" ? "bg-amber-500/15 text-amber-300" : "bg-slate-500/15 text-slate-300";
-  return <span className={`rounded px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${tone}`}>{real ? "real" : text}</span>;
+  return <span className={`inline-flex self-start rounded px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${tone}`}>{real ? "real" : text}</span>;
 }
 
 export function ShellTitle({ title, eyebrow, source }: { title: string; eyebrow?: string; source?: SourceName | string }) {
@@ -40,8 +42,8 @@ export function MetricTile({ label, value, detail, badge }: { label: string; val
         <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
         {badge}
       </div>
-      <div className="mt-3 text-2xl font-semibold text-white">{value}</div>
-      {detail ? <p className="mt-1 text-sm text-slate-400">{detail}</p> : null}
+      <div className="mt-3 break-words text-2xl font-semibold text-white">{value}</div>
+      {detail ? <p className="mt-1 break-words text-sm text-slate-400">{detail}</p> : null}
     </div>
   );
 }
@@ -79,15 +81,15 @@ export function AssetCard({ asset, history }: { asset: Asset; history?: SymbolHi
     <div className="rounded-lg border border-line bg-[#0c1018] p-4 shadow-lg shadow-black/10">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">{asset.symbol ?? asset.proxy ?? "N/A"}</p>
+          <p className="text-sm font-semibold text-white">{asset.label ?? asset.symbol ?? asset.proxy ?? "N/A"}</p>
           <p className="mt-1 text-xs text-slate-400">{asset.name ?? "Unavailable"}</p>
         </div>
-        <span className={tone}>{change === null ? "N/A" : `${change > 0 ? "+" : ""}${change.toFixed(2)}%`}</span>
+        <span className={tone}>{change === null ? "N/A" : formatPercent(change)}</span>
       </div>
-      <p className="mt-4 text-2xl font-semibold text-white">{asset.value ?? "Unavailable"}{asset.unit ? <span className="text-sm text-slate-400"> {asset.unit}</span> : null}</p>
+      <p className="mt-4 text-2xl font-semibold text-white">{formatValueWithUnit(asset.value, asset.unit)}</p>
       <div className="mt-3"><Sparkline rows={history?.rows} positive={(change ?? 0) >= 0} /></div>
       <div className="mt-2 flex items-center justify-between gap-2 text-xs text-slate-500">
-        <span>{asset.provider ? `via ${asset.provider}` : "provider N/A"}</span>
+        <span>{asset.latest_date ? formatDate(asset.latest_date) : "date N/A"}</span>
         <StatusBadge label={asset.status} real={asset.real_data} />
       </div>
     </div>
@@ -102,14 +104,18 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
         <div key={`${item.name ?? "indicator"}-${index}`} className="flex items-center justify-between gap-4 border-b border-line pb-3 last:border-0 last:pb-0">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-medium text-white">{item.name ?? "Unavailable"}</p>
+              {item.href ? (
+                <Link href={item.href} className="font-medium text-white hover:text-cyan-300">{item.name ?? item.label ?? "Unavailable"}</Link>
+              ) : (
+                <p className="font-medium text-white">{item.name ?? item.label ?? "Unavailable"}</p>
+              )}
               <StatusBadge label={item.status} real={item.real_data} />
             </div>
             <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
-            <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${item.latest_date}` : ""}</p>
-            {item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label} · {item.one_year_delta_label ?? "context only"}</p> : null}
+            <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${formatDate(item.latest_date)}` : ""}</p>
+            {typeof item.delta === "number" ? <p className="mt-1 text-xs text-slate-500">Δ previous {formatDelta(item.delta, item.unit ?? "")} · {item.one_year_delta_label ?? "context only"}</p> : item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label}</p> : null}
           </div>
-          <p className="whitespace-nowrap text-sm text-slate-200">{item.value ?? "Unavailable"}{item.unit ? ` ${item.unit}` : ""}</p>
+          <p className="whitespace-nowrap text-sm text-slate-200">{formatValueWithUnit(item.value, item.unit)}</p>
         </div>
       ))}
     </div>
@@ -129,10 +135,10 @@ export function WatchlistTable({ assets, history }: { assets: Asset[] | undefine
             <tr key={`${asset.symbol}-${index}`} className="border-t border-line">
               <td className="py-3 font-medium text-white">{asset.symbol ?? asset.proxy ?? "N/A"}</td>
               <td className="text-slate-300">{asset.name ?? "Unavailable"}</td>
-              <td>{asset.value ?? "N/A"}{asset.unit ? ` ${asset.unit}` : ""}</td>
-              <td className={typeof asset.change === "number" && asset.change < 0 ? "text-loss" : "text-gain"}>{typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "N/A"}</td>
+              <td>{formatValueWithUnit(asset.value, asset.unit)}</td>
+              <td className={typeof asset.change === "number" && asset.change < 0 ? "text-loss" : "text-gain"}>{typeof asset.change === "number" ? formatPercent(asset.change) : "N/A"}</td>
               <td className="text-slate-400">{asset.provider ?? "N/A"}</td>
-              <td className="text-slate-400">{asset.latest_date ?? "N/A"}</td>
+              <td className="text-slate-400">{asset.latest_date ? formatDate(asset.latest_date) : "N/A"}</td>
               <td><StatusBadge label={asset.status} real={asset.real_data} /></td>
               <td className="w-32"><Sparkline rows={history?.[asset.symbol ?? ""]?.rows} positive={(asset.change ?? 0) >= 0} /></td>
             </tr>

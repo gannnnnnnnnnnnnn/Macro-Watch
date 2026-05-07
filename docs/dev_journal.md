@@ -90,4 +90,64 @@ Append-only lightweight project journal.
 - validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and wrote generated market, history, macro, stress, and pipeline status JSON; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, and `/data-lab`. Optional `npm run dev` was not rerun for this docs-only checkpoint.
 - notes/risks: No feature, UI, or data-source changes in this checkpoint.
 - next: Merge review for v0.1, then choose one small Phase 2 daily-use slice.
-- commit hash if available: Pending.
+- commit hash if available: `a4c266e`
+
+## 2026-05-03 19:29 Australia/Melbourne
+
+- task: Add Phase 2.1 Interactive Research Workbench.
+- files changed: `config/assets.json`, `config/indicators.json`, `config/pins.json`, `scripts/openbb_pipeline/**`, `data/mock/indicator_history.json`, `lib/data.ts`, `lib/types.ts`, `lib/routes.ts`, `components/LightweightChart.tsx`, `components/MarketsClient.tsx`, `components/Cockpit.tsx`, `components/TradingViewWidget.tsx`, `app/page.tsx`, `app/markets/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `package.json`, `package-lock.json`, `README.md`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `docs/architecture.md`.
+- what changed: Added config-driven asset, indicator, and pin catalogs; expanded OpenBB/yfinance market snapshot and one-year history fetches from the asset catalog; expanded FRED macro/stress fetches from the indicator catalog; added generated/mock `indicator_history.json`; added dashboard pins, market group filtering, asset detail pages, indicator detail pages, and local Lightweight Charts using generated JSON.
+- validation: `npm install` installed `lightweight-charts`; first `npm run build` failed because a client component imported server-only `fs` through `lib/data.ts`, then passed after moving route helpers to `lib/routes.ts`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed with 28 enabled assets, 28 market history entries, 24 enabled FRED indicators, 3 derived indicators, and `pipeline_status.status` `ok`; final `npm run build` passed and prerendered `/`, `/markets`, `/macro`, `/stress`, `/data-lab`, 28 asset detail pages, and 27 indicator detail pages; mock-fallback build also passed with generated JSON temporarily moved aside; existing `npm run dev` server on port 3000 returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/indicators/DGS10`, and `/data-lab`.
+- notes/risks: Pins are static config only; no database/auth/preference editor exists. Charts use local JSON and Lightweight Charts; external TradingView remains reference-only. No scoring, AI, Trader Reader, broker integration, or backend service was added.
+- next: Visual review the workbench pages, then consider a small refresh workflow or manual notes slice.
+- commit hash if available: `65d7ffc`
+
+## 2026-05-03 19:48 Australia/Melbourne
+
+- task: Visual QA for interactive workbench.
+- files changed: `app/globals.css`, `app/page.tsx`, `app/data-lab/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `components/AppShell.tsx`, `components/Cockpit.tsx`, `components/LightweightChart.tsx`, `components/MarketsClient.tsx`, `docs/dev_journal.md`.
+- what changed: Tightened mobile status strip layout, prevented horizontal overflow, kept source/status badges compact, added spacing around new workbench sections, aligned selected asset state with the active market group filter, formatted asset detail table numbers, and made empty chart states respect chart height.
+- validation: `npm run build` passed; visual screenshots checked Dashboard, Markets, `/assets/SPY`, `/indicators/cpi-yoy`, and mobile `/data-lab`; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed for the expanded asset/indicator catalog; final `npm run build` passed and prerendered the cockpit plus asset and indicator detail pages.
+- notes/risks: External TradingView reference widgets can still show their own loading state independently of local Lightweight Charts. No feature, data contract, scoring, AI, Trader Reader, or backend changes were added.
+- next: Continue PR visual review on real browser/device before merge.
+- commit hash if available: `4934a42`
+
+## 2026-05-03 23:33 Australia/Melbourne
+
+- task: Phase 2.2 polish interactive workbench UX.
+- files changed: `components/AppShell.tsx`, `components/ShellNav.tsx`, `components/LanguageProvider.tsx`, `components/PinsClient.tsx`, `components/LightweightChart.tsx`, `components/MarketsClient.tsx`, `components/StressRadarClient.tsx`, `components/Cockpit.tsx`, `app/page.tsx`, `app/markets/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `lib/format.ts`, `lib/data.ts`, `scripts/openbb_pipeline/fetch_market_history.py`, `scripts/qa/route_smoke.mjs`, `package.json`, `package-lock.json`, `README.md`, `docs/current_state.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/trader_reader_design.md`.
+- what changed: Cleaned normal page information hierarchy by moving operational metadata toward Data Lab, added shared number/date formatting, redesigned Markets into an explorer-first page, added chart range controls and lightweight technical overlays, added localStorage pin management, added an EN / 中文 interface toggle, extended market history fetches to roughly five years, added a coverage-aware SVG stress radar, added route smoke QA, and documented a future Trader Reader claim schema without implementing ingestion.
+- validation: `npm install` passed with dependencies already up to date and `lightweight-charts` pinned; `npm run build` passed before pipeline validation; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched 28 market snapshots plus longer history; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run dev` started on port 3000; `npm run qa:routes` returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: `npm install` still reports two moderate audit findings. Stress radar is context-percentile based and partial, not a complete stress score. Language coverage targets core interface labels; some longer technical notes remain English. Pin state is browser-local only and does not mutate config files.
+- next: User should visually review the listed routes before merge, especially Markets, asset details, indicator details, Stress radar, and mobile Data Lab.
+- commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-03 23:43 Australia/Melbourne
+
+- task: Final polish interactive workbench PR.
+- files changed: `app/page.tsx`, `app/markets/page.tsx`, `app/assets/[symbol]/page.tsx`, `app/indicators/[id]/page.tsx`, `app/stress/page.tsx`, `components/LanguageProvider.tsx`, `components/MarketsClient.tsx`, `components/PinsClient.tsx`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`.
+- what changed: Softened Dashboard copy away from diagnostics, made Data Lab the diagnostics home, moved Stress Radar to the top of the Stress page, collapsed the full stress bucket list behind a secondary section, made pin buttons aware of default pins when localStorage has not been initialized, expanded the local EN / 中文 dictionary, and kept Markets/asset/indicator pin actions aligned with default pins.
+- validation: `npm install` passed with dependencies already up to date; `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched 28 market snapshots plus five-year market history; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run dev` started on port 3000; `npm run qa:routes` returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: PR body was updated to include Phase 2.2 follow-up scope and validation. `npm install` still reports two moderate audit findings. Stress radar remains partial context only, not a full score. Pin and language preferences remain localStorage-only.
+- next: User visual approval on Dashboard, Markets, asset details, indicator details, Stress, and Data Lab before merge.
+- commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-04 00:24 Australia/Melbourne
+
+- task: Fix hydration issues and clarify stress radar.
+- files changed: `components/MarketsClient.tsx`, `components/PinsClient.tsx`, `components/StressRadarClient.tsx`, `components/LanguageProvider.tsx`, `docs/dev_journal.md`.
+- what changed: Fixed invalid nested interactive HTML by replacing the Markets asset-card wrapper `<button>` with a keyboard-accessible non-button container and by changing pinned cards from whole-card links with nested remove buttons to normal cards with separate detail links. Clarified Stress Radar wording as context percentile only, partial coverage, provisional directions, and not a complete stress score. Increased radar SVG padding/reduced label size to avoid clipped labels and added modest Chinese dictionary labels.
+- validation: `npm run build` passed; `pip install -r requirements.txt` passed with requirements already satisfied; `python run_all.py` passed and fetched 28 market snapshots plus five-year market history; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run qa:routes` returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: `npm run dev` found an existing Next dev server on port 3000; a second dev start reported the existing server and exited. Route smoke passed against the existing dev server. After clearing the ignored Next dev log and opening `/markets`, `/`, and `/stress` in the browser, no nested `<button>` hydration errors reappeared; only the React DevTools info message was logged.
+- next: User visual approval, then merge review when ready.
+- commit hash if available: Pending; current commit hash backfill deferred.
+
+## 2026-05-04 18:28 Australia/Melbourne
+
+- task: Polish dashboard IA and local refresh workflow.
+- files changed: `app/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `components/StressRadarClient.tsx`, `scripts/refresh_data.sh`, `package.json`, `package-lock.json`, `README.md`, `docs/current_state.md`, `docs/dev_journal.md`, `docs/roadmap.md`, `docs/architecture.md`.
+- what changed: Simplified Dashboard information architecture into a slim hero, pinned indicators, compact market pulse, compact stress radar preview, and one macro snapshot. Removed repeated dashboard detail sections and kept Data Lab-style metadata out of normal pages. Updated Stress radar labels to short axis labels with a legend to avoid Household/Leverage clipping. Added `npm run data:refresh` through `scripts/refresh_data.sh` and documented the local refresh/update workflow in Data Lab and README.
+- validation: `npm install` passed with dependencies already up to date; initial `npm run build` caught a Stress radar type issue, then passed after the fix. Full validation passed with `npm run build`, `npm run data:refresh`, final `npm run build`, and `npm run qa:routes`. Route smoke returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, and `/data-lab`.
+- notes/risks: Refresh remains local/manual by design; no browser button, backend API, cron, or automatic refresh was added. Stress radar remains context percentile only with partial coverage and no full score. Opened `/`, `/stress`, `/markets`, and `/data-lab` against the running dev server after clearing the ignored Next dev log; no hydration errors appeared, only the React DevTools info message.
+- next: User visual review of `/`, `/stress`, `/markets`, and `/data-lab`, then merge review when ready.
+- commit hash if available: Pending; current commit hash backfill deferred.

@@ -3,19 +3,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "qa:routes": "node scripts/qa/route_smoke.mjs",
+    "data:refresh": "bash scripts/refresh_data.sh"
   },
   "dependencies": {
     "@types/node": "25.6.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "autoprefixer": "10.4.20",
+    "lightweight-charts": "5.2.0",
     "next": "16.2.4",
     "postcss": "8.4.49",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "tailwindcss": "3.4.17",
     "typescript": "6.0.3"
-  },
-  "devDependencies": {}
+  }
 }
