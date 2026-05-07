@@ -7,6 +7,8 @@ import { assetHref, indicatorHref } from "./routes";
 import type {
   Asset,
   AssetConfig,
+  CoverageSummary,
+  EvidenceCards,
   Indicator,
   IndicatorConfig,
   IndicatorHistory,
@@ -15,7 +17,9 @@ import type {
   PinConfig,
   PipelineStatus,
   ResolvedResearchItem,
+  SignalCards,
   SourceName,
+  StressEngine,
   StressIndicators,
   MacroIndicators,
 } from "./types";
@@ -60,6 +64,8 @@ function enrichMarketSnapshot(snapshot: MarketSnapshot): MarketSnapshot {
           group: config.group,
           proxy: config.provider_symbol,
           tradingview_symbol: config.tradingview_symbol,
+          priority: config.priority,
+          tags: config.tags,
           ...asset,
         }
       : asset;
@@ -97,20 +103,36 @@ export function getCockpitData() {
   const indicatorHistory = choose<IndicatorHistory>("indicator_history.json", (d) => Boolean(d.indicators && Object.values(d.indicators).some((item) => hasArray(item.rows))));
   const macro = choose<MacroIndicators>("macro_indicators.json", (d) => hasGroups(d.groups));
   const stress = choose<StressIndicators>("stress_indicators.json", (d) => hasGroups(d.buckets));
+  const coverage = choose<CoverageSummary>("coverage_summary.json", (d) => Boolean(d.assets || d.indicators));
+  const signalCards = choose<SignalCards>("signal_cards.json", (d) => hasArray(d.cards));
+  const evidenceCards = choose<EvidenceCards>("evidence_cards.json", (d) => hasArray(d.cards));
+  const stressEngine = choose<StressEngine>("stress_engine.json", (d) => hasArray(d.buckets));
   const pipelineStatus = readJson<PipelineStatus>("generated", "pipeline_status.json") ?? {
     source: "mock",
     status: "No generated pipeline status found",
     warnings: ["Run the local pipeline to create generated data."],
     providers: [],
   };
-  const sources = [market.source, marketHistory.source, indicatorHistory.source, macro.source, stress.source];
+  const sources = [market.source, marketHistory.source, indicatorHistory.source, macro.source, stress.source, coverage.source, signalCards.source, evidenceCards.source, stressEngine.source];
   const source: SourceName = sources.every((s) => s === "generated")
     ? "generated"
     : sources.every((s) => s === "mock")
       ? "mock"
       : "mixed";
 
-  return { market: enrichMarketSnapshot(market.data), marketHistory: marketHistory.data, indicatorHistory: indicatorHistory.data, macro: macro.data, stress: stress.data, pipelineStatus, source };
+  return {
+    market: enrichMarketSnapshot(market.data),
+    marketHistory: marketHistory.data,
+    indicatorHistory: indicatorHistory.data,
+    macro: macro.data,
+    stress: stress.data,
+    coverage: coverage.data,
+    signalCards: signalCards.data,
+    evidenceCards: evidenceCards.data,
+    stressEngine: stressEngine.data,
+    pipelineStatus,
+    source,
+  };
 }
 
 export function allIndicators(macro: MacroIndicators, stress: StressIndicators): Indicator[] {
@@ -186,6 +208,34 @@ export function marketHistoryFor(symbol: string, history?: MarketHistory) {
 
 export function indicatorHistoryFor(id: string, history?: IndicatorHistory) {
   return history?.indicators?.[id]?.rows ?? [];
+}
+
+export function getCoverageSummary() {
+  return choose<CoverageSummary>("coverage_summary.json", (d) => Boolean(d.assets || d.indicators)).data;
+}
+
+export function getSignalCards() {
+  return choose<SignalCards>("signal_cards.json", (d) => hasArray(d.cards)).data;
+}
+
+export function getEvidenceCards() {
+  return choose<EvidenceCards>("evidence_cards.json", (d) => hasArray(d.cards)).data;
+}
+
+export function getStressEngine() {
+  return choose<StressEngine>("stress_engine.json", (d) => hasArray(d.buckets)).data;
+}
+
+export function signalCardsForBucket(bucket: string) {
+  return (getSignalCards().cards ?? []).filter((card) => card.bucket === bucket);
+}
+
+export function evidenceCardsForSource(sourceId: string) {
+  return (getEvidenceCards().cards ?? []).filter((card) => card.source_ids?.includes(sourceId));
+}
+
+export function evidenceCardsForModule(module: string) {
+  return (getEvidenceCards().cards ?? []).filter((card) => card.module === module);
 }
 
 export function resolvePinnedItems(): ResolvedResearchItem[] {

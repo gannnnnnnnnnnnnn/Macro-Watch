@@ -21,7 +21,7 @@ When daily research workflows need local persistence, start with simple local fi
 - `data/local/trader_claims.json`: future extracted article claims.
 - `data/local/ai_runs.json`: future local AI run metadata and outputs, if AI is added later.
 
-These files should stay local, auditable, and easy to inspect. They should not replace the generated-first/mock-fallback data contract.
+These files should stay local, auditable, and easy to inspect. They should not replace the generated-first/mock-fallback data contract. Phase 2.5 generated evidence cards are deterministic pipeline output, not editable local notes.
 
 ## Future SQLite Boundary
 

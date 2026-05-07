@@ -81,7 +81,7 @@ The future stress engine should be transparent, auditable, and separate from AI.
 
 ## Future Output Contract
 
-Future generated file:
+Generated file:
 
 `data/generated/stress_engine.json`
 
@@ -113,6 +113,6 @@ Suggested shape:
 
 ## Composite Policy
 
-Composite stress should remain unavailable until bucket coverage is broad enough, directionality has been reviewed, and missing-data behavior is visible in the output. A future composite should be optional, explainable, and easy to audit from the JSON.
+The Phase 2.5 file is a skeleton that groups signal cards into stress buckets. Composite stress should remain unavailable until bucket coverage is broad enough, directionality has been reviewed, and missing-data behavior is visible in the output. A future composite should be optional, explainable, and easy to audit from the JSON.
 
 AI can later summarize or explain `stress_engine.json`. AI should not calculate hidden scores, infer missing indicators, or turn partial context into trading advice.

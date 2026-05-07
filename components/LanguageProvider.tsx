@@ -11,6 +11,7 @@ const dictionary: Record<Language, Dictionary> = {
     markets: "Markets",
     macro: "Macro",
     stress: "Stress",
+    library: "Library",
     dataLab: "Data Lab",
     localCockpit: "Local macro cockpit",
     language: "Language",
@@ -44,12 +45,14 @@ const dictionary: Record<Language, Dictionary> = {
     overlays: "Overlays",
     localData: "Local JSON data",
     diagnostics: "Diagnostics",
+    evidenceLibrary: "Evidence Library",
   },
   zh: {
     dashboard: "仪表盘",
     markets: "市场",
     macro: "宏观",
     stress: "压力",
+    library: "证据库",
     dataLab: "数据实验室",
     localCockpit: "本地宏观驾驶舱",
     language: "语言",
@@ -83,6 +86,7 @@ const dictionary: Record<Language, Dictionary> = {
     overlays: "叠加",
     localData: "本地 JSON 数据",
     diagnostics: "诊断",
+    evidenceLibrary: "证据库",
   },
 };
 

@@ -41,7 +41,14 @@ The frontend expects:
 - `indicator_history.json`
 - `pipeline_status.json` when generated
 
-Phase 2.3 documents a future `stress_engine.json` contract, but that file is not implemented yet. The current Stress Radar still reads the existing stress, market history, and indicator history JSON.
+Phase 2.4/2.5 adds generated/mock foundation files:
+
+- `coverage_summary.json` summarizes enabled/real/unavailable asset and indicator coverage.
+- `signal_cards.json` stores transformed observations from local assets and indicators.
+- `evidence_cards.json` stores deterministic evidence references generated from signal cards.
+- `stress_engine.json` groups signal cards into transparent stress buckets while leaving composite stress unavailable.
+
+These files extend the generated-first/mock-fallback contract. They do not introduce a database, backend, AI analyst, news ingestion, or trading-signal layer.
 
 Missing fields must render as unavailable instead of crashing the UI.
 
@@ -55,7 +62,7 @@ Python scripts under `scripts/openbb_pipeline` try to fetch market data through 
 
 ## Future Local Research Store
 
-Phase 2.3 keeps persistence as design work only. Future local research files may live under `data/local/` for notes, watchlist overrides, article manifests, extracted claims, and AI run records. SQLite remains a later option only if JSON files become too awkward for local research workflows.
+Phase 2.3 keeps persistence as design work only. Phase 2.5 adds generated evidence files, not editable research storage. Future local research files may live under `data/local/` for notes, watchlist overrides, article manifests, extracted claims, and AI run records. SQLite remains a later option only if JSON files become too awkward for local research workflows.
 
 ## Avoided
 

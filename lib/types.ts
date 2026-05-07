@@ -8,6 +8,8 @@ export type AssetConfig = {
   provider_symbol?: string;
   tradingview_symbol?: string;
   enabled?: boolean;
+  tags?: string[];
+  priority?: "core" | "secondary" | "experimental" | string;
 };
 
 export type IndicatorConfig = {
@@ -19,6 +21,10 @@ export type IndicatorConfig = {
   unit?: string;
   provider?: string;
   enabled?: boolean;
+  frequency?: string;
+  directionality?: string;
+  tags?: string[];
+  priority?: "core" | "secondary" | "experimental" | string;
 };
 
 export type PinConfig = {
@@ -78,6 +84,8 @@ export type Asset = {
   status?: string;
   provider?: string | null;
   real_data?: boolean;
+  tags?: string[];
+  priority?: string;
   latest_date?: string;
   previous_close?: number | null;
 };
@@ -101,6 +109,9 @@ export type Indicator = {
   one_year_delta?: number | null;
   one_year_delta_label?: string | null;
   href?: string;
+  directionality?: string;
+  tags?: string[];
+  priority?: string;
 };
 
 export type ResolvedResearchItem = {
@@ -166,6 +177,139 @@ export type PipelineStatus = {
   files?: Record<string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[]; series?: Record<string, unknown> }>;
   symbols?: { symbol?: string; provider?: string | null; status?: string; real_data?: boolean; history_status?: string; history_rows?: number; error?: string | null }[];
   fred_series?: Record<string, { provider?: string | null; status?: string; real_data?: boolean; latest_date?: string | null }>;
-  config?: { assets_total?: number; assets_enabled?: number; assets_disabled?: number; indicators_enabled?: number; derived_indicators_enabled?: number };
+  config?: {
+    assets_total?: number;
+    assets_enabled?: number;
+    assets_disabled?: number;
+    assets_real?: number;
+    assets_unavailable?: number;
+    indicators_total?: number;
+    indicators_enabled?: number;
+    derived_indicators_enabled?: number;
+    indicators_real?: number;
+    indicators_unavailable?: number;
+    asset_groups?: CoverageGroup[];
+    indicator_groups?: CoverageGroup[];
+  };
   providers?: { name?: string; status?: string; note?: string }[];
+};
+
+export type CoverageGroup = {
+  group?: string;
+  enabled?: number;
+  real?: number;
+  unavailable?: number;
+  coverage?: number;
+};
+
+export type CoverageSummary = {
+  source?: string;
+  generated_at?: string;
+  status?: string;
+  assets?: {
+    total?: number;
+    enabled?: number;
+    real?: number;
+    unavailable?: number;
+    groups?: CoverageGroup[];
+  };
+  indicators?: {
+    total?: number;
+    enabled?: number;
+    real?: number;
+    unavailable?: number;
+    groups?: CoverageGroup[];
+  };
+  warnings?: string[];
+};
+
+export type SignalTransforms = {
+  percentile_5y?: number | null;
+  z_score_5y?: number | null;
+  rolling_change_1m?: number | null;
+  rolling_change_3m?: number | null;
+  rolling_change_1y?: number | null;
+  trend?: string | null;
+  acceleration?: number | null;
+};
+
+export type SignalCard = {
+  id?: string;
+  type?: "asset" | "indicator" | "derived" | "stress_context" | string;
+  bucket?: string;
+  label?: string;
+  source_id?: string;
+  latest_value?: number | string | null;
+  unit?: string;
+  latest_date?: string | null;
+  provider?: string | null;
+  status?: string;
+  real_data?: boolean;
+  history_points?: number;
+  transforms?: SignalTransforms;
+  directionality?: string;
+  confidence?: string;
+  coverage_note?: string;
+  interpretation_boundary?: string;
+  href?: string;
+};
+
+export type SignalCards = {
+  source?: string;
+  generated_at?: string;
+  status?: string;
+  real_data?: boolean;
+  warnings?: string[];
+  cards?: SignalCard[];
+};
+
+export type EvidenceCard = {
+  id?: string;
+  type?: "indicator" | "asset" | "stress" | "event" | "news" | "manual" | string;
+  title?: string;
+  module?: string;
+  summary?: string;
+  source_ids?: string[];
+  time_range?: string;
+  created_at?: string;
+  updated_at?: string;
+  evidence?: { kind?: string; label?: string; href?: string }[];
+  tags?: string[];
+  status?: string;
+  ai_generated?: boolean;
+  interpretation_boundary?: string;
+};
+
+export type EvidenceCards = {
+  source?: string;
+  generated_at?: string;
+  status?: string;
+  real_data?: boolean;
+  warnings?: string[];
+  cards?: EvidenceCard[];
+};
+
+export type StressEngineBucket = {
+  id?: string;
+  label?: string;
+  status?: string;
+  context_percentile?: number | null;
+  coverage?: number;
+  confidence?: string;
+  indicators?: { id?: string; label?: string; href?: string; percentile_5y?: number | null; status?: string }[];
+  missing_candidate_indicators?: string[];
+  warnings?: string[];
+  directionality_notes?: string;
+  interpretation_boundary?: string;
+};
+
+export type StressEngine = {
+  source?: string;
+  version?: string;
+  generated_at?: string;
+  method?: string;
+  status?: string;
+  warnings?: string[];
+  buckets?: StressEngineBucket[];
+  composite?: { available?: boolean; reason?: string };
 };

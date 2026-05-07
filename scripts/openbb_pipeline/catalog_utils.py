@@ -23,3 +23,8 @@ def enabled_indicators():
 
 def enabled_derived_indicators():
     return [indicator for indicator in read_config("indicators.json").get("derived", []) if indicator.get("enabled")]
+
+
+def all_indicators():
+    config = read_config("indicators.json")
+    return config.get("indicators", []) + config.get("derived", [])

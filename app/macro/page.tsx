@@ -3,7 +3,7 @@ import { getCockpitData, withIndicatorHrefs } from "@/lib/data";
 import { formatDelta, formatValueWithUnit } from "@/lib/format";
 import type { Indicator } from "@/lib/types";
 
-const groups = ["Rates", "Inflation", "Labor", "Liquidity", "Credit", "Growth", "Housing", "Dollar", "Commodities"];
+const groups = ["Rates", "Real rates / inflation expectations", "Inflation", "Labor", "Liquidity", "Credit / financial conditions", "Growth", "Housing", "Dollar", "Commodities"];
 
 function findIndicator(groupsMap: Record<string, Indicator[]> | undefined, name: string) {
   return Object.values(groupsMap ?? {}).flat().find((item) => item.name === name);
@@ -19,7 +19,7 @@ function detail(item: Indicator | undefined, fallback = "context only") {
 }
 
 export default function MacroPage() {
-  const { macro } = getCockpitData();
+  const { macro, coverage } = getCockpitData();
   const tenYear = findIndicator(macro.groups, "10Y Treasury yield");
   const twoYear = findIndicator(macro.groups, "2Y Treasury yield");
   const curve = findIndicator(macro.groups, "10Y-2Y spread");
@@ -44,7 +44,11 @@ export default function MacroPage() {
         <Panel title="Pending"><p className="text-sm text-slate-300">Dollar and commodity macro series remain pending; market proxies cover them elsewhere.</p></Panel>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {groups.map((group) => <Panel key={group} title={group}><IndicatorList items={withIndicatorHrefs(macro.groups?.[group])} /></Panel>)}
+        {groups.map((group) => {
+          const coverageGroup = coverage.indicators?.groups?.find((item) => item.group === group);
+          const title = coverageGroup ? `${group} · ${coverageGroup.real ?? 0}/${coverageGroup.enabled ?? 0}` : group;
+          return <Panel key={group} title={title}><IndicatorList items={withIndicatorHrefs(macro.groups?.[group])} /></Panel>;
+        })}
       </div>
     </>
   );

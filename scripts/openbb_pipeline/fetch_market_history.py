@@ -36,6 +36,8 @@ def _empty_history(target, status):
         "name": target.get("name", target["symbol"]),
         "group": target.get("group"),
         "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
         "provider": None,
         "status": status,
         "real_data": False,
@@ -58,7 +60,54 @@ def _fetch_history(openbb_client, target):
         "name": target.get("name", target["symbol"]),
         "group": target.get("group"),
         "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
         "provider": provider,
+        "status": "ok",
+        "real_data": True,
+        "rows": rows,
+    }
+
+
+def _fetch_history_yfinance(target):
+    try:
+        import yfinance as yf
+    except Exception as exc:
+        raise ValueError(f"direct yfinance unavailable: {exc}") from exc
+
+    frame = yf.download(_provider_symbol(target), period="5y", interval="1d", progress=False, auto_adjust=False, threads=False)
+    if frame is None or frame.empty:
+        raise ValueError("direct yfinance returned no historical rows")
+    rows = []
+    for index, row in frame.iterrows():
+        close = row.get("Close")
+        if close is None or close != close:
+            continue
+        raw_date = index.date().isoformat() if hasattr(index, "date") else str(index)
+        def clean(value):
+            try:
+                return float(value) if value == value else None
+            except Exception:
+                return None
+        rows.append({
+            "date": raw_date,
+            "open": clean(row.get("Open")),
+            "high": clean(row.get("High")),
+            "low": clean(row.get("Low")),
+            "close": clean(close),
+            "volume": clean(row.get("Volume")),
+        })
+    if not rows:
+        raise ValueError("direct yfinance returned no usable historical rows")
+    return {
+        "symbol": target["symbol"],
+        "proxy": _provider_symbol(target),
+        "name": target.get("name", target["symbol"]),
+        "group": target.get("group"),
+        "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
+        "provider": "yfinance",
         "status": "ok",
         "real_data": True,
         "rows": rows,
@@ -81,11 +130,17 @@ def fetch_market_history(openbb_client=None):
                 history = _fetch_history(openbb_client, target)
                 print(f"Fetched history for {symbol} via {history['provider']}: {len(history['rows'])} rows")
                 symbols[symbol] = history
-            except Exception as exc:
-                status = f"unavailable: {exc}"
-                warnings.append(f"{symbol} history: {status}")
-                print(f"Failed history for {symbol}: {exc}")
-                symbols[symbol] = _empty_history(target, status)
+            except Exception as openbb_exc:
+                try:
+                    history = _fetch_history_yfinance(target)
+                    print(f"Fetched history for {symbol} via direct yfinance fallback: {len(history['rows'])} rows")
+                    symbols[symbol] = history
+                    warnings.append(f"{symbol} history: OpenBB path failed; direct yfinance fallback used: {openbb_exc}")
+                except Exception as yf_exc:
+                    status = f"unavailable: openbb={openbb_exc}; yfinance={yf_exc}"
+                    warnings.append(f"{symbol} history: {status}")
+                    print(f"Failed history for {symbol}: {status}")
+                    symbols[symbol] = _empty_history(target, status)
 
     real_count = sum(1 for item in symbols.values() if item.get("real_data"))
     return {

@@ -9,6 +9,7 @@ const nav = [
   { href: "/markets", key: "markets" },
   { href: "/macro", key: "macro" },
   { href: "/stress", key: "stress" },
+  { href: "/library", key: "library" },
   { href: "/data-lab", key: "dataLab" },
 ];
 

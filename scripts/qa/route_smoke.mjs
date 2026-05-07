@@ -9,6 +9,7 @@ const routes = [
   "/indicators/DGS10",
   "/indicators/cpi-yoy",
   "/stress",
+  "/library",
   "/data-lab",
 ];
 

@@ -1,0 +1,30 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-01T00:00:00Z",
+  "status": "mock",
+  "assets": {
+    "total": 8,
+    "enabled": 8,
+    "real": 5,
+    "unavailable": 3,
+    "groups": [
+      {"group": "US core equity", "enabled": 2, "real": 2, "unavailable": 0, "coverage": 1},
+      {"group": "FX", "enabled": 2, "real": 1, "unavailable": 1, "coverage": 0.5},
+      {"group": "Commodities", "enabled": 2, "real": 1, "unavailable": 1, "coverage": 0.5},
+      {"group": "Crypto", "enabled": 2, "real": 1, "unavailable": 1, "coverage": 0.5}
+    ]
+  },
+  "indicators": {
+    "total": 8,
+    "enabled": 8,
+    "real": 6,
+    "unavailable": 2,
+    "groups": [
+      {"group": "Rates", "enabled": 3, "real": 3, "unavailable": 0, "coverage": 1},
+      {"group": "Inflation", "enabled": 2, "real": 1, "unavailable": 1, "coverage": 0.5},
+      {"group": "Credit / financial conditions", "enabled": 2, "real": 2, "unavailable": 0, "coverage": 1},
+      {"group": "Liquidity", "enabled": 1, "real": 0, "unavailable": 1, "coverage": 0}
+    ]
+  },
+  "warnings": ["Mock coverage summary. Run npm run data:refresh for local generated coverage."]
+}

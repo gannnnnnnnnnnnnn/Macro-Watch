@@ -21,7 +21,7 @@ function detail(item: Indicator | undefined, fallback = "context only") {
 }
 
 export default function Home() {
-  const { market, marketHistory, indicatorHistory, macro, stress, pipelineStatus } = getCockpitData();
+  const { market, marketHistory, indicatorHistory, macro, stress, pipelineStatus, coverage, signalCards, evidenceCards } = getCockpitData();
   const assets = market.assets ?? [];
   const bySymbol = Object.fromEntries(assets.map((asset) => [asset.symbol, asset]));
   const freshness = getFreshness(pipelineStatus.generated_at);
@@ -58,6 +58,12 @@ export default function Home() {
 
       <div className="mb-6">
         <PinnedWorkbench defaultPins={defaultPins} items={researchItems} />
+      </div>
+
+      <div className="mb-6 grid gap-3 md:grid-cols-3">
+        <MetricTile label="Research base" value={`${coverage.assets?.real ?? 0}/${coverage.assets?.enabled ?? 0}`} detail="asset coverage; diagnostics in Data Lab" />
+        <MetricTile label="Macro coverage" value={`${coverage.indicators?.real ?? 0}/${coverage.indicators?.enabled ?? 0}`} detail="indicator coverage; context only" />
+        <MetricTile label="Evidence base" value={evidenceCards.cards?.length ?? signalCards.cards?.length ?? 0} detail="mechanical evidence, no AI analysis" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_0.72fr]">

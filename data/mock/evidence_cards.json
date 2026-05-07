@@ -1,0 +1,41 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-01T00:00:00Z",
+  "status": "mock",
+  "real_data": false,
+  "warnings": ["Mock evidence cards. Run npm run data:refresh for generated evidence references."],
+  "cards": [
+    {
+      "id": "evidence:SPY",
+      "type": "asset",
+      "title": "SPY evidence",
+      "module": "equity",
+      "summary": "Latest value available with short mock context.",
+      "source_ids": ["SPY"],
+      "time_range": "mock sample",
+      "created_at": "2026-05-01T00:00:00Z",
+      "updated_at": "2026-05-01T00:00:00Z",
+      "evidence": [{"kind": "asset", "label": "SPY", "href": "/assets/SPY"}],
+      "tags": ["equity", "asset"],
+      "status": "mock",
+      "ai_generated": false,
+      "interpretation_boundary": "Mechanical evidence reference only. No AI analysis."
+    },
+    {
+      "id": "evidence:DGS10",
+      "type": "indicator",
+      "title": "10Y Treasury yield evidence",
+      "module": "rates",
+      "summary": "Latest value available with 5Y context.",
+      "source_ids": ["DGS10"],
+      "time_range": "mock sample",
+      "created_at": "2026-05-01T00:00:00Z",
+      "updated_at": "2026-05-01T00:00:00Z",
+      "evidence": [{"kind": "indicator", "label": "DGS10", "href": "/indicators/DGS10"}],
+      "tags": ["rates", "indicator"],
+      "status": "mock",
+      "ai_generated": false,
+      "interpretation_boundary": "Mechanical evidence reference only. No AI analysis."
+    }
+  ]
+}

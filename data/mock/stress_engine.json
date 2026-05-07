@@ -1,0 +1,27 @@
+{
+  "source": "mock",
+  "version": "stress-engine-v1",
+  "generated_at": "2026-05-01T00:00:00Z",
+  "method": "transparent_context_model_skeleton",
+  "status": "mock",
+  "warnings": ["Mock stress engine skeleton. Run npm run data:refresh for generated context."],
+  "buckets": [
+    {
+      "id": "credit",
+      "label": "Credit",
+      "status": "partial",
+      "context_percentile": 0.72,
+      "coverage": 0.25,
+      "confidence": "low",
+      "indicators": [{"id": "DGS10", "label": "10Y Treasury yield", "href": "/indicators/DGS10", "percentile_5y": 0.72, "status": "mock"}],
+      "missing_candidate_indicators": ["HY OAS", "BBB OAS"],
+      "warnings": [],
+      "directionality_notes": "Context only; directionality must be reviewed before any composite model.",
+      "interpretation_boundary": "Stress engine skeleton only. Not a final score and not trading advice."
+    }
+  ],
+  "composite": {
+    "available": false,
+    "reason": "Composite not enabled until bucket coverage and directionality are reviewed."
+  }
+}
