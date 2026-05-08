@@ -13,6 +13,10 @@ def _kind(target):
         return "crypto"
     if symbol.startswith("^"):
         return "index"
+    if symbol.endswith("=X") or target["symbol"] in ("EURUSD", "USDJPY", "AUDUSD", "USDCNH"):
+        return "equity"
+    if symbol.endswith("=F"):
+        return "equity"
     return "equity"
 
 
@@ -33,6 +37,8 @@ def _empty_asset(target, status):
         "group": target.get("group"),
         "proxy": _provider_symbol(target),
         "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
         "value": None,
         "unit": "" if target["symbol"] == "VIX" else "USD",
         "change": None,
@@ -54,6 +60,21 @@ def _row_date(row):
     if value is None and hasattr(row, "model_dump"):
         value = row.model_dump().get("date")
     return value.isoformat() if hasattr(value, "isoformat") else value
+
+
+def _yf_column(frame, field):
+    if field in frame.columns:
+        column = frame[field]
+    else:
+        matches = [column for column in frame.columns if isinstance(column, tuple) and column[0] == field]
+        if not matches:
+            raise ValueError(f"direct yfinance missing {field} column")
+        column = frame[matches[0]]
+    if hasattr(column, "columns"):
+        if len(column.columns) != 1:
+            raise ValueError(f"direct yfinance returned multiple {field} columns")
+        column = column.iloc[:, 0]
+    return column
 
 
 def _fetch_symbol(openbb_client, target):
@@ -79,6 +100,8 @@ def _fetch_symbol(openbb_client, target):
         "group": target.get("group"),
         "proxy": _provider_symbol(target),
         "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
         "value": round(latest_close, 4),
         "unit": "" if target["symbol"] == "VIX" else "USD",
         "change": round(change, 4),
@@ -86,6 +109,44 @@ def _fetch_symbol(openbb_client, target):
         "provider": provider,
         "real_data": True,
         "latest_date": _row_date(latest),
+        "previous_close": round(previous_close, 4),
+    }
+
+
+def _fetch_symbol_yfinance(target):
+    try:
+        import yfinance as yf
+    except Exception as exc:
+        raise ValueError(f"direct yfinance unavailable: {exc}") from exc
+
+    frame = yf.download(_provider_symbol(target), period="14d", interval="1d", progress=False, auto_adjust=False, threads=False)
+    if frame is None or frame.empty:
+        raise ValueError("direct yfinance returned no rows")
+    close = _yf_column(frame, "Close").dropna()
+    if len(close) < 2:
+        raise ValueError("direct yfinance returned fewer than two close values")
+    latest_close = float(close.iloc[-1])
+    previous_close = float(close.iloc[-2])
+    if previous_close == 0:
+        raise ValueError("direct yfinance returned zero previous close")
+    latest_date = close.index[-1].date().isoformat() if hasattr(close.index[-1], "date") else str(close.index[-1])
+    change = ((latest_close - previous_close) / previous_close) * 100
+    return {
+        "symbol": target["symbol"],
+        "label": target.get("label", target["symbol"]),
+        "name": target.get("name", target["symbol"]),
+        "group": target.get("group"),
+        "proxy": _provider_symbol(target),
+        "tradingview_symbol": target.get("tradingview_symbol"),
+        "priority": target.get("priority"),
+        "tags": target.get("tags", []),
+        "value": round(latest_close, 4),
+        "unit": "" if target["symbol"] == "VIX" or target.get("group") == "FX" else "USD",
+        "change": round(change, 4),
+        "status": "ok",
+        "provider": "yfinance",
+        "real_data": True,
+        "latest_date": latest_date,
         "previous_close": round(previous_close, 4),
     }
 
@@ -104,11 +165,17 @@ def fetch_market_snapshot(openbb_client=None):
                 asset = _fetch_symbol(openbb_client, target)
                 print(f"Fetched {asset['symbol']} via {asset['provider']}: {asset['value']}")
                 assets.append(asset)
-            except Exception as exc:
-                status = f"unavailable: {exc}"
-                warnings.append(f"{target['symbol']}: {status}")
-                print(f"Failed {target['symbol']}: {exc}")
-                assets.append(_empty_asset(target, status))
+            except Exception as openbb_exc:
+                try:
+                    asset = _fetch_symbol_yfinance(target)
+                    print(f"Fetched {asset['symbol']} via direct yfinance fallback: {asset['value']}")
+                    assets.append(asset)
+                    warnings.append(f"{target['symbol']}: OpenBB path failed; direct yfinance fallback used: {openbb_exc}")
+                except Exception as yf_exc:
+                    status = f"unavailable: openbb={openbb_exc}; yfinance={yf_exc}"
+                    warnings.append(f"{target['symbol']}: {status}")
+                    print(f"Failed {target['symbol']}: {status}")
+                    assets.append(_empty_asset(target, status))
 
     real_count = sum(1 for asset in assets if asset.get("real_data"))
     return {

@@ -1,0 +1,49 @@
+{
+  "source": "mock",
+  "generated_at": "2026-05-01T00:00:00Z",
+  "status": "mock",
+  "real_data": false,
+  "warnings": ["Mock signal cards. Run npm run data:refresh for generated observations."],
+  "cards": [
+    {
+      "id": "asset:SPY",
+      "type": "asset",
+      "bucket": "equity",
+      "label": "SPY",
+      "source_id": "SPY",
+      "latest_value": 500,
+      "unit": "USD",
+      "latest_date": "2026-05-01",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "history_points": 60,
+      "transforms": {"percentile_5y": null, "z_score_5y": null, "rolling_change_1m": 2.1, "rolling_change_3m": 8.4, "rolling_change_1y": null, "trend": "rising", "acceleration": null},
+      "directionality": "context_dependent",
+      "confidence": "low",
+      "coverage_note": "Mock market history is short.",
+      "interpretation_boundary": "Mechanical observation only. Not trading advice.",
+      "href": "/assets/SPY"
+    },
+    {
+      "id": "indicator:DGS10",
+      "type": "indicator",
+      "bucket": "rates",
+      "label": "10Y Treasury yield",
+      "source_id": "DGS10",
+      "latest_value": 4.25,
+      "unit": "%",
+      "latest_date": "2026-05-01",
+      "provider": "mock",
+      "status": "mock",
+      "real_data": false,
+      "history_points": 120,
+      "transforms": {"percentile_5y": 0.72, "z_score_5y": 0.8, "rolling_change_1m": 0.1, "rolling_change_3m": -0.2, "rolling_change_1y": 0.4, "trend": "rising", "acceleration": 0.3},
+      "directionality": "higher_is_tighter",
+      "confidence": "low",
+      "coverage_note": "Mock FRED context.",
+      "interpretation_boundary": "Mechanical observation only. Not trading advice.",
+      "href": "/indicators/DGS10"
+    }
+  ]
+}

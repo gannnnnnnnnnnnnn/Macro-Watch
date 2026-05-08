@@ -113,7 +113,7 @@ export function IndicatorList({ items }: { items: Indicator[] | undefined }) {
             </div>
             <p className="mt-1 text-xs text-slate-400">{item.note ?? item.status ?? "Not wired yet"}</p>
             <p className="mt-1 text-xs text-slate-500">{item.provider ?? "Provider N/A"}{item.latest_date ? ` · ${formatDate(item.latest_date)}` : ""}</p>
-            {typeof item.delta === "number" ? <p className="mt-1 text-xs text-slate-500">Δ previous {formatDelta(item.delta, item.unit ?? "")} · {item.one_year_delta_label ?? "context only"}</p> : item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label}</p> : null}
+            {typeof item.delta === "number" ? <p className="mt-1 text-xs text-slate-500">Δ previous {formatDelta(item.delta, item.unit ?? "")} · {typeof item.one_year_delta === "number" ? `1Y change ${formatDelta(item.one_year_delta, item.unit ?? "")}` : "context only"}</p> : item.delta_label ? <p className="mt-1 text-xs text-slate-500">{item.delta_label}</p> : null}
           </div>
           <p className="whitespace-nowrap text-sm text-slate-200">{formatValueWithUnit(item.value, item.unit)}</p>
         </div>

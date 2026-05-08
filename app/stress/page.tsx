@@ -16,11 +16,11 @@ function value(indicator: Indicator | undefined) {
 }
 
 function detail(indicator: Indicator | undefined, fallback = "context only") {
-  return typeof indicator?.delta === "number" ? `Δ previous ${formatDelta(indicator.delta, indicator.unit ?? "")} · ${indicator.one_year_delta_label ?? fallback}` : indicator?.latest_date ?? fallback;
+  return typeof indicator?.delta === "number" ? `Δ previous ${formatDelta(indicator.delta, indicator.unit ?? "")} · ${typeof indicator.one_year_delta === "number" ? `1Y change ${formatDelta(indicator.one_year_delta, indicator.unit ?? "")}` : fallback}` : indicator?.latest_date ?? fallback;
 }
 
 export default function StressPage() {
-  const { stress, indicatorHistory, marketHistory } = getCockpitData();
+  const { stress, indicatorHistory, marketHistory, stressEngine, evidenceCards } = getCockpitData();
   const credit = stress.buckets?.["Credit stress"];
   const liquidity = stress.buckets?.["Liquidity stress"];
   const treasury = stress.buckets?.["Treasury market stress"];
@@ -42,7 +42,7 @@ export default function StressPage() {
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         <MetricTile label="Credit context" value="partial" detail="HY OAS and Baa spread wired" badge={<StatusBadge label="partial" />} />
         <MetricTile label="Liquidity context" value="partial" detail="Fed assets and RRP wired" badge={<StatusBadge label="partial" />} />
-        <MetricTile label="Pending buckets" value="3" detail="Banking, household, leverage" badge={<StatusBadge label="pending" />} />
+        <MetricTile label="Stress engine" value={stressEngine.buckets?.length ?? 0} detail={stressEngine.composite?.reason ?? "Composite unavailable by design"} badge={<StatusBadge label={stressEngine.status ?? "skeleton"} />} />
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="HY OAS" value={value(hyOas)} detail={detail(hyOas)} />
@@ -58,6 +58,17 @@ export default function StressPage() {
         <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">All stress buckets</summary>
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {buckets.map((bucket) => <Panel key={bucket} title={bucket}><IndicatorList items={withIndicatorHrefs(stress.buckets?.[bucket])} /></Panel>)}
+        </div>
+      </details>
+      <details className="mt-4 rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+        <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">Evidence links</summary>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {(evidenceCards.cards ?? []).filter((card) => ["volatility", "credit", "liquidity", "treasury", "banking", "household", "leverage", "rates"].includes(card.module ?? "")).slice(0, 12).map((card) => (
+            <a key={card.id} href={card.evidence?.[0]?.href ?? "/library"} className="rounded border border-line bg-ink p-3 text-sm text-slate-300 hover:border-cyan-400/40 hover:text-white">
+              <span className="block font-medium text-white">{card.title ?? card.id}</span>
+              <span className="mt-1 block text-xs text-slate-500">{card.summary ?? "Mechanical evidence reference."}</span>
+            </a>
+          ))}
         </div>
       </details>
     </>

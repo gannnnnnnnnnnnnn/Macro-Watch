@@ -4,7 +4,7 @@ import { getFreshness } from "@/lib/freshness";
 import { formatDate, formatDateTime } from "@/lib/format";
 
 export default function DataLabPage() {
-  const { pipelineStatus, source, marketHistory, indicatorHistory, stress } = getCockpitData();
+  const { pipelineStatus, source, marketHistory, indicatorHistory, stress, coverage, signalCards, evidenceCards, stressEngine } = getCockpitData();
   const vixStress = stress.buckets?.["Volatility stress"]?.find((item) => item.name === "VIX");
   const freshness = getFreshness(pipelineStatus.generated_at);
   const fileEntries: [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][] =
@@ -24,6 +24,12 @@ export default function DataLabPage() {
         <MetricTile label="Indicator catalog" value={getEnabledIndicatorCatalog().length} detail="raw and derived enabled" />
         <MetricTile label="Chart history" value={`${Object.keys(marketHistory.symbols ?? {}).length} / ${Object.keys(indicatorHistory.indicators ?? {}).length}`} detail="market / indicator files" />
         <MetricTile label="Volatility stress" value={<StatusBadge label={vixStress?.status} real={vixStress?.real_data} />} detail="VIX context only; no score" />
+      </div>
+      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <MetricTile label="Coverage summary" value={`${coverage.assets?.real ?? 0}/${coverage.assets?.enabled ?? 0}`} detail="real / enabled assets" />
+        <MetricTile label="Indicator coverage" value={`${coverage.indicators?.real ?? 0}/${coverage.indicators?.enabled ?? 0}`} detail="real / enabled indicators" />
+        <MetricTile label="Signal cards" value={signalCards.cards?.length ?? 0} detail="mechanical observations; no judgments" />
+        <MetricTile label="Evidence cards" value={evidenceCards.cards?.length ?? 0} detail="deterministic references; no AI prose" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title="Refresh local data">
@@ -51,6 +57,40 @@ export default function DataLabPage() {
               </tbody>
             </table>
           </div>
+        </Panel>
+        <Panel title="Coverage summary">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Asset groups</h3>
+              <div className="space-y-2">
+                {(coverage.assets?.groups?.length ? coverage.assets.groups : [{ group: "Unavailable", enabled: 0, real: 0, unavailable: 0, coverage: 0 }]).map((group) => (
+                  <div key={group.group} className="rounded border border-line bg-ink p-3 text-sm">
+                    <div className="flex items-center justify-between gap-3"><span className="font-medium text-white">{group.group}</span><span className="text-slate-400">{group.real ?? 0}/{group.enabled ?? 0}</span></div>
+                    <p className="mt-1 text-xs text-slate-500">Unavailable {group.unavailable ?? 0} · coverage {Math.round((group.coverage ?? 0) * 100)}%</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Indicator groups</h3>
+              <div className="space-y-2">
+                {(coverage.indicators?.groups?.length ? coverage.indicators.groups : [{ group: "Unavailable", enabled: 0, real: 0, unavailable: 0, coverage: 0 }]).map((group) => (
+                  <div key={group.group} className="rounded border border-line bg-ink p-3 text-sm">
+                    <div className="flex items-center justify-between gap-3"><span className="font-medium text-white">{group.group}</span><span className="text-slate-400">{group.real ?? 0}/{group.enabled ?? 0}</span></div>
+                    <p className="mt-1 text-xs text-slate-500">Unavailable {group.unavailable ?? 0} · coverage {Math.round((group.coverage ?? 0) * 100)}%</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Panel>
+        <Panel title="Signal / evidence foundation">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Signal cards</p><p className="mt-1 text-2xl font-semibold text-white">{signalCards.cards?.length ?? 0}</p><p className="mt-1 text-xs text-slate-500">transformed observations</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Evidence cards</p><p className="mt-1 text-2xl font-semibold text-white">{evidenceCards.cards?.length ?? 0}</p><p className="mt-1 text-xs text-slate-500">auditable references</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Stress engine</p><p className="mt-1 text-2xl font-semibold text-white">{stressEngine.buckets?.length ?? 0}</p><p className="mt-1 text-xs text-slate-500">{stressEngine.composite?.available ? "composite available" : "composite unavailable"}</p></div>
+          </div>
+          <p className="mt-3 text-sm text-slate-400">Signal cards are not trading signals. Evidence cards are not AI analysis. The stress engine file is a skeleton and keeps composite stress disabled.</p>
         </Panel>
         <Panel title="Catalog summary">
           <div className="grid gap-3 sm:grid-cols-2">

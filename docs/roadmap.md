@@ -45,7 +45,7 @@ Status: merged to `main` and tagged `v0.2-interactive-workbench`.
 
 ## Phase 2.3: Stress Engine Foundation
 
-Status: in progress on `feature/stress-engine-foundation`.
+Status: merged to `main` and tagged `v0.3-stress-engine-foundation`.
 
 - Transparent stress engine design doc
 - Explicit current Stress Radar limitations
@@ -53,6 +53,26 @@ Status: in progress on `feature/stress-engine-foundation`.
 - Bucket coverage, confidence, and directionality concepts
 - Local research store design boundary
 - No full scoring model, AI analyst, database, or Trader Reader ingestion
+
+## Phase 2.4: Macro Data Coverage Pack
+
+Status: in progress on `feature/macro-signal-evidence-foundation`.
+
+- Broader config-driven macro asset universe
+- Broader FRED/derived macro indicator catalog
+- Coverage summary generated/mock data contract
+- Pipeline status coverage counts by asset and indicator group
+- One failed asset or series must not break the full pipeline
+
+## Phase 2.5: Signal and Evidence Foundation
+
+Status: in progress on `feature/macro-signal-evidence-foundation`.
+
+- Mechanical signal cards from local market/macro/stress data
+- Deterministic evidence cards from signal cards
+- Thin `stress_engine.json` skeleton consuming signal cards
+- Read-only Evidence Library route
+- No AI analyst, Trader Reader ingestion, news scraping, full scoring model, or trading signals
 
 ## Phase 2: Daily Use Layer
 

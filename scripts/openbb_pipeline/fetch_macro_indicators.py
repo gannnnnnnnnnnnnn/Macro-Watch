@@ -103,6 +103,7 @@ def _indicator(config, result):
         "series_id": config["series_id"],
         "name": config.get("label", config.get("name", config["series_id"])),
         "label": config.get("label", config.get("name", config["series_id"])),
+        "group": config.get("group"),
         "value": round(result["value"], 4) if isinstance(result.get("value"), float) else result.get("value"),
         "unit": config.get("unit", ""),
         "latest_date": result.get("latest_date"),
@@ -110,6 +111,9 @@ def _indicator(config, result):
         "real_data": bool(result.get("real_data")),
         "status": result.get("status", "unavailable"),
         "note": f"FRED {config['series_id']}.",
+        "directionality": config.get("directionality"),
+        "priority": config.get("priority"),
+        "tags": config.get("tags", []),
         **_delta_fields(history),
     }
 
@@ -120,6 +124,7 @@ def _derived_indicator(config, history, status="real", note=None):
         "id": config["id"],
         "name": config.get("label", config["id"]),
         "label": config.get("label", config["id"]),
+        "group": config.get("group"),
         "value": round(latest[1], 4) if isinstance(latest[1], float) else latest[1],
         "unit": config.get("unit", ""),
         "latest_date": latest[0],
@@ -127,6 +132,9 @@ def _derived_indicator(config, history, status="real", note=None):
         "real_data": bool(history),
         "status": status if history else "unavailable",
         "note": note or config.get("name", "Derived from FRED series."),
+        "directionality": config.get("directionality"),
+        "priority": config.get("priority"),
+        "tags": config.get("tags", []),
         **_delta_fields(history),
     }
 
@@ -200,6 +208,8 @@ def build_fred_macro_data():
             history = _align_binary_history(raw_series.get("DGS10", {}).get("history", []), raw_series.get("DGS3MO", {}).get("history", []), lambda a, b: a - b)
         elif config["id"] == "cpi-yoy":
             history = _cpi_yoy_history(raw_series.get("CPIAUCSL", {}).get("history", []))
+        elif config["id"] == "real-10y-yield":
+            history = raw_series.get("DFII10", {}).get("history", [])
         note = f"Derived from {', '.join(depends)}; context only, not scored."
         item = _derived_indicator(config, history, note=note)
         groups.setdefault(config.get("group", "Derived"), []).append(item)
