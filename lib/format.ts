@@ -43,13 +43,13 @@ export function formatPercent(value: number | string | null | undefined, maximum
   return `${number > 0 ? "+" : ""}${formatNumber(number, maximumFractionDigits)}%`;
 }
 
-export function formatRate(value: number | string | null | undefined, maximumFractionDigits = 3) {
+export function formatRate(value: number | string | null | undefined, maximumFractionDigits = 2) {
   const number = numeric(value);
   if (number === null) return "Unavailable";
   return `${formatNumber(number, maximumFractionDigits)}%`;
 }
 
-export function formatDelta(value: number | string | null | undefined, unit = "", maximumFractionDigits = 3) {
+export function formatDelta(value: number | string | null | undefined, unit = "", maximumFractionDigits = 2) {
   const number = numeric(value);
   if (number === null) return "Unavailable";
   const sign = number > 0 ? "+" : "";
@@ -87,7 +87,7 @@ export function formatValueWithUnit(value: number | string | null | undefined, u
   const cleanUnit = (unit ?? "").trim();
   if (!cleanUnit) return formatNumber(value, 2);
   if (cleanUnit === "%") return formatRate(value);
-  if (/percent|rate|spread|yield/i.test(cleanUnit)) return `${formatNumber(value, 3)} ${cleanUnit}`;
+  if (/percent|rate|spread|yield/i.test(cleanUnit)) return `${formatNumber(value, 2)} ${cleanUnit}`;
   if (/usd|millions|billions/i.test(cleanUnit)) return formatLargeMacroValue(value, cleanUnit);
   return `${formatNumber(value, 3)} ${cleanUnit}`;
 }

@@ -17,7 +17,7 @@ function value(item: Indicator | undefined) {
 }
 
 function detail(item: Indicator | undefined, fallback = "context only") {
-  return typeof item?.delta === "number" ? `Δ previous ${formatDelta(item.delta, item.unit ?? "")} · ${item.one_year_delta_label ?? fallback}` : item?.latest_date ?? fallback;
+  return typeof item?.delta === "number" ? `Δ previous ${formatDelta(item.delta, item.unit ?? "")} · ${typeof item.one_year_delta === "number" ? `1Y change ${formatDelta(item.one_year_delta, item.unit ?? "")}` : fallback}` : item?.latest_date ?? fallback;
 }
 
 export default function Home() {

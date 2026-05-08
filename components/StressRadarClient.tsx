@@ -36,7 +36,7 @@ export function StressRadarClient({
       <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">{compact ? "Stress radar preview" : "Coverage-aware stress radar"}</h2>
-          <p className="mt-1 text-sm text-slate-500">Context percentile only. Partial bucket coverage, provisional directions, and no complete stress score or trading advice.</p>
+          <p className="mt-1 text-sm text-slate-500">{compact ? "Partial context, not a full score." : "Context percentile only. Partial bucket coverage, provisional directions, and no complete stress score or trading advice."}</p>
         </div>
         {compact ? <Link href="/stress" className="text-sm text-cyan-300 hover:text-cyan-100">Open Stress</Link> : <StatusBadge label="partial" />}
       </div>
@@ -47,7 +47,7 @@ export function StressRadarClient({
               <polygon key={scale} points={radarPoints(bucketDefs.map(() => scale * 100), 140, 140, 92).join(" ")} fill="none" stroke="rgba(148, 163, 184, 0.14)" />
             ))}
             {buckets.map((bucket, index) => {
-              const [x, y] = axisPoint(index, buckets.length, 140, 140, 124);
+              const [x, y] = axisPoint(index, buckets.length, 140, 140, 118);
               return (
                 <g key={bucket.key}>
                   <line x1="140" y1="140" x2={x} y2={y} stroke="rgba(148, 163, 184, 0.16)" />
