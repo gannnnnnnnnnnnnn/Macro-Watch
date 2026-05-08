@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from math import isfinite
 from pathlib import Path
 
 from build_coverage_summary import build_coverage_summary
@@ -31,8 +32,18 @@ def get_openbb_client():
 def write_json(name, payload):
     GENERATED.mkdir(parents=True, exist_ok=True)
     path = GENERATED / name
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(_json_safe(payload), indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print(f"Wrote {path.relative_to(ROOT)}")
+
+
+def _json_safe(value):
+    if isinstance(value, float):
+        return value if isfinite(value) else None
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    return value
 
 
 def main():
@@ -60,6 +71,7 @@ def main():
         "indicator_history.json": indicator_history,
     }
 
+    builder_failures = {}
     builders = [
         ("coverage_summary.json", lambda: build_coverage_summary(market_snapshot, macro_indicators, indicator_history)),
         ("signal_cards.json", lambda: build_signal_cards(market_snapshot, market_history, macro_indicators, stress_indicators, indicator_history)),
@@ -73,13 +85,18 @@ def main():
             warning = f"{name}: builder failed: {exc}"
             warnings.append(warning)
             print(warning)
-            outputs[name] = {
-                "source": "generated",
-                "generated_at": datetime.now(timezone.utc).isoformat(),
-                "status": "warning",
-                "real_data": False,
-                "warnings": [warning],
-            }
+            builder_failures[name] = warning
+            if (GENERATED / name).exists():
+                outputs[name] = None
+                print(f"Preserved existing data/generated/{name}")
+            else:
+                outputs[name] = {
+                    "source": "generated",
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                    "status": "warning",
+                    "real_data": False,
+                    "warnings": [warning],
+                }
 
     file_status = {}
     for name, payload in outputs.items():
@@ -94,6 +111,16 @@ def main():
             "series": payload.get("series", {}),
         }
         write_json(name, payload)
+
+    for name, warning in builder_failures.items():
+        if name not in file_status:
+            file_status[name] = {
+                "status": "warning",
+                "provider": None,
+                "real_data": False,
+                "warnings": [warning, "Existing generated file preserved."],
+                "series": {},
+            }
 
     market_assets = outputs["market_snapshot.json"].get("assets", [])
     market_history_symbols = outputs["market_history.json"].get("symbols", {})

@@ -62,6 +62,21 @@ def _row_date(row):
     return value.isoformat() if hasattr(value, "isoformat") else value
 
 
+def _yf_column(frame, field):
+    if field in frame.columns:
+        column = frame[field]
+    else:
+        matches = [column for column in frame.columns if isinstance(column, tuple) and column[0] == field]
+        if not matches:
+            raise ValueError(f"direct yfinance missing {field} column")
+        column = frame[matches[0]]
+    if hasattr(column, "columns"):
+        if len(column.columns) != 1:
+            raise ValueError(f"direct yfinance returned multiple {field} columns")
+        column = column.iloc[:, 0]
+    return column
+
+
 def _fetch_symbol(openbb_client, target):
     start = (date.today() - timedelta(days=14)).isoformat()
     result = _endpoint(openbb_client, target)(symbol=_provider_symbol(target), start_date=start, provider="yfinance", interval="1d")
@@ -107,7 +122,7 @@ def _fetch_symbol_yfinance(target):
     frame = yf.download(_provider_symbol(target), period="14d", interval="1d", progress=False, auto_adjust=False, threads=False)
     if frame is None or frame.empty:
         raise ValueError("direct yfinance returned no rows")
-    close = frame["Close"].dropna()
+    close = _yf_column(frame, "Close").dropna()
     if len(close) < 2:
         raise ValueError("direct yfinance returned fewer than two close values")
     latest_close = float(close.iloc[-1])

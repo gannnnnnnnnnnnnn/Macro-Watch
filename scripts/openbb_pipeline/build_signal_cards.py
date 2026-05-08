@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import isfinite, sqrt
 
 
@@ -26,8 +26,13 @@ def _values(rows, field="value"):
     values = []
     for row in rows or []:
         value = _clean_number(row.get(field))
-        if value is not None:
-            values.append((row.get("date"), value))
+        raw_date = row.get("date")
+        if value is not None and raw_date:
+            try:
+                parsed_date = datetime.fromisoformat(str(raw_date)[:10]).date()
+            except ValueError:
+                continue
+            values.append((parsed_date, value))
     return values
 
 
@@ -47,12 +52,14 @@ def _zscore(latest, values):
     return round((latest - mean) / std, 4) if std else None
 
 
-def _change(values, days):
+def _change_calendar(values, calendar_days):
     if len(values) < 2:
         return None
-    latest = values[-1][1]
-    target_index = max(0, len(values) - days)
-    prior = values[target_index][1]
+    latest_date, latest = values[-1]
+    target_date = latest_date - timedelta(days=calendar_days)
+    prior = next((value for raw_date, value in reversed(values[:-1]) if raw_date <= target_date), None)
+    if prior is None:
+        return None
     return round(latest - prior, 4)
 
 
@@ -73,12 +80,18 @@ def _transforms(rows, field="value"):
     values = [value for _date, value in series]
     latest = values[-1] if values else None
     latest_5y = values[-1260:] if values else []
-    recent_1m = _change(series, 21)
-    recent_3m = _change(series, 63)
-    recent_1y = _change(series, 252)
-    short_trend = _change(series, 21)
-    long_trend = _change(series, 63)
-    acceleration = round(short_trend - long_trend, 4) if short_trend is not None and long_trend is not None else None
+    recent_1m = _change_calendar(series, 30)
+    recent_3m = _change_calendar(series, 90)
+    recent_1y = _change_calendar(series, 365)
+    acceleration_value = round(recent_1m - recent_3m, 4) if recent_1m is not None and recent_3m is not None else None
+    if acceleration_value is None:
+        acceleration = "unknown"
+    elif acceleration_value > 0.0001:
+        acceleration = "positive"
+    elif acceleration_value < -0.0001:
+        acceleration = "negative"
+    else:
+        acceleration = "flat"
     return {
         "percentile_5y": _pctile(latest, latest_5y),
         "z_score_5y": _zscore(latest, latest_5y),
@@ -87,24 +100,33 @@ def _transforms(rows, field="value"):
         "rolling_change_1y": recent_1y,
         "trend": _trend(series),
         "acceleration": acceleration,
+        "acceleration_value": acceleration_value,
     }
 
 
 def _asset_bucket(asset):
     group = (asset.get("group") or "").lower()
     symbol = asset.get("symbol")
+    name = (asset.get("name") or "").lower()
+    provider_symbol = asset.get("proxy") or asset.get("provider_symbol") or ""
+    # Order matters: specific stress/asset proxies must be classified before
+    # generic sector/equity groups, otherwise KRE/XLF become plain equity.
     if symbol == "VIX" or "volatility" in group:
         return "volatility"
-    if "credit" in group or symbol in ("HYG", "LQD", "EMB"):
+    if "bank" in name or symbol in ("KRE", "XLF"):
+        return "banking"
+    if symbol in ("HYG", "LQD", "EMB"):
         return "credit"
-    if "rates" in group or symbol in ("TLT", "IEF", "SHY"):
+    if symbol in ("TLT", "IEF", "SHY") or "rates" in group:
         return "treasury"
+    if "credit" in group:
+        return "credit"
     if "fx" in group or symbol in ("DXY", "UUP", "EURUSD", "USDJPY", "AUDUSD", "USDCNH"):
         return "fx"
-    if "commodities" in group:
+    if "commodities" in group or provider_symbol.endswith("=F") or symbol in ("GLD", "SLV", "USO", "CPER", "UNG"):
         return "commodity"
-    if "bank" in (asset.get("name") or "").lower() or symbol in ("KRE", "XLF"):
-        return "banking"
+    # Generic equity/sector checks stay after stress, FX, rates, and commodity
+    # checks so macro buckets remain stable as the catalog grows.
     if "equity" in group or "sector" in group or "mega" in group or "global" in group:
         return "equity"
     if "crypto" in group:

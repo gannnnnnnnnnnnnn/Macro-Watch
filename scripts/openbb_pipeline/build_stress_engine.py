@@ -29,7 +29,8 @@ def build_stress_engine(signal_cards):
         real_cards = [card for card in cards if card.get("real_data")]
         percentiles = [card.get("transforms", {}).get("percentile_5y") for card in real_cards]
         percentiles = [value for value in percentiles if isinstance(value, (int, float))]
-        coverage = round(len(real_cards) / max(1, len(cards) + len(missing_candidates)), 4)
+        wired_coverage = round(len(real_cards) / max(1, len(cards)), 4) if cards else 0
+        candidate_coverage = round(len(real_cards) / max(1, len(cards) + len(missing_candidates)), 4)
         context_percentile = round(sum(percentiles) / len(percentiles), 4) if percentiles else None
         if not real_cards:
             warnings.append(f"{label}: no real signal coverage")
@@ -38,7 +39,10 @@ def build_stress_engine(signal_cards):
             "label": label,
             "status": "partial" if real_cards else "pending",
             "context_percentile": context_percentile,
-            "coverage": coverage,
+            "coverage": candidate_coverage,
+            "wired_coverage": wired_coverage,
+            "candidate_coverage": candidate_coverage,
+            "coverage_note": "wired_coverage uses currently wired signal cards; candidate_coverage also includes missing candidate indicators.",
             "confidence": "medium" if len(real_cards) >= 2 else "low",
             "indicators": [
                 {

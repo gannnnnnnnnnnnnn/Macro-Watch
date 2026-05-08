@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta, timezone
 
 from catalog_utils import enabled_assets
-from fetch_market_snapshot import _endpoint, _provider_symbol
+from fetch_market_snapshot import _endpoint, _provider_symbol, _yf_column
 
 
 def _value(row, field):
@@ -78,9 +78,17 @@ def _fetch_history_yfinance(target):
     frame = yf.download(_provider_symbol(target), period="5y", interval="1d", progress=False, auto_adjust=False, threads=False)
     if frame is None or frame.empty:
         raise ValueError("direct yfinance returned no historical rows")
+    columns = {}
+    for field in ("Open", "High", "Low", "Close", "Volume"):
+        try:
+            columns[field] = _yf_column(frame, field)
+        except ValueError:
+            if field == "Close":
+                raise
+            columns[field] = None
     rows = []
-    for index, row in frame.iterrows():
-        close = row.get("Close")
+    for index in frame.index:
+        close = columns["Close"].loc[index]
         if close is None or close != close:
             continue
         raw_date = index.date().isoformat() if hasattr(index, "date") else str(index)
@@ -91,11 +99,11 @@ def _fetch_history_yfinance(target):
                 return None
         rows.append({
             "date": raw_date,
-            "open": clean(row.get("Open")),
-            "high": clean(row.get("High")),
-            "low": clean(row.get("Low")),
+            "open": clean(columns["Open"].loc[index]) if columns["Open"] is not None else None,
+            "high": clean(columns["High"].loc[index]) if columns["High"] is not None else None,
+            "low": clean(columns["Low"].loc[index]) if columns["Low"] is not None else None,
             "close": clean(close),
-            "volume": clean(row.get("Volume")),
+            "volume": clean(columns["Volume"].loc[index]) if columns["Volume"] is not None else None,
         })
     if not rows:
         raise ValueError("direct yfinance returned no usable historical rows")

@@ -20,10 +20,18 @@ Signal cards convert local market, macro, and stress context into deterministic 
 - 5Y percentile when enough history exists
 - 5Y z-score when enough history exists
 - rolling changes
-- trend and acceleration
+- trend, acceleration label, and optional numeric acceleration value
 - confidence and coverage note
 
 The transforms are intentionally simple and auditable. Missing data stays unavailable, and short history leaves transforms null with warnings.
+
+Rolling changes use approximate calendar windows rather than row counts:
+
+- `rolling_change_1m`: latest value minus the latest observation at or before 30 days prior.
+- `rolling_change_3m`: latest value minus the latest observation at or before 90 days prior.
+- `rolling_change_1y`: latest value minus the latest observation at or before 365 days prior.
+
+`acceleration` is a label: `positive`, `negative`, `flat`, or `unknown`. `acceleration_value` stores the simple numeric difference between the 1M and 3M rolling changes when available.
 
 ## Evidence Cards
 

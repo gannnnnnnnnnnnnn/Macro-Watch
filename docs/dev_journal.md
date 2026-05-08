@@ -171,3 +171,13 @@ Append-only lightweight project journal.
 - notes/risks: This is not AI analysis, Trader Reader ingestion, news scraping, a database, a full stress score, or trading advice. Local generated coverage was 56/56 enabled assets and 34/34 enabled indicators. `USDCNH` remains in the catalog but disabled as an experimental fragile mapping. Pipeline warnings were context-transform warnings rather than failed enabled fetches: pending stress placeholders too short for percentile and no leverage signal coverage.
 - next: Run full frontend/pipeline/mock-fallback/route-smoke validation, then open the Phase 2.4/2.5 PR.
 - commit hash if available: Pending.
+
+## 2026-05-08 23:59 Australia/Melbourne
+
+- task: Fix signal foundation edge cases.
+- files changed: `scripts/openbb_pipeline/build_signal_cards.py`, `scripts/openbb_pipeline/fetch_market_snapshot.py`, `scripts/openbb_pipeline/fetch_market_history.py`, `scripts/openbb_pipeline/run_all.py`, `scripts/openbb_pipeline/build_stress_engine.py`, `lib/types.ts`, `docs/signal_evidence_design.md`, `docs/stress_engine_design.md`, `docs/dev_journal.md`.
+- what changed: Fixed signal-card bucket classification order so banking, credit, volatility, treasury, FX, and commodity proxies classify before generic equity/sector rules; changed rolling changes to calendar windows; changed acceleration to a label with optional `acceleration_value`; hardened direct yfinance fallback for flat and MultiIndex columns; made failed optional builders preserve existing generated files when possible; and clarified stress engine wired/candidate coverage fields.
+- validation: `npm run build` passed; `npm run data:refresh` passed and generated valid JSON; final `npm run build` passed; mock fallback build passed with generated JSON temporarily moved aside and restored; `npm run qa:routes` passed against the existing dev server with HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, `/library`, and `/data-lab`. `npm run dev` confirmed an existing Next dev server was already running on port 3000.
+- notes/risks: Generated coverage remained 56/56 enabled assets and 34/34 enabled indicators locally. Remaining pipeline warnings are expected skeleton/context warnings: pending stress placeholders lack 5Y percentile context and the leverage bucket has no real signal coverage. Generated JSON files remain ignored and unstaged.
+- next: User visual/review approval for PR #3, then merge when ready.
+- commit hash if available: Pending.

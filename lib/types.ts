@@ -230,7 +230,8 @@ export type SignalTransforms = {
   rolling_change_3m?: number | null;
   rolling_change_1y?: number | null;
   trend?: string | null;
-  acceleration?: number | null;
+  acceleration?: "positive" | "negative" | "flat" | "unknown" | string | null;
+  acceleration_value?: number | null;
 };
 
 export type SignalCard = {
@@ -295,6 +296,9 @@ export type StressEngineBucket = {
   status?: string;
   context_percentile?: number | null;
   coverage?: number;
+  wired_coverage?: number;
+  candidate_coverage?: number;
+  coverage_note?: string;
   confidence?: string;
   indicators?: { id?: string; label?: string; href?: string; percentile_5y?: number | null; status?: string }[];
   missing_candidate_indicators?: string[];
