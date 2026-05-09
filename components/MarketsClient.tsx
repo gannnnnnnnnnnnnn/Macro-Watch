@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AssetCard, Panel, Sparkline, StatusBadge } from "@/components/Cockpit";
 import { LightweightChart } from "@/components/LightweightChart";
 import { PinButton } from "@/components/PinsClient";
@@ -10,19 +10,77 @@ import { assetHref } from "@/lib/routes";
 import type { Asset, MarketHistory, PinConfig } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
 
+const pinStorageKey = "macro-watch:pins:v1";
+const recentStorageKey = "macro-watch:recent-assets:v1";
+const quickFilters = ["All", "Core", "Pinned", "Recent"] as const;
+
 export function MarketsClient({ assets, history, defaultPins = [] }: { assets: Asset[]; history: MarketHistory; defaultPins?: PinConfig[] }) {
   const { t } = useLanguage();
   const defaultSymbol = assets[0]?.symbol ?? "";
   const [selectedSymbol, setSelectedSymbol] = useState(defaultSymbol);
   const [group, setGroup] = useState("All");
+  const [query, setQuery] = useState("");
+  const [quickFilter, setQuickFilter] = useState<(typeof quickFilters)[number]>("All");
+  const [pinnedAssetIds, setPinnedAssetIds] = useState(() => defaultPins.filter((pin) => pin.type === "asset").map((pin) => pin.id));
+  const [recentAssetIds, setRecentAssetIds] = useState<string[]>([]);
   const [view, setView] = useState<"cards" | "table">("cards");
   const groups = useMemo(() => ["All", ...Array.from(new Set(assets.map((asset) => asset.group).filter((item): item is string => Boolean(item))))], [assets]);
-  const visibleAssets = group === "All" ? assets : assets.filter((asset) => asset.group === group);
+  const visibleAssets = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return assets.filter((asset) => {
+      const groupMatch = group === "All" || asset.group === group;
+      const quickMatch =
+        quickFilter === "All" ||
+        (quickFilter === "Core" && asset.priority === "core") ||
+        (quickFilter === "Pinned" && Boolean(asset.symbol && pinnedAssetIds.includes(asset.symbol))) ||
+        (quickFilter === "Recent" && Boolean(asset.symbol && recentAssetIds.includes(asset.symbol)));
+      const searchText = [asset.symbol, asset.label, asset.name, asset.group, asset.proxy, ...(asset.tags ?? [])].filter(Boolean).join(" ").toLowerCase();
+      const searchMatch = !normalizedQuery || searchText.includes(normalizedQuery);
+      return groupMatch && quickMatch && searchMatch;
+    });
+  }, [assets, group, pinnedAssetIds, query, quickFilter, recentAssetIds]);
   const selected = useMemo(
     () => visibleAssets.find((asset) => asset.symbol === selectedSymbol) ?? visibleAssets[0] ?? assets.find((asset) => asset.symbol === selectedSymbol) ?? assets[0],
     [assets, selectedSymbol, visibleAssets],
   );
   const selectedHistory = selected?.symbol ? history.symbols?.[selected.symbol] : undefined;
+  const chooseAsset = (symbol?: string) => {
+    if (!symbol) return;
+    setSelectedSymbol(symbol);
+    setRecentAssetIds((current) => {
+      const next = [symbol, ...current.filter((item) => item !== symbol)].slice(0, 8);
+      window.localStorage.setItem(recentStorageKey, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const syncPins = () => {
+      try {
+        const raw = window.localStorage.getItem(pinStorageKey);
+        const pins = raw ? JSON.parse(raw) as PinConfig[] : defaultPins;
+        setPinnedAssetIds((Array.isArray(pins) ? pins : defaultPins).filter((pin) => pin.type === "asset").map((pin) => pin.id));
+      } catch {
+        setPinnedAssetIds(defaultPins.filter((pin) => pin.type === "asset").map((pin) => pin.id));
+      }
+    };
+    const rawRecent = window.localStorage.getItem(recentStorageKey);
+    if (rawRecent) {
+      try {
+        const parsed = JSON.parse(rawRecent) as string[];
+        if (Array.isArray(parsed)) setRecentAssetIds(parsed.filter(Boolean));
+      } catch {
+        setRecentAssetIds([]);
+      }
+    }
+    syncPins();
+    window.addEventListener("macro-watch:pins-changed", syncPins);
+    window.addEventListener("storage", syncPins);
+    return () => {
+      window.removeEventListener("macro-watch:pins-changed", syncPins);
+      window.removeEventListener("storage", syncPins);
+    };
+  }, [defaultPins]);
 
   return (
     <>
@@ -33,7 +91,7 @@ export function MarketsClient({ assets, history, defaultPins = [] }: { assets: A
             <h2 className="mt-2 text-2xl font-semibold text-white">Market workbench</h2>
             <p className="mt-1 text-sm text-slate-400">Browse macro-relevant assets, then open a focused detail view when needed.</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex max-h-28 flex-wrap gap-2 overflow-y-auto pr-1">
             {groups.map((item) => (
               <button
                 key={item}
@@ -62,10 +120,47 @@ export function MarketsClient({ assets, history, defaultPins = [] }: { assets: A
               <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">{t("change")}</p><p className={`mt-1 text-xl ${typeof selected?.change === "number" && selected.change < 0 ? "text-loss" : "text-gain"}`}>{formatPercent(selected?.change)}</p></div>
             </div>
           </div>
-          <LightweightChart market={selectedHistory?.rows} height={360} unit={selected?.unit} showOverlays />
+          <LightweightChart market={selectedHistory?.rows} height={400} unit={selected?.unit} showOverlays />
         </Panel>
-        <Panel title="Snapshot">
+        <Panel title="Find asset">
           <div className="space-y-4">
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search symbol, name, group, tag"
+              className="w-full rounded border border-line bg-ink px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/50"
+            />
+            <div className="flex flex-wrap gap-2">
+              {quickFilters.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setQuickFilter(item)}
+                  className={`rounded border px-2.5 py-1.5 text-xs font-medium ${quickFilter === item ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-200" : "border-line bg-ink text-slate-400 hover:text-white"}`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <div className="max-h-[360px] space-y-2 overflow-y-auto pr-1">
+              {(visibleAssets.length ? visibleAssets : assets.slice(0, 8)).map((asset) => {
+                const active = asset.symbol === selected?.symbol;
+                return (
+                  <button
+                    key={asset.symbol}
+                    type="button"
+                    onClick={() => chooseAsset(asset.symbol)}
+                    className={`w-full rounded border p-2 text-left transition ${active ? "border-cyan-400/50 bg-cyan-400/10" : "border-line bg-ink hover:border-cyan-400/30"}`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-medium text-white">{asset.symbol}</span>
+                      <span className={typeof asset.change === "number" && asset.change < 0 ? "text-xs text-loss" : "text-xs text-gain"}>{formatPercent(asset.change)}</span>
+                    </div>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">{asset.name ?? "Unavailable"}</p>
+                  </button>
+                );
+              })}
+            </div>
             <StatusBadge label={selected?.status} real={selected?.real_data} />
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Updated</p><p className="mt-1 text-sm text-slate-200">{selected?.latest_date ? formatDate(selected.latest_date) : "Unavailable"}</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">History rows</p><p className="mt-1 text-sm text-slate-200">{selectedHistory?.rows?.length ?? 0}</p></div>
@@ -102,11 +197,11 @@ export function MarketsClient({ assets, history, defaultPins = [] }: { assets: A
                     key={`${asset.symbol}-${index}`}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setSelectedSymbol(asset.symbol ?? "")}
+                    onClick={() => chooseAsset(asset.symbol)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        setSelectedSymbol(asset.symbol ?? "");
+                        chooseAsset(asset.symbol);
                       }
                     }}
                     className={`group rounded-lg border p-1 text-left transition ${active ? "border-cyan-400/50 bg-cyan-400/5" : "border-transparent hover:border-line"}`}
@@ -138,7 +233,7 @@ export function MarketsClient({ assets, history, defaultPins = [] }: { assets: A
                         <td className="text-slate-400">{asset.latest_date ? formatDate(asset.latest_date) : "N/A"}</td>
                         <td><StatusBadge label={asset.status} real={asset.real_data} /></td>
                         <td className="w-32"><Sparkline rows={history.symbols?.[asset.symbol ?? ""]?.rows} positive={(asset.change ?? 0) >= 0} /></td>
-                        <td><button type="button" onClick={() => setSelectedSymbol(asset.symbol ?? "")} className="rounded border border-line px-2 py-1 text-xs text-slate-300 hover:bg-panel hover:text-white">{active ? "Selected" : "Select"}</button></td>
+                        <td><button type="button" onClick={() => chooseAsset(asset.symbol)} className="rounded border border-line px-2 py-1 text-xs text-slate-300 hover:bg-panel hover:text-white">{active ? "Selected" : "Select"}</button></td>
                       </tr>
                     );
                   })}

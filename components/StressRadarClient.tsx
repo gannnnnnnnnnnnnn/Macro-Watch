@@ -42,7 +42,7 @@ export function StressRadarClient({
       </div>
       <div className={`grid gap-4 ${compact ? "" : "xl:grid-cols-[360px_1fr]"}`}>
         <div className="rounded-lg border border-line bg-ink p-4">
-          <svg viewBox="0 0 292 292" className={`mx-auto w-full ${compact ? "h-[220px] max-w-[260px]" : "h-[330px] max-w-[360px]"}`} role="img" aria-label="Partial stress radar">
+          <svg viewBox="0 0 292 292" className={`mx-auto w-full ${compact ? "h-[260px] max-w-[300px]" : "h-[330px] max-w-[360px]"}`} role="img" aria-label="Partial stress radar">
             {[0.25, 0.5, 0.75, 1].map((scale) => (
               <polygon key={scale} points={radarPoints(bucketDefs.map(() => scale * 100), 140, 140, 92).join(" ")} fill="none" stroke="rgba(148, 163, 184, 0.14)" />
             ))}

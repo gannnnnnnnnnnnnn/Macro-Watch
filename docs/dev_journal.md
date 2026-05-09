@@ -181,3 +181,13 @@ Append-only lightweight project journal.
 - notes/risks: Generated coverage remained 56/56 enabled assets and 34/34 enabled indicators locally. Remaining pipeline warnings are expected skeleton/context warnings: pending stress placeholders lack 5Y percentile context and the leverage bucket has no real signal coverage. Generated JSON files remain ignored and unstaged.
 - next: User visual/review approval for PR #3, then merge when ready.
 - commit hash if available: Pending.
+
+## 2026-05-09 22:54 Australia/Melbourne
+
+- task: Phase 2.6 research navigation and discovery.
+- files changed: `components/MarketsClient.tsx`, `components/StressRadarClient.tsx`, `components/Cockpit.tsx`, `components/PinsClient.tsx`, `app/page.tsx`, `app/macro/page.tsx`, `app/stress/page.tsx`, `app/indicators/[id]/page.tsx`, `lib/format.ts`, `lib/data.ts`, `docs/current_state.md`, `docs/roadmap.md`, `docs/dev_journal.md`.
+- what changed: Tagged current `main` as `v0.4-macro-signal-evidence-foundation`, started `feature/research-navigation-discovery`, added asset search plus Core/Pinned/Recent quick filters to Markets, moved the compact asset discovery list near the selected chart, made group filters less likely to overflow, clarified macro change labels to `Last obs` and `1Y`, formatted rate deltas as percentage points, and made the Dashboard stress radar preview slightly larger.
+- validation: Initial `npm run build` passed; `npm run data:refresh` passed and refreshed local generated market, macro, stress, coverage, signal, evidence, stress engine, and history JSON; final `npm run build` passed; `npm run qa:routes` passed with HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, `/library`, and `/data-lab`.
+- notes/risks: No new data sources, pipeline changes, stress scores, AI, Trader Reader, Cycle Atlas, backend, database, or auth work was added. Generated JSON files remain ignored and unstaged.
+- next: Open Phase 2.6 PR for visual review, especially `/markets`, `/macro`, Dashboard stress preview, and mobile Markets filters.
+- commit hash if available: Pending.

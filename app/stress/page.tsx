@@ -16,7 +16,7 @@ function value(indicator: Indicator | undefined) {
 }
 
 function detail(indicator: Indicator | undefined, fallback = "context only") {
-  return typeof indicator?.delta === "number" ? `Δ previous ${formatDelta(indicator.delta, indicator.unit ?? "")} · ${typeof indicator.one_year_delta === "number" ? `1Y change ${formatDelta(indicator.one_year_delta, indicator.unit ?? "")}` : fallback}` : indicator?.latest_date ?? fallback;
+  return typeof indicator?.delta === "number" ? `Last obs ${formatDelta(indicator.delta, indicator.unit ?? "")} · ${typeof indicator.one_year_delta === "number" ? `1Y ${formatDelta(indicator.one_year_delta, indicator.unit ?? "")}` : fallback}` : indicator?.latest_date ?? fallback;
 }
 
 export default function StressPage() {
