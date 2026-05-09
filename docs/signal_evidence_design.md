@@ -49,13 +49,15 @@ Evidence cards are not AI prose, notes, news summaries, or article ingestion.
 
 ## Stress Engine Relationship
 
-The stress engine consumes signal cards, not vibes. The Phase 2.5 `stress_engine.json` file is a skeleton that groups relevant signal cards by bucket and keeps composite stress disabled.
+The stress engine consumes signal cards, not vibes. Phase 2.7 upgrades `stress_engine.json` from a skeleton into a transparent diagnosis layer with bucket severity, momentum, drivers, counter-evidence, watch items, and a light confirmation matrix.
+
+Severity is context-only and based on available signal-card percentiles. Momentum is derived from recent signal-card changes only when directionality is available. Driver and counter-evidence text is mechanical and auditable. The confirmation matrix is a relationship map, not a composite model.
 
 AI can later read signal, evidence, and stress outputs, but it should cite evidence and should not invent scores, missing data, or certainty.
 
 ## Future Modules
 
-- Stress Engine can use signal cards for transparent bucket context.
+- Stress Engine can use signal cards for transparent bucket context and diagnosis.
 - Cycle Atlas can later use signal/evidence history to compare macro phases.
 - Trader Reader can later create article/claim evidence cards, but ingestion is not implemented now.
 - AI Analyst can later summarize evidence cards with citations, but should not create hidden calculations.
@@ -64,5 +66,5 @@ AI can later read signal, evidence, and stress outputs, but it should cite evide
 
 - No buy/sell signals.
 - No macro regime calls.
-- No composite stress score until coverage and directionality are reviewed.
+- No composite stress score until coverage, directionality, and validation are reviewed.
 - No news scraping, PDF ingestion, or manual evidence editing in this phase.

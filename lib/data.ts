@@ -21,6 +21,7 @@ import type {
   SignalCards,
   SourceName,
   StressEngine,
+  StressEngineBucket,
   StressIndicators,
   MacroIndicators,
 } from "./types";
@@ -225,6 +226,24 @@ export function getEvidenceCards() {
 
 export function getStressEngine() {
   return choose<StressEngine>("stress_engine.json", (d) => hasArray(d.buckets)).data;
+}
+
+export function stressBucketById(id: string, engine = getStressEngine()): StressEngineBucket | undefined {
+  const normalized = id.toLowerCase();
+  return engine.buckets?.find((bucket) => bucket.id?.toLowerCase() === normalized || bucket.label?.toLowerCase() === normalized);
+}
+
+export function stressDriversForBucket(id: string, engine = getStressEngine()) {
+  return stressBucketById(id, engine)?.drivers ?? [];
+}
+
+export function stressEvidenceForBucket(id: string, engine = getStressEngine()) {
+  const bucket = stressBucketById(id, engine);
+  return {
+    drivers: bucket?.drivers ?? [],
+    counterEvidence: bucket?.counter_evidence ?? [],
+    watchItems: bucket?.watch_items ?? [],
+  };
 }
 
 export function signalCardsForBucket(bucket: string) {

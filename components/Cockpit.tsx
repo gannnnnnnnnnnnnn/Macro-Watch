@@ -26,9 +26,9 @@ export function ShellTitle({ title, eyebrow, source }: { title: string; eyebrow?
   );
 }
 
-export function Panel({ children, title }: { children: React.ReactNode; title?: string }) {
+export function Panel({ children, title, className = "" }: { children: React.ReactNode; title?: string; className?: string }) {
   return (
-    <section className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+    <section className={`rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20 ${className}`}>
       {title ? <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-300">{title}</h2> : null}
       {children}
     </section>

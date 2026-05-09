@@ -2,26 +2,115 @@
   "source": "mock",
   "version": "stress-engine-v1",
   "generated_at": "2026-05-01T00:00:00Z",
-  "method": "transparent_context_model_skeleton",
+  "method": "transparent_context_model_v1",
   "status": "mock",
-  "warnings": ["Mock stress engine skeleton. Run npm run data:refresh for generated context."],
+  "warnings": ["Mock Stress Engine v1 data. Run npm run data:refresh for generated context."],
   "buckets": [
     {
       "id": "credit",
       "label": "Credit",
       "status": "partial",
       "context_percentile": 0.72,
-      "coverage": 0.25,
-      "confidence": "low",
-      "indicators": [{"id": "DGS10", "label": "10Y Treasury yield", "href": "/indicators/DGS10", "percentile_5y": 0.72, "status": "mock"}],
-      "missing_candidate_indicators": ["HY OAS", "BBB OAS"],
+      "severity": "elevated",
+      "severity_note": "Severity is based on available signal-card percentiles only. It is not a full stress score.",
+      "momentum": "tightening",
+      "momentum_note": "Momentum is derived from recent signal-card changes where directionality is available.",
+      "coverage": 0.4,
+      "wired_coverage": 0.66,
+      "candidate_coverage": 0.4,
+      "coverage_note": "wired_coverage uses currently wired signal cards; candidate_coverage also includes missing candidate indicators.",
+      "confidence": "medium",
+      "drivers": [
+        {
+          "source_id": "BAMLH0A0HYM2",
+          "label": "High yield OAS",
+          "href": "/indicators/BAMLH0A0HYM2",
+          "reason": "5Y percentile elevated and recent change tightening.",
+          "percentile_5y": 0.72,
+          "rolling_change_1m": 0.22,
+          "status": "mock"
+        }
+      ],
+      "counter_evidence": [
+        {
+          "source_id": "LQD",
+          "label": "LQD",
+          "href": "/assets/LQD",
+          "reason": "Available context is low or not confirming.",
+          "percentile_5y": 0.32,
+          "status": "mock"
+        }
+      ],
+      "watch_items": [
+        {
+          "type": "coverage",
+          "message": "Coverage is thin.",
+          "severity": "watch"
+        }
+      ],
+      "indicators": [
+        {
+          "id": "BAMLH0A0HYM2",
+          "label": "High yield OAS",
+          "href": "/indicators/BAMLH0A0HYM2",
+          "percentile_5y": 0.72,
+          "rolling_change_1m": 0.22,
+          "rolling_change_3m": 0.51,
+          "trend": "rising",
+          "acceleration": "flat",
+          "directionality": "higher_is_tighter",
+          "status": "mock",
+          "real_data": false
+        }
+      ],
+      "missing_candidate_indicators": ["BBB OAS", "leveraged loan spreads"],
       "warnings": [],
       "directionality_notes": "Context only; directionality must be reviewed before any composite model.",
-      "interpretation_boundary": "Stress engine skeleton only. Not a final score and not trading advice."
+      "interpretation_boundary": "Stress Engine v1 diagnosis layer. Not a final score, not a regime model, and not trading advice."
+    },
+    {
+      "id": "banking",
+      "label": "Banking",
+      "status": "pending",
+      "context_percentile": null,
+      "severity": "unknown",
+      "severity_note": "Severity is based on available signal-card percentiles only. It is not a full stress score.",
+      "momentum": "unknown",
+      "momentum_note": "Momentum is derived from recent signal-card changes where directionality is available.",
+      "coverage": 0,
+      "wired_coverage": 0,
+      "candidate_coverage": 0,
+      "coverage_note": "wired_coverage uses currently wired signal cards; candidate_coverage also includes missing candidate indicators.",
+      "confidence": "low",
+      "drivers": [],
+      "counter_evidence": [],
+      "watch_items": [
+        {
+          "type": "missing_data",
+          "message": "No real signal cards wired.",
+          "severity": "warning"
+        }
+      ],
+      "indicators": [],
+      "missing_candidate_indicators": ["KRE", "XLF", "bank deposits", "discount window"],
+      "warnings": ["Banking bucket has no real signal cards yet."],
+      "directionality_notes": "Context only; directionality must be reviewed before any composite model.",
+      "interpretation_boundary": "Stress Engine v1 diagnosis layer. Not a final score, not a regime model, and not trading advice."
     }
   ],
+  "confirmation": {
+    "pairs": [
+      {
+        "id": "credit_vs_volatility",
+        "label": "Credit vs Volatility",
+        "status": "insufficient",
+        "summary": "Insufficient available context for comparison."
+      }
+    ],
+    "warnings": []
+  },
   "composite": {
     "available": false,
-    "reason": "Composite not enabled until bucket coverage and directionality are reviewed."
+    "reason": "Composite not enabled until bucket coverage, directionality, and validation are reviewed."
   }
 }

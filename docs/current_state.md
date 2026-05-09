@@ -2,7 +2,7 @@
 
 ## Current phase
 
-v0.4 Macro Coverage and Signal Evidence Foundation has been merged to `main` and tagged as `v0.4-macro-signal-evidence-foundation`. The current branch is `feature/research-navigation-discovery` for Phase 2.6 Research Navigation and Discovery.
+v0.5 Research Navigation and Discovery has been merged to `main` and tagged as `v0.5-research-navigation-discovery`. The current branch is `feature/stress-engine-v1` for Phase 2.7 Stress Engine v1 and Research Diagnostics.
 
 ## Current runnable path
 
@@ -21,7 +21,8 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 - OpenBB/yfinance pipeline reads `config/assets.json` and writes expanded market snapshot/history with a longer market-history window.
 - FRED pipeline reads `config/indicators.json`, writes macro/stress data, and adds `indicator_history.json` for charting.
 - Phase 2.4/2.5 expanded the asset and FRED catalogs, added generated/mock coverage summary, generated/mock signal cards, generated/mock evidence cards, and a generated/mock stress engine skeleton.
-- Phase 2.6 improves research navigation and display ergonomics after the expanded data coverage, without adding new data sources or models.
+- Phase 2.6 improved research navigation and display ergonomics after the expanded data coverage, without adding new data sources or models.
+- Phase 2.7 upgrades `stress_engine.json` into a context-only diagnosis layer with severity, momentum, drivers, counter-evidence, watch items, and confirmation pairs while keeping composite stress disabled.
 - `/library` provides a read-only Evidence Library for deterministic evidence references.
 - Data Lab shows catalog counts, generated file status, chart data status, provider status, warnings, local refresh commands, and the `npm run data:refresh` workflow.
 
@@ -31,7 +32,7 @@ Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON
 
 ## Current data contract
 
-Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, `indicator_history.json`, `coverage_summary.json`, `signal_cards.json`, `evidence_cards.json`, `stress_engine.json`, and optional `pipeline_status.json`. Catalog inputs live in `config/assets.json`, `config/indicators.json`, and `config/pins.json`. Chart components use local generated/mock JSON only; generated market history is intended to support multi-year chart ranges.
+Frontend consumes `market_snapshot.json`, `market_history.json`, `macro_indicators.json`, `stress_indicators.json`, `indicator_history.json`, `coverage_summary.json`, `signal_cards.json`, `evidence_cards.json`, `stress_engine.json`, and optional `pipeline_status.json`. Catalog inputs live in `config/assets.json`, `config/indicators.json`, and `config/pins.json`. Chart components use local generated/mock JSON only; generated market history is intended to support multi-year chart ranges. Stress Engine v1 consumes signal cards and remains a diagnosis layer, not a composite score.
 
 ## Out of scope
 
@@ -39,4 +40,4 @@ Trader Reader ingestion, AI chat, thesis validation, broker integration, deploym
 
 ## Next phase candidates
 
-Next candidates: visual review for the research navigation layer, manual notes, watchlist preference editing, richer indicator detail ergonomics, and later Trader Reader claim ingestion.
+Next candidates: visual review for Stress Engine v1 diagnostics, richer stress bucket detail ergonomics, manual notes, watchlist preference editing, and later Trader Reader claim ingestion.

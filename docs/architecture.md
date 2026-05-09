@@ -46,9 +46,9 @@ Phase 2.4/2.5 adds generated/mock foundation files:
 - `coverage_summary.json` summarizes enabled/real/unavailable asset and indicator coverage.
 - `signal_cards.json` stores transformed observations from local assets and indicators.
 - `evidence_cards.json` stores deterministic evidence references generated from signal cards.
-- `stress_engine.json` groups signal cards into transparent stress buckets while leaving composite stress unavailable.
+- `stress_engine.json` consumes signal cards and stores Stress Engine v1 diagnosis fields: bucket severity, momentum, drivers, counter-evidence, watch items, confirmation pairs, and disabled composite status.
 
-These files extend the generated-first/mock-fallback contract. They do not introduce a database, backend, AI analyst, news ingestion, or trading-signal layer.
+These files extend the generated-first/mock-fallback contract. Stress Engine v1 remains context-only and auditable; it does not introduce a database, backend, AI analyst, news ingestion, composite stress score, or trading-signal layer.
 
 Missing fields must render as unavailable instead of crashing the UI.
 
