@@ -15,7 +15,6 @@ CONFIRMATION_PAIRS = [
     ("credit_vs_volatility", "Credit vs Volatility", "credit", "volatility"),
     ("credit_vs_banking", "Credit vs Banking", "credit", "banking"),
     ("liquidity_vs_treasury", "Liquidity vs Treasury", "liquidity", "treasury"),
-    ("household_vs_growth", "Household vs Growth", "household", "growth"),
     ("leverage_vs_volatility", "Leverage vs Volatility", "leverage", "volatility"),
 ]
 

@@ -98,6 +98,7 @@ Status: in progress on `feature/stress-engine-v1`.
 - `/stress` diagnosis UI and Data Lab stress-engine diagnostics
 - Composite stress remains disabled
 - No AI analyst, Trader Reader ingestion, news scraping, full score, or trading signals
+- Future stress UX may add dedicated bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`, similar to asset and indicator detail pages. Not implemented in this PR.
 
 ## Phase 2: Daily Use Layer
 
