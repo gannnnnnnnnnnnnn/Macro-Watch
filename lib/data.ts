@@ -4,6 +4,7 @@ import assetsConfig from "@/config/assets.json";
 import indicatorsConfig from "@/config/indicators.json";
 import pinsConfig from "@/config/pins.json";
 import { assetHref, indicatorHref } from "./routes";
+import { formatPercent } from "./format";
 import type {
   Asset,
   AssetConfig,
@@ -195,9 +196,9 @@ export function resolveIndicator(idOrName: string, macro?: MacroIndicators, stre
     real_data: Boolean(item?.real_data),
     previous_value: item?.previous_value ?? null,
     delta: item?.delta ?? null,
-    delta_label: item?.delta_label ?? "Δ previous unavailable",
+    delta_label: item?.delta_label ?? "Last obs unavailable",
     one_year_delta: item?.one_year_delta ?? null,
-    one_year_delta_label: item?.one_year_delta_label ?? "1Y change unavailable",
+    one_year_delta_label: item?.one_year_delta_label ?? "1Y unavailable",
     href: indicatorHref(id),
   };
 }
@@ -253,7 +254,7 @@ export function resolvePinnedItems(): ResolvedResearchItem[] {
         latest_date: asset.latest_date,
         status: asset.status,
         real_data: asset.real_data,
-        delta_label: typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "Δ previous unavailable",
+        delta_label: typeof asset.change === "number" ? formatPercent(asset.change) : "Last obs unavailable",
         note: "Market watch item; context only, not scored.",
         href: assetHref(asset.symbol ?? pin.id),
       };
@@ -291,7 +292,7 @@ export function resolveAllResearchItems(): ResolvedResearchItem[] {
       latest_date: asset.latest_date,
       status: asset.status,
       real_data: asset.real_data,
-      delta_label: typeof asset.change === "number" ? `${asset.change > 0 ? "+" : ""}${asset.change.toFixed(2)}%` : "Δ previous unavailable",
+      delta_label: typeof asset.change === "number" ? formatPercent(asset.change) : "Last obs unavailable",
       note: "Market watch item; context only, not scored.",
       href: assetHref(asset.symbol ?? config.symbol),
     };

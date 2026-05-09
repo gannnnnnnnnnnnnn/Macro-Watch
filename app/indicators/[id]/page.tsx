@@ -27,8 +27,8 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
       </div>
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="Latest" value={formatValueWithUnit(indicator.value, indicator.unit)} detail={indicator.latest_date ? formatDate(indicator.latest_date) : "Run pipeline"} />
-        <MetricTile label="Δ previous" value={typeof indicator.delta === "number" ? formatDelta(indicator.delta, indicator.unit ?? "") : indicator.delta_label ?? "Unavailable"} detail="context only" />
-        <MetricTile label="1Y change" value={indicator.one_year_delta_label ?? "Unavailable"} detail="context only" />
+        <MetricTile label="Last obs" value={typeof indicator.delta === "number" ? formatDelta(indicator.delta, indicator.unit ?? "") : indicator.delta_label ?? "Unavailable"} detail="context only" />
+        <MetricTile label="1Y" value={indicator.one_year_delta_label ?? "Unavailable"} detail="context only" />
         <MetricTile label="Series" value={indicator.series_id ?? indicator.id ?? "Local JSON"} detail={indicator.provider ?? "Generated JSON"} />
       </div>
       <div className="grid gap-4 xl:grid-cols-[1fr_0.55fr]">

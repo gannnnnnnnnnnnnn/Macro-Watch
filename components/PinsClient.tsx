@@ -159,7 +159,7 @@ export function PinnedWorkbench({
             </div>
             <p className="mt-3 text-2xl font-semibold text-white">{formatValueWithUnit(pin.value, pin.unit)}</p>
             <p className="mt-2 text-xs text-slate-400">
-              {pin.type === "asset" ? pin.delta_label ?? "context only" : pin.delta_label ?? "Δ previous unavailable"}
+              {pin.type === "asset" ? pin.delta_label ?? "context only" : pin.delta_label ?? "Last obs unavailable"}
             </p>
             <p className="mt-2 text-xs text-slate-500">{pin.latest_date ? formatDate(pin.latest_date) : t("unavailable")}</p>
             <Link href={pin.href} className="mt-3 inline-flex rounded border border-line px-2.5 py-1.5 text-xs text-slate-300 hover:bg-panel hover:text-white">

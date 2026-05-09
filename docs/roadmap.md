@@ -56,7 +56,7 @@ Status: merged to `main` and tagged `v0.3-stress-engine-foundation`.
 
 ## Phase 2.4: Macro Data Coverage Pack
 
-Status: in progress on `feature/macro-signal-evidence-foundation`.
+Status: merged to `main` and tagged `v0.4-macro-signal-evidence-foundation`.
 
 - Broader config-driven macro asset universe
 - Broader FRED/derived macro indicator catalog
@@ -66,13 +66,25 @@ Status: in progress on `feature/macro-signal-evidence-foundation`.
 
 ## Phase 2.5: Signal and Evidence Foundation
 
-Status: in progress on `feature/macro-signal-evidence-foundation`.
+Status: merged to `main` and tagged `v0.4-macro-signal-evidence-foundation`.
 
 - Mechanical signal cards from local market/macro/stress data
 - Deterministic evidence cards from signal cards
 - Thin `stress_engine.json` skeleton consuming signal cards
 - Read-only Evidence Library route
 - No AI analyst, Trader Reader ingestion, news scraping, full scoring model, or trading signals
+
+## Phase 2.6: Research Navigation and Discovery
+
+Status: in progress on `feature/research-navigation-discovery`.
+
+- Faster Markets discovery after expanded asset coverage
+- Asset search by symbol, name, group, proxy, and tags
+- Group filters plus quick filters for Core, Pinned, and Recent assets
+- Compact asset list near the selected chart
+- Clearer macro change labels and number formatting
+- Slightly larger Dashboard stress radar preview
+- No new data sources, pipeline changes, stress scores, AI, or Trader Reader work
 
 ## Phase 2: Daily Use Layer
 

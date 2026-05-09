@@ -53,7 +53,9 @@ export function formatDelta(value: number | string | null | undefined, unit = ""
   const number = numeric(value);
   if (number === null) return "Unavailable";
   const sign = number > 0 ? "+" : "";
-  const suffix = unit ? ` ${unit}` : "";
+  const cleanUnit = unit.trim();
+  const displayUnit = cleanUnit === "%" ? "pp" : cleanUnit;
+  const suffix = displayUnit ? ` ${displayUnit}` : "";
   return `${sign}${formatNumber(number, maximumFractionDigits)}${suffix}`;
 }
 
@@ -87,6 +89,7 @@ export function formatValueWithUnit(value: number | string | null | undefined, u
   const cleanUnit = (unit ?? "").trim();
   if (!cleanUnit) return formatNumber(value, 2);
   if (cleanUnit === "%") return formatRate(value);
+  if (cleanUnit === "pp") return `${formatNumber(value, 2)} pp`;
   if (/percent|rate|spread|yield/i.test(cleanUnit)) return `${formatNumber(value, 2)} ${cleanUnit}`;
   if (/usd|millions|billions/i.test(cleanUnit)) return formatLargeMacroValue(value, cleanUnit);
   return `${formatNumber(value, 3)} ${cleanUnit}`;
