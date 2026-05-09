@@ -12,6 +12,11 @@ export default function DataLabPage() {
   const fredEntries: [string, { status?: string; provider?: string | null; latest_date?: string | null; real_data?: boolean }][] =
     Object.entries(pipelineStatus.fred_series ?? {});
   const files = fileEntries.length ? fileEntries : [["No files", { status: "unavailable", real_data: false, warnings: [] }]] as [string, { status?: string; provider?: string | null; real_data?: boolean; warnings?: string[] }][];
+  const stressBuckets = stressEngine.buckets ?? [];
+  const stressDrivers = stressBuckets.reduce((sum, bucket) => sum + (bucket.drivers?.length ?? 0), 0);
+  const stressCounters = stressBuckets.reduce((sum, bucket) => sum + (bucket.counter_evidence?.length ?? 0), 0);
+  const stressWatchItems = stressBuckets.reduce((sum, bucket) => sum + (bucket.watch_items?.length ?? 0), 0);
+  const stressCoveredBuckets = stressBuckets.filter((bucket) => (bucket.wired_coverage ?? 0) > 0).length;
 
   return (
     <>
@@ -30,6 +35,8 @@ export default function DataLabPage() {
         <MetricTile label="Indicator coverage" value={`${coverage.indicators?.real ?? 0}/${coverage.indicators?.enabled ?? 0}`} detail="real / enabled indicators" />
         <MetricTile label="Signal cards" value={signalCards.cards?.length ?? 0} detail="mechanical observations; no judgments" />
         <MetricTile label="Evidence cards" value={evidenceCards.cards?.length ?? 0} detail="deterministic references; no AI prose" />
+        <MetricTile label="Stress drivers" value={stressDrivers} detail="driver rows in stress_engine.json" />
+        <MetricTile label="Stress confirmation" value={stressEngine.confirmation?.pairs?.length ?? 0} detail="pair checks, no composite" />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title="Refresh local data">
@@ -90,7 +97,13 @@ export default function DataLabPage() {
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Evidence cards</p><p className="mt-1 text-2xl font-semibold text-white">{evidenceCards.cards?.length ?? 0}</p><p className="mt-1 text-xs text-slate-500">auditable references</p></div>
             <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Stress engine</p><p className="mt-1 text-2xl font-semibold text-white">{stressEngine.buckets?.length ?? 0}</p><p className="mt-1 text-xs text-slate-500">{stressEngine.composite?.available ? "composite available" : "composite unavailable"}</p></div>
           </div>
-          <p className="mt-3 text-sm text-slate-400">Signal cards are not trading signals. Evidence cards are not AI analysis. The stress engine file is a skeleton and keeps composite stress disabled.</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Buckets with coverage</p><p className="mt-1 text-xl font-semibold text-white">{stressCoveredBuckets}/{stressBuckets.length}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Counter-evidence</p><p className="mt-1 text-xl font-semibold text-white">{stressCounters}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Watch items</p><p className="mt-1 text-xl font-semibold text-white">{stressWatchItems}</p></div>
+            <div className="rounded border border-line bg-ink p-3"><p className="text-xs text-slate-500">Composite</p><p className="mt-1 text-xl font-semibold text-white">{stressEngine.composite?.available ? "available" : "disabled"}</p></div>
+          </div>
+          <p className="mt-3 text-sm text-slate-400">Signal cards are not trading signals. Evidence cards are not AI analysis. Stress Engine v1 is a mechanical diagnosis layer and keeps composite stress disabled.</p>
         </Panel>
         <Panel title="Catalog summary">
           <div className="grid gap-3 sm:grid-cols-2">

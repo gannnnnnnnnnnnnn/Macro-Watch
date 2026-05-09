@@ -21,7 +21,7 @@ function detail(item: Indicator | undefined, fallback = "context only") {
 }
 
 export default function Home() {
-  const { market, marketHistory, indicatorHistory, macro, stress, pipelineStatus, coverage, signalCards, evidenceCards } = getCockpitData();
+  const { market, marketHistory, indicatorHistory, macro, stress, stressEngine, pipelineStatus, coverage, signalCards, evidenceCards } = getCockpitData();
   const assets = market.assets ?? [];
   const bySymbol = Object.fromEntries(assets.map((asset) => [asset.symbol, asset]));
   const freshness = getFreshness(pipelineStatus.generated_at);
@@ -77,7 +77,7 @@ export default function Home() {
           </div>
           <Link href="/markets" className="mt-4 inline-flex rounded border border-line px-3 py-2 text-sm text-slate-300 hover:bg-ink hover:text-white">Open Markets</Link>
         </Panel>
-        <StressRadarClient stress={stress} indicatorHistory={indicatorHistory} marketHistory={marketHistory} compact />
+        <StressRadarClient stress={stress} indicatorHistory={indicatorHistory} marketHistory={marketHistory} stressEngine={stressEngine} compact />
       </div>
 
       <div className="mt-6">

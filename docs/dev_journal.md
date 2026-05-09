@@ -191,3 +191,13 @@ Append-only lightweight project journal.
 - notes/risks: No new data sources, pipeline changes, stress scores, AI, Trader Reader, Cycle Atlas, backend, database, or auth work was added. Generated JSON files remain ignored and unstaged.
 - next: Open Phase 2.6 PR for visual review, especially `/markets`, `/macro`, Dashboard stress preview, and mobile Markets filters.
 - commit hash if available: Pending.
+
+## 2026-05-09 23:18 Australia/Melbourne
+
+- task: Phase 2.7 Stress Engine v1 diagnosis layer.
+- files changed: `scripts/openbb_pipeline/build_stress_engine.py`, `data/mock/stress_engine.json`, `lib/types.ts`, `lib/data.ts`, `components/StressRadarClient.tsx`, `components/Cockpit.tsx`, `app/page.tsx`, `app/stress/page.tsx`, `app/data-lab/page.tsx`, `docs/stress_engine_design.md`, `docs/signal_evidence_design.md`, `docs/current_state.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/dev_journal.md`.
+- what changed: Merged PR #4 with a normal merge commit, tagged `v0.5-research-navigation-discovery`, then started `feature/stress-engine-v1`. Upgraded `stress_engine.json` from a skeleton into a context-only diagnosis layer with bucket severity, momentum, drivers, counter-evidence, watch items, richer coverage fields, and a cross-bucket confirmation matrix. Updated `/stress` with diagnosis cards, bucket detail sections, and confirmation pairs; updated Data Lab with stress-engine diagnostics. Composite stress remains disabled.
+- validation: PR #4 validation passed with `npm run build`, `npm run data:refresh`, final `npm run build`, and `npm run qa:routes`. Phase 2.7 validation passed with `npm run build`, `npm run data:refresh`, final `npm run build`, and `npm run qa:routes`. Route smoke returned HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/stress`, `/library`, and `/data-lab`.
+- notes/risks: Generated Stress Engine v1 produced 7 buckets and 5 confirmation pairs locally; composite remains unavailable by design. Severity is context percentile only, momentum depends on available directionality, and driver/counter-evidence text is mechanical. No AI, Trader Reader, news scraping, SQLite/database, backend, Cycle Atlas, trading signals, or full stress score was added. Generated JSON files remain ignored and unstaged.
+- next: Open Phase 2.7 PR for review, with visual attention on `/stress` and `/data-lab`.
+- commit hash if available: Pending.

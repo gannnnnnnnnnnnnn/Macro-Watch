@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { IndicatorList, StatusBadge } from "@/components/Cockpit";
-import type { Indicator, IndicatorHistory, MarketHistory, StressIndicators } from "@/lib/types";
+import type { Indicator, IndicatorHistory, MarketHistory, StressEngine, StressIndicators } from "@/lib/types";
 
 const bucketDefs = [
   { key: "Volatility stress", label: "Volatility", axis: "Vol", ids: ["VIX"], market: "VIX" },
@@ -19,15 +19,17 @@ export function StressRadarClient({
   stress,
   indicatorHistory,
   marketHistory,
+  stressEngine,
   compact = false,
 }: {
   stress: StressIndicators;
   indicatorHistory: IndicatorHistory;
   marketHistory: MarketHistory;
+  stressEngine?: StressEngine;
   compact?: boolean;
 }) {
   const [selected, setSelected] = useState(bucketDefs[0].key);
-  const buckets = useMemo(() => bucketDefs.map((bucket) => buildBucket(bucket, stress, indicatorHistory, marketHistory)), [indicatorHistory, marketHistory, stress]);
+  const buckets = useMemo(() => bucketDefs.map((bucket) => buildBucket(bucket, stress, indicatorHistory, marketHistory, stressEngine)), [indicatorHistory, marketHistory, stress, stressEngine]);
   const selectedBucket = buckets.find((bucket) => bucket.key === selected) ?? buckets[0];
   const points = radarPoints(buckets.map((bucket) => bucket.value), 140, 140, 92).join(" ");
 
@@ -123,7 +125,9 @@ function buildBucket(
   stress: StressIndicators,
   indicatorHistory: IndicatorHistory,
   marketHistory: MarketHistory,
+  stressEngine?: StressEngine,
 ) {
+  const engineBucket = stressEngine?.buckets?.find((item) => item.label === bucket.label || item.id === bucket.label.toLowerCase());
   const items = stress.buckets?.[bucket.key] ?? [];
   const values: number[] = [];
   for (const id of bucket.ids) {
@@ -137,9 +141,11 @@ function buildBucket(
     if (typeof latest === "number") values.push(percentile(rows, latest));
   }
   const realItems = items.filter((item) => item.real_data);
-  const value = values.length ? values.reduce((sum, item) => sum + item, 0) / values.length : 0;
-  const status = realItems.length && realItems.length === items.length ? "real" : realItems.length || values.length ? "partial" : "pending";
-  const note = status === "pending" ? "Not wired yet." : `${values.length || realItems.length} context series wired.`;
+  const value = typeof engineBucket?.context_percentile === "number"
+    ? engineBucket.context_percentile * 100
+    : values.length ? values.reduce((sum, item) => sum + item, 0) / values.length : 0;
+  const status = engineBucket?.status ?? (realItems.length && realItems.length === items.length ? "real" : realItems.length || values.length ? "partial" : "pending");
+  const note = engineBucket?.severity ? `${engineBucket.severity} severity · ${engineBucket.momentum ?? "unknown"} momentum.` : status === "pending" ? "Not wired yet." : `${values.length || realItems.length} context series wired.`;
   return { ...bucket, value, status, note, items: items.length ? items : [{ name: bucket.label, status: "pending", note: "Not wired yet.", value: null }] as Indicator[] };
 }
 

@@ -295,16 +295,69 @@ export type StressEngineBucket = {
   label?: string;
   status?: string;
   context_percentile?: number | null;
+  severity?: "low" | "watch" | "elevated" | "high" | "unknown" | string;
+  severity_note?: string;
+  momentum?: "easing" | "tightening" | "flat" | "mixed" | "unknown" | string;
+  momentum_note?: string;
   coverage?: number;
   wired_coverage?: number;
   candidate_coverage?: number;
   coverage_note?: string;
   confidence?: string;
-  indicators?: { id?: string; label?: string; href?: string; percentile_5y?: number | null; status?: string }[];
+  drivers?: StressEngineDriver[];
+  counter_evidence?: StressEngineCounterEvidence[];
+  watch_items?: StressEngineWatchItem[];
+  indicators?: StressEngineIndicator[];
   missing_candidate_indicators?: string[];
   warnings?: string[];
   directionality_notes?: string;
   interpretation_boundary?: string;
+};
+
+export type StressEngineIndicator = {
+  id?: string;
+  label?: string;
+  href?: string;
+  percentile_5y?: number | null;
+  rolling_change_1m?: number | null;
+  rolling_change_3m?: number | null;
+  trend?: string | null;
+  acceleration?: string | null;
+  directionality?: string | null;
+  status?: string;
+  real_data?: boolean;
+};
+
+export type StressEngineDriver = {
+  source_id?: string;
+  label?: string;
+  href?: string;
+  reason?: string;
+  percentile_5y?: number | null;
+  rolling_change_1m?: number | null;
+  status?: string;
+};
+
+export type StressEngineCounterEvidence = {
+  source_id?: string;
+  label?: string;
+  href?: string;
+  reason?: string;
+  percentile_5y?: number | null;
+  status?: string;
+};
+
+export type StressEngineWatchItem = {
+  type?: "coverage" | "missing_data" | "conflict" | "early_warning" | string;
+  message?: string;
+  severity?: "info" | "watch" | "warning" | string;
+};
+
+export type StressEngineConfirmationPair = {
+  id?: string;
+  label?: string;
+  status?: "confirmed" | "divergent" | "insufficient" | string;
+  summary?: string;
 };
 
 export type StressEngine = {
@@ -315,5 +368,6 @@ export type StressEngine = {
   status?: string;
   warnings?: string[];
   buckets?: StressEngineBucket[];
+  confirmation?: { pairs?: StressEngineConfirmationPair[]; warnings?: string[] };
   composite?: { available?: boolean; reason?: string };
 };

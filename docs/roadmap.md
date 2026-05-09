@@ -76,7 +76,7 @@ Status: merged to `main` and tagged `v0.4-macro-signal-evidence-foundation`.
 
 ## Phase 2.6: Research Navigation and Discovery
 
-Status: in progress on `feature/research-navigation-discovery`.
+Status: merged to `main` and tagged `v0.5-research-navigation-discovery`.
 
 - Faster Markets discovery after expanded asset coverage
 - Asset search by symbol, name, group, proxy, and tags
@@ -85,6 +85,20 @@ Status: in progress on `feature/research-navigation-discovery`.
 - Clearer macro change labels and number formatting
 - Slightly larger Dashboard stress radar preview
 - No new data sources, pipeline changes, stress scores, AI, or Trader Reader work
+
+## Phase 2.7: Stress Engine v1 Diagnosis Layer
+
+Status: in progress on `feature/stress-engine-v1`.
+
+- Upgrade `stress_engine.json` from skeleton to diagnosis layer
+- Context-only severity labels from available signal-card percentiles
+- Directionality-aware momentum where recent signal-card changes are usable
+- Mechanical drivers, counter-evidence, and watch items per bucket
+- Light cross-bucket confirmation matrix
+- `/stress` diagnosis UI and Data Lab stress-engine diagnostics
+- Composite stress remains disabled
+- No AI analyst, Trader Reader ingestion, news scraping, full score, or trading signals
+- Future stress UX may add dedicated bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`, similar to asset and indicator detail pages. Not implemented in this PR.
 
 ## Phase 2: Daily Use Layer
 
