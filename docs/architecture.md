@@ -2,6 +2,10 @@
 
 Macro-Watch is intentionally local-first.
 
+## Terminal Shell
+
+v0.7 adds a top-level terminal shell layer. `lib/modules.ts` is the source of truth for active routes and future disabled modules. The left navigation rail renders from that registry, highlights the current module, keeps future modules visible without links, and points users to the Data Source Center for data status.
+
 ## Frontend
 
 Next.js renders the cockpit pages and reads local JSON files on the server. It checks `data/generated` first and falls back to `data/mock` when generated data is missing, invalid, or incomplete.
@@ -17,6 +21,7 @@ Phase 2.1 adds an interactive workbench layer, and Phase 2.2 polishes that layer
 - localStorage pin and language preferences
 - coverage-aware stress radar visualization
 - compact dashboard stress radar preview that links to the full `/stress` page
+- Data Source Center on `/data-lab`
 
 The public TradingView widget remains an optional external reference on asset detail pages; it is not the primary charting path.
 
@@ -52,7 +57,13 @@ These files extend the generated-first/mock-fallback contract. Stress Engine v1 
 
 Missing fields must render as unavailable instead of crashing the UI.
 
-Normal research pages should avoid pipeline-console detail. Data Lab is the diagnostics home for source, provider, freshness, generated/mock, and warning details.
+Normal research pages should avoid pipeline-console detail. Data Source Center is the diagnostics/control-tower home for source, provider, freshness, generated/mock, coverage, output files, refresh workflow, and warning details.
+
+## DataHub-lite
+
+DataHub-lite is a future topic/data contract, not a live service in v0.7. It gives future Dashboard, Markets, Macro, Stress, Evidence Library, Trader Reader, AI Research, and Cycle Atlas modules a shared vocabulary for local data topics such as `asset:snapshot:SPY`, `macro:fred:DGS10`, `stress:bucket:credit`, `signal:card:<id>`, and `evidence:card:<id>`.
+
+The current source of truth remains generated/mock JSON. No database, live pub/sub, backend service, or connector editor is introduced by v0.7.
 
 ## Pipeline
 

@@ -8,6 +8,7 @@ const routes = [
   "/assets/BTC-USD",
   "/indicators/DGS10",
   "/indicators/cpi-yoy",
+  "/macro",
   "/stress",
   "/library",
   "/data-lab",

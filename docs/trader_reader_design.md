@@ -1,6 +1,6 @@
 # Trader Reader Future Design Note
 
-Trader Reader is not implemented in Phase 2.2. This note records a future claim schema so later ingestion work can stay structured and testable.
+This note records a future claim schema so later ingestion work can stay structured and testable.
 
 ## Future Claim Schema
 

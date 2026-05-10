@@ -2,7 +2,7 @@
 
 ## v0.1 Local Macro Cockpit
 
-Status: ready for merge review.
+Status: merged.
 
 - Local-first market cockpit
 - OpenStock/OpenBB-inspired dark UI
@@ -14,67 +14,45 @@ Status: ready for merge review.
 - Markets page selected asset switching
 - Data Lab operating page
 
-## Phase 2.1: Interactive Research Workbench
-
-Status: in PR #1 on `feature/interactive-workbench`.
-
-- Config-driven asset catalog
-- Config-driven macro/FRED indicator catalog
-- Static pinned indicators
-- Asset detail pages
-- Indicator detail pages
-- Local TradingView Lightweight Charts from generated JSON
-- Expanded market and macro data catalog
-- Data Lab catalog/chart status
-
-## Phase 2.2: Product Polish Follow-up
+## v0.2 Interactive Workbench + Product Polish
 
 Status: merged to `main` and tagged `v0.2-interactive-workbench`.
 
-- Research-first information hierarchy with Data Lab as diagnostics home
-- Consistent number/date formatting
-- Explorer-first Markets page
+- Config-driven asset and indicator catalogs
+- Static default pins and localStorage pin controls
+- Asset detail pages
+- Indicator detail pages
+- Local TradingView Lightweight Charts from generated JSON
 - Chart time ranges and lightweight technical overlays
-- Longer market history fetch window
-- localStorage pin management
 - EN / 中文 UI language toggle
 - Coverage-aware stress radar visualization
-- Compact Dashboard stress radar preview
 - Local `npm run data:refresh` workflow
 - Trader Reader future claim schema note only
 
-## Phase 2.3: Stress Engine Foundation
+## v0.3 Stress Engine Foundation
 
 Status: merged to `main` and tagged `v0.3-stress-engine-foundation`.
 
 - Transparent stress engine design doc
-- Explicit current Stress Radar limitations
-- Future `data/generated/stress_engine.json` output contract
+- Explicit Stress Radar limitations
+- Future `stress_engine.json` output contract
 - Bucket coverage, confidence, and directionality concepts
 - Local research store design boundary
 - No full scoring model, AI analyst, database, or Trader Reader ingestion
 
-## Phase 2.4: Macro Data Coverage Pack
+## v0.4 Macro Signal Evidence Foundation
 
 Status: merged to `main` and tagged `v0.4-macro-signal-evidence-foundation`.
 
 - Broader config-driven macro asset universe
 - Broader FRED/derived macro indicator catalog
 - Coverage summary generated/mock data contract
-- Pipeline status coverage counts by asset and indicator group
-- One failed asset or series must not break the full pipeline
-
-## Phase 2.5: Signal and Evidence Foundation
-
-Status: merged to `main` and tagged `v0.4-macro-signal-evidence-foundation`.
-
 - Mechanical signal cards from local market/macro/stress data
 - Deterministic evidence cards from signal cards
 - Thin `stress_engine.json` skeleton consuming signal cards
 - Read-only Evidence Library route
-- No AI analyst, Trader Reader ingestion, news scraping, full scoring model, or trading signals
 
-## Phase 2.6: Research Navigation and Discovery
+## v0.5 Research Navigation and Discovery
 
 Status: merged to `main` and tagged `v0.5-research-navigation-discovery`.
 
@@ -83,12 +61,12 @@ Status: merged to `main` and tagged `v0.5-research-navigation-discovery`.
 - Group filters plus quick filters for Core, Pinned, and Recent assets
 - Compact asset list near the selected chart
 - Clearer macro change labels and number formatting
-- Slightly larger Dashboard stress radar preview
+- Larger Dashboard stress radar preview
 - No new data sources, pipeline changes, stress scores, AI, or Trader Reader work
 
-## Phase 2.7: Stress Engine v1 Diagnosis Layer
+## v0.6 Stress Engine v1 Diagnosis Layer
 
-Status: in progress on `feature/stress-engine-v1`.
+Status: merged to `main` and tagged `v0.6-stress-engine-v1`.
 
 - Upgrade `stress_engine.json` from skeleton to diagnosis layer
 - Context-only severity labels from available signal-card percentiles
@@ -98,28 +76,67 @@ Status: in progress on `feature/stress-engine-v1`.
 - `/stress` diagnosis UI and Data Lab stress-engine diagnostics
 - Composite stress remains disabled
 - No AI analyst, Trader Reader ingestion, news scraping, full score, or trading signals
-- Future stress UX may add dedicated bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`, similar to asset and indicator detail pages. Not implemented in this PR.
 
-## Phase 2: Daily Use Layer
+## v0.7 Terminal Shell + Data Source Center
 
-- Refresh workflow
-- Manual notes
-- Watchlist preferences UI
-- More polished watchlist preferences
-- Richer historical context views
+Status: active.
+
+- Module registry for active and future modules
+- Terminal-style left navigation shell
+- Data Lab route reframed as Data Source Center
+- Product vision doc
+- DataHub-lite design contract
+- Disabled future modules visible without routes
+
+## v0.8 Stress Bucket Detail Pages
+
+Status: planned.
+
+- Dedicated stress bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`
+- Better driver, counter-evidence, and watch-item drilldowns
+- No composite stress score unless separately justified
+
+## v0.9 Evidence-first Analytics Upgrade
+
+Status: planned.
+
+- Richer evidence browsing and filtering
+- Better signal/evidence traceability from research pages
+- Keep evidence deterministic and auditable
+
+## v1.0 Research Workspace MVP
+
+Status: planned.
+
+- Local workspace layout for comparing modules
+- Manual notes and saved research context
+- No heavy dock manager or database by default
+
+## v1.1 AI Mode Selector
+
+Status: planned.
+
+- Future AI modes that explain evidence
+- No opaque hidden scoring or invented conclusions
+
+## v1.2 Trader Reader MVP
+
+Status: planned.
+
+- Structured article and claim ingestion
+- Claim schema grounded in auditable source material
+- No broker actions or trading advice
+
+## v1.3 Research Flow Builder
+
+Status: planned.
+
+- Future flow builder for repeatable research workflows
+- No real node editor until the workflow need is proven
 
 ## Later
 
-- Trader Reader
-- AI-assisted research
-- Thesis validation
-- Broker integration
-- Full macro regime scoring
-
-## Previous v0 scaffold
-
-- Local-first market cockpit
-- OpenStock-inspired dark UI
-- Generated JSON data path
-- Mock JSON fallback
-- OpenBB pipeline skeleton
+- Cycle Atlas
+- More polished watchlist preferences
+- Event calendar/news summaries
+- Broker integration only if product scope changes
