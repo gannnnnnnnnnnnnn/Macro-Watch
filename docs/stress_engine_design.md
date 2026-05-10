@@ -144,6 +144,10 @@ Momentum is directionality-aware where signal cards provide directionality:
 
 Drivers, counter-evidence, and watch items are mechanical lists. They are not AI prose and not recommendations. The confirmation matrix compares selected bucket pairs for alignment or divergence but does not produce a composite score.
 
+## UI Inspection
+
+Stress Engine v1 output can be inspected on `/stress`. Individual buckets can be inspected on `/stress/[bucket]`, such as `/stress/credit` or `/stress/liquidity`. These detail pages are still context-only views of the stored engine output; they do not add a composite score, trading advice, or AI-generated interpretation.
+
 ## Composite Policy
 
 Phase 2.7 keeps composite stress unavailable. Composite stress should remain unavailable until bucket coverage is broad enough, directionality has been reviewed, and missing-data behavior is visible in the output. A future composite should be optional, explainable, and easy to audit from the JSON.

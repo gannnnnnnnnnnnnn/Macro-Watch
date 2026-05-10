@@ -3,6 +3,7 @@ import { IndicatorList, MetricTile, Panel, ShellTitle, StatusBadge } from "@/com
 import { StressRadarClient } from "@/components/StressRadarClient";
 import { getCockpitData, withIndicatorHrefs } from "@/lib/data";
 import { formatDelta, formatValueWithUnit } from "@/lib/format";
+import { stressBucketHref } from "@/lib/stressRoutes";
 import type { Indicator, StressEngineBucket } from "@/lib/types";
 
 const buckets = ["Volatility stress", "Credit stress", "Liquidity stress", "Banking stress", "Household stress", "Leverage stress", "Treasury market stress"];
@@ -25,7 +26,7 @@ function pct(value: number | null | undefined) {
 }
 
 function bucketHref(bucket: StressEngineBucket) {
-  return `#bucket-${bucket.id ?? bucket.label ?? "stress"}`;
+  return stressBucketHref(bucket.id ?? bucket.label ?? "stress");
 }
 
 export default function StressPage() {
@@ -56,7 +57,7 @@ export default function StressPage() {
       <Panel title="Bucket diagnosis" className="mt-4">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {(stressEngine.buckets ?? []).map((bucket) => (
-            <a key={bucket.id ?? bucket.label} href={bucketHref(bucket)} className="rounded border border-line bg-ink p-3 transition hover:border-cyan-400/40">
+            <Link key={bucket.id ?? bucket.label} href={bucketHref(bucket)} className="rounded border border-line bg-ink p-3 transition hover:border-cyan-400/40">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-medium text-white">{bucket.label}</p>
@@ -72,7 +73,8 @@ export default function StressPage() {
                 <span>Drivers: {bucket.drivers?.length ?? 0}</span>
                 <span>Counter: {bucket.counter_evidence?.length ?? 0}</span>
               </div>
-            </a>
+              <p className="mt-3 text-xs font-medium text-cyan-300">View detail</p>
+            </Link>
           ))}
         </div>
       </Panel>

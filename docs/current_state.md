@@ -2,7 +2,7 @@
 
 ## Current phase
 
-v0.6 Stress Engine v1 has been merged to `main` and tagged as `v0.6-stress-engine-v1`. The active phase is v0.7 Terminal Shell + Data Source Center.
+v0.7 Terminal Shell + Data Source Center has been merged to `main` and tagged as `v0.7-terminal-shell-data-source-center`. The active phase is v0.8 Stress Bucket Detail Pages.
 
 ## Current runnable path
 
@@ -15,6 +15,7 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 - Markets supports grouped asset discovery, search, quick filters, local charts, and asset detail links.
 - Macro and Stress consume local indicator data with context-only framing.
 - Stress Engine v1 provides severity, momentum, drivers, counter-evidence, watch items, and confirmation pairs while keeping composite stress disabled.
+- Stress bucket detail pages let each bucket be inspected at `/stress/[bucket]` without turning the overview into one long report.
 - Evidence Library is read-only and deterministic.
 - Data Lab is becoming the Data Source Center: a user-facing control tower for generated/mock status, provider status, coverage, output files, refresh workflow, and warnings.
 - UI language can toggle locally between English and Chinese for core interface labels.
@@ -33,4 +34,4 @@ Trader Reader ingestion, AI chat, AI analyst, thesis validation, broker integrat
 
 ## Next phase candidates
 
-v0.8 Stress Bucket Detail Pages, v0.9 Evidence-first Analytics Upgrade, v1.0 Research Workspace MVP, v1.1 AI Mode Selector, v1.2 Trader Reader MVP, and v1.3 Research Flow Builder.
+v0.9 Evidence-first Analytics Upgrade, v1.0 Research Workspace MVP, v1.1 AI Mode Selector, v1.2 Trader Reader MVP, and v1.3 Research Flow Builder.
