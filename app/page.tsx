@@ -61,7 +61,7 @@ export default function Home() {
       </div>
 
       <div className="mb-6 grid gap-3 md:grid-cols-3">
-        <MetricTile label="Research base" value={`${coverage.assets?.real ?? 0}/${coverage.assets?.enabled ?? 0}`} detail="asset coverage; diagnostics in Data Lab" />
+        <MetricTile label="Research base" value={`${coverage.assets?.real ?? 0}/${coverage.assets?.enabled ?? 0}`} detail="asset coverage; diagnostics in Data Source Center" />
         <MetricTile label="Macro coverage" value={`${coverage.indicators?.real ?? 0}/${coverage.indicators?.enabled ?? 0}`} detail="indicator coverage; context only" />
         <MetricTile label="Evidence base" value={evidenceCards.cards?.length ?? signalCards.cards?.length ?? 0} detail="mechanical evidence, no AI analysis" />
       </div>

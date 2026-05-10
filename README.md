@@ -74,7 +74,7 @@ When the dev server is running, key local routes can be smoke-tested with:
 npm run qa:routes
 ```
 
-This does not replace visual review. Before merge, visually review Dashboard, Markets, asset detail pages, indicator detail pages, Stress, and Data Lab.
+This does not replace visual review. Before merge, visually review Dashboard, Markets, asset detail pages, indicator detail pages, Stress, and Data Source Center.
 
 ## Current Shape
 

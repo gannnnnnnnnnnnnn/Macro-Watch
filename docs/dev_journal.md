@@ -201,3 +201,11 @@ Append-only lightweight project journal.
 - notes/risks: Generated Stress Engine v1 produced 7 buckets and 5 confirmation pairs locally; composite remains unavailable by design. Severity is context percentile only, momentum depends on available directionality, and driver/counter-evidence text is mechanical. No AI, Trader Reader, news scraping, SQLite/database, backend, Cycle Atlas, trading signals, or full stress score was added. Generated JSON files remain ignored and unstaged.
 - next: Open Phase 2.7 PR for review, with visual attention on `/stress` and `/data-lab`.
 - commit hash if available: Pending.
+
+## 2026-05-10 Australia/Melbourne
+
+- task: v0.7 Terminal Shell + Data Source Center.
+- files changed: `lib/modules.ts`, `components/AppShell.tsx`, `components/ShellNav.tsx`, `app/data-lab/page.tsx`, `docs/product_vision.md`, `docs/datahub_lite_design.md`, `docs/current_state.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/trader_reader_design.md`, `scripts/qa/route_smoke.mjs`.
+- what changed: Added the module registry, moved shell navigation to grouped terminal-style modules with disabled future modules, reframed `/data-lab` as the read-only Data Source Center, added product vision and DataHub-lite design docs, and updated docs for v0.6 merged/tagged plus v0.7 active.
+- validation: `npm run build` passed; `npm run data:refresh` passed and wrote local generated JSON; final `npm run build` passed; `npm run qa:routes` passed against the existing dev server on port 3000 with HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/macro`, `/stress`, `/library`, and `/data-lab`.
+- notes/risks: Data refresh remains manual. DataHub-lite is a design contract, not live pub/sub. Future modules are visible but disabled.
