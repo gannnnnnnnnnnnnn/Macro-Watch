@@ -209,3 +209,11 @@ Append-only lightweight project journal.
 - what changed: Added the module registry, moved shell navigation to grouped terminal-style modules with disabled future modules, reframed `/data-lab` as the read-only Data Source Center, added product vision and DataHub-lite design docs, and updated docs for v0.6 merged/tagged plus v0.7 active.
 - validation: `npm run build` passed; `npm run data:refresh` passed and wrote local generated JSON; final `npm run build` passed; `npm run qa:routes` passed against the existing dev server on port 3000 with HTTP 200 for `/`, `/markets`, `/assets/SPY`, `/assets/NVDA`, `/assets/BTC-USD`, `/indicators/DGS10`, `/indicators/cpi-yoy`, `/macro`, `/stress`, `/library`, and `/data-lab`.
 - notes/risks: Data refresh remains manual. DataHub-lite is a design contract, not live pub/sub. Future modules are visible but disabled.
+
+## 2026-05-10 Australia/Melbourne
+
+- task: v0.8 Stress Bucket Detail Pages.
+- files changed: `app/stress/page.tsx`, `app/stress/[bucket]/page.tsx`, `app/data-lab/page.tsx`, `lib/stressRoutes.ts`, `scripts/qa/route_smoke.mjs`, `docs/current_state.md`, `docs/roadmap.md`, `docs/stress_engine_design.md`, `docs/product_vision.md`, `docs/dev_journal.md`.
+- what changed: Added dedicated `/stress/[bucket]` pages for bucket-level stress inspection, linked overview bucket cards to detail pages, surfaced drivers, counter-evidence, watch items, bucket indicators, missing candidates, and related existing evidence without changing Stress Engine v1 logic.
+- validation: `npm run build` passed; `npm run data:refresh` passed and refreshed ignored local generated JSON; final `npm run build` passed; `MACROWATCH_BASE_URL=http://192.168.1.4:3000 npm run qa:routes` passed with HTTP 200 for `/stress`, all seven `/stress/[bucket]` routes, and the existing smoke routes.
+- notes/risks: Context-only stress diagnosis remains unchanged. No composite stress score, trading signals, AI, new data sources, or pipeline changes were added.

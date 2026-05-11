@@ -10,6 +10,13 @@ const routes = [
   "/indicators/cpi-yoy",
   "/macro",
   "/stress",
+  "/stress/credit",
+  "/stress/liquidity",
+  "/stress/treasury",
+  "/stress/banking",
+  "/stress/household",
+  "/stress/leverage",
+  "/stress/volatility",
   "/library",
   "/data-lab",
 ];

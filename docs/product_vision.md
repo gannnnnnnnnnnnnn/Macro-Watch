@@ -58,6 +58,7 @@ Macro-Watch Terminal
    ├─ Markets
    ├─ Macro
    ├─ Stress
+   ├─ Stress bucket detail pages
    ├─ Assets
    ├─ Indicators
    ├─ Evidence Library
@@ -69,7 +70,6 @@ Macro-Watch Terminal
 
 ## Near-term Roadmap
 
-- v0.7 Terminal Shell + Data Source Center
 - v0.8 Stress Bucket Detail Pages
 - v0.9 Evidence-first Analytics Upgrade
 - v1.0 Research Workspace MVP

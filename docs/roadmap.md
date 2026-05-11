@@ -79,7 +79,7 @@ Status: merged to `main` and tagged `v0.6-stress-engine-v1`.
 
 ## v0.7 Terminal Shell + Data Source Center
 
-Status: active.
+Status: merged to `main` and tagged `v0.7-terminal-shell-data-source-center`.
 
 - Module registry for active and future modules
 - Terminal-style left navigation shell
@@ -90,7 +90,7 @@ Status: active.
 
 ## v0.8 Stress Bucket Detail Pages
 
-Status: planned.
+Status: active.
 
 - Dedicated stress bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`
 - Better driver, counter-evidence, and watch-item drilldowns

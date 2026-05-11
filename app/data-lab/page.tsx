@@ -83,7 +83,7 @@ export default function DataLabPage() {
         <MetricTile label="Indicator coverage" value={`${coverage.indicators?.real ?? 0}/${coverage.indicators?.enabled ?? 0}`} detail={`${getEnabledIndicatorCatalog().length} enabled raw/derived`} />
         <MetricTile label="Signal cards" value={signalCards.cards?.length ?? 0} detail="mechanical observations" />
         <MetricTile label="Evidence cards" value={evidenceCards.cards?.length ?? 0} detail="deterministic references" />
-        <MetricTile label="Stress buckets" value={stressEngine.buckets?.length ?? 0} detail={`${stressEngine.confirmation?.pairs?.length ?? 0} confirmation pairs`} />
+        <MetricTile label="Stress buckets" value={stressEngine.buckets?.length ?? 0} detail={`${stressEngine.confirmation?.pairs?.length ?? 0} confirmation pairs; bucket detail pages available`} />
         <MetricTile label="Warnings" value={warningCount(pipelineStatus, files)} detail="provider, output, and stress warnings" />
       </div>
 
