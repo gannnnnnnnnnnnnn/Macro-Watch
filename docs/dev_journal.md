@@ -217,3 +217,10 @@ Append-only lightweight project journal.
 - what changed: Added dedicated `/stress/[bucket]` pages for bucket-level stress inspection, linked overview bucket cards to detail pages, surfaced drivers, counter-evidence, watch items, bucket indicators, missing candidates, and related existing evidence without changing Stress Engine v1 logic.
 - validation: `npm run build` passed; `npm run data:refresh` passed and refreshed ignored local generated JSON; final `npm run build` passed; `MACROWATCH_BASE_URL=http://192.168.1.4:3000 npm run qa:routes` passed with HTTP 200 for `/stress`, all seven `/stress/[bucket]` routes, and the existing smoke routes.
 - notes/risks: Context-only stress diagnosis remains unchanged. No composite stress score, trading signals, AI, new data sources, or pipeline changes were added.
+
+## 2026-05-11 Australia/Melbourne
+
+- task: v0.9 Evidence-first Analytics Upgrade.
+- files changed: Evidence Library/detail routes, evidence route helpers, asset/indicator/stress related evidence links, docs, and route smoke.
+- what changed: Added deterministic `/library/[id]` pages, upgraded Evidence Library search/filtering, linked source ids and related signal cards, and surfaced compact related evidence blocks from detail pages without adding AI, new data sources, editing, or scoring logic.
+- validation: `npm run build` passed; `npm run data:refresh` passed and refreshed ignored local generated JSON; final `npm run build` passed; `MACROWATCH_BASE_URL=http://192.168.1.8:3000 npm run qa:routes` passed with HTTP 200 for `/library`, `/library/evidence%3ASPY`, `/library/evidence%3ADGS10`, asset/indicator/stress detail routes, and existing smoke routes.
