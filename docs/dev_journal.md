@@ -224,3 +224,10 @@ Append-only lightweight project journal.
 - files changed: Evidence Library/detail routes, evidence route helpers, asset/indicator/stress related evidence links, docs, and route smoke.
 - what changed: Added deterministic `/library/[id]` pages, upgraded Evidence Library search/filtering, linked source ids and related signal cards, and surfaced compact related evidence blocks from detail pages without adding AI, new data sources, editing, or scoring logic.
 - validation: `npm run build` passed; `npm run data:refresh` passed and refreshed ignored local generated JSON; final `npm run build` passed; `MACROWATCH_BASE_URL=http://192.168.1.8:3000 npm run qa:routes` passed with HTTP 200 for `/library`, `/library/evidence%3ASPY`, `/library/evidence%3ADGS10`, asset/indicator/stress detail routes, and existing smoke routes.
+
+## 2026-05-11 Australia/Melbourne
+
+- task: v1.0 Research Workspace MVP.
+- files changed: `lib/modules.ts`, `app/workspace/page.tsx`, `components/ResearchWorkspaceClient.tsx`, `components/AddToWorkspaceButton.tsx`, detail pages, docs, and route smoke.
+- what changed: Enabled `/workspace`, added a localStorage-only research workspace for selected assets, indicators, stress buckets, and deterministic evidence cards, added a structured evidence pack preview, and added lightweight Add to Workspace buttons on detail pages.
+- validation: `npm run build` passed; `npm run data:refresh` passed and refreshed ignored local generated JSON; final `npm run build` passed; `MACROWATCH_BASE_URL=http://192.168.1.8:3000 npm run qa:routes` passed with HTTP 200 for `/workspace`, asset/indicator/stress/evidence detail routes, and existing smoke routes.

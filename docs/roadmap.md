@@ -98,7 +98,7 @@ Status: merged to `main` and tagged `v0.8-stress-bucket-detail-pages`.
 
 ## v0.9 Evidence-first Analytics Upgrade
 
-Status: active.
+Status: merged to `main` and tagged `v0.9-evidence-first-analytics`.
 
 - Richer evidence browsing and filtering
 - Better signal/evidence traceability from research pages
@@ -107,10 +107,12 @@ Status: active.
 
 ## v1.0 Research Workspace MVP
 
-Status: planned.
+Status: active.
 
 - Local workspace layout for comparing modules
-- Manual notes and saved research context
+- Saved local research context using localStorage
+- Add assets, indicators, stress buckets, and evidence cards to `/workspace`
+- Basic deterministic evidence pack preview
 - No heavy dock manager or database by default
 
 ## v1.1 AI Mode Selector

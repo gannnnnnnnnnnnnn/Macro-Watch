@@ -2,7 +2,7 @@
 
 ## Current phase
 
-v0.8 Stress Bucket Detail Pages has been merged to `main` and tagged as `v0.8-stress-bucket-detail-pages`. The active phase is v0.9 Evidence-first Analytics Upgrade.
+v0.9 Evidence-first Analytics Upgrade has been merged to `main` and tagged as `v0.9-evidence-first-analytics`. The active phase is v1.0 Research Workspace MVP.
 
 ## Current runnable path
 
@@ -10,19 +10,20 @@ Next.js frontend reads `data/generated/*.json` first, then falls back to `data/m
 
 ## What works
 
-- Dashboard, Markets, Macro, Stress, Evidence Library, asset detail pages, and indicator detail pages are route-backed modules.
+- Dashboard, Markets, Macro, Stress, Evidence Library, Research Workspace, asset detail pages, and indicator detail pages are route-backed modules.
 - The app uses local generated/mock JSON for market snapshots, market history, macro indicators, stress indicators, indicator history, coverage summary, signal cards, evidence cards, stress engine output, and optional pipeline status.
 - Markets supports grouped asset discovery, search, quick filters, local charts, and asset detail links.
 - Macro and Stress consume local indicator data with context-only framing.
 - Stress Engine v1 provides severity, momentum, drivers, counter-evidence, watch items, and confirmation pairs while keeping composite stress disabled.
 - Stress bucket detail pages let each bucket be inspected at `/stress/[bucket]` without turning the overview into one long report.
 - Evidence Library is read-only and deterministic, with evidence details available at `/library/[id]`.
+- Research Workspace is active at `/workspace` and stores selected assets, indicators, stress buckets, and evidence cards in localStorage.
 - Data Lab is becoming the Data Source Center: a user-facing control tower for generated/mock status, provider status, coverage, output files, refresh workflow, and warnings.
 - UI language can toggle locally between English and Chinese for core interface labels.
 
 ## Current stack
 
-Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON files, localStorage pins/language preference, embedded public TradingView widget reference on asset detail pages, and a Python data pipeline using OpenBB/yfinance plus FRED through `pandas_datareader` with no-key CSV fallback.
+Next.js, TypeScript, Tailwind CSS v3, TradingView Lightweight Charts, local JSON files, localStorage pins/language preference/workspace state, embedded public TradingView widget reference on asset detail pages, and a Python data pipeline using OpenBB/yfinance plus FRED through `pandas_datareader` with no-key CSV fallback.
 
 ## Current data contract
 
@@ -34,4 +35,4 @@ Trader Reader ingestion, AI chat, AI analyst, thesis validation, broker integrat
 
 ## Next phase candidates
 
-v1.0 Research Workspace MVP, v1.1 AI Mode Selector, v1.2 Trader Reader MVP, and v1.3 Research Flow Builder.
+v1.1 AI Mode Selector, v1.2 Trader Reader MVP, and v1.3 Research Flow Builder.

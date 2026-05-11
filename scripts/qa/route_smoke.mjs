@@ -20,6 +20,7 @@ const routes = [
   "/library",
   "/library/evidence%3ASPY",
   "/library/evidence%3ADGS10",
+  "/workspace",
   "/data-lab",
 ];
 

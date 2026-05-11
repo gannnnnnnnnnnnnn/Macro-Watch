@@ -10,6 +10,8 @@ The product is not a trading bot and not a broker terminal. It is a research wor
 
 The Evidence Library is the audit layer between raw signals and future AI analysis.
 
+Research Workspace is the bridge between evidence cards and future AI-assisted thesis validation.
+
 ## Core Principles
 
 - Local first.
@@ -64,6 +66,7 @@ Macro-Watch Terminal
    ├─ Assets
    ├─ Indicators
    ├─ Evidence Library
+   ├─ Research Workspace
    ├─ Data Source Center
    ├─ Cycle Atlas later
    ├─ Trader Reader later
