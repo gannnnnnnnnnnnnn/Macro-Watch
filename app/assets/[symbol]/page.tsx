@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AddToWorkspaceButton } from "@/components/AddToWorkspaceButton";
 import { LightweightChart } from "@/components/LightweightChart";
 import { Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
@@ -25,6 +26,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
         <Link href="/markets" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Markets</Link>
         <StatusBadge label={asset.status} real={asset.real_data} />
         {asset.symbol ? <PinButton target={{ type: "asset", id: asset.symbol }} defaultPins={defaultPins} /> : null}
+        {asset.symbol ? <AddToWorkspaceButton type="asset" id={asset.symbol} label={asset.name ?? asset.symbol} /> : null}
       </div>
       <div className="grid gap-4 xl:grid-cols-[1fr_0.55fr]">
         <Panel title="Local history chart">

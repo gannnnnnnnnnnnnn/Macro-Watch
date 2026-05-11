@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToWorkspaceButton } from "@/components/AddToWorkspaceButton";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData, getEvidenceCards } from "@/lib/data";
 import { evidenceHref, sourceHref } from "@/lib/evidenceRoutes";
@@ -27,6 +28,7 @@ export default async function EvidenceDetailPage({ params }: { params: Promise<{
         <StatusBadge label={card.type ?? "evidence"} />
         <StatusBadge label={card.module ?? "module"} />
         <StatusBadge label={card.status} real={card.status === "real" || card.status === "ok"} />
+        {card.id ? <AddToWorkspaceButton type="evidence" id={card.id} label={card.title ?? card.id} /> : null}
         <span className="text-slate-400">AI generated: {card.ai_generated ? "true" : "false"}</span>
       </div>
 

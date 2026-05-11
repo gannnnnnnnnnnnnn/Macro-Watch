@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AddToWorkspaceButton } from "@/components/AddToWorkspaceButton";
 import { LightweightChart } from "@/components/LightweightChart";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
@@ -26,6 +27,7 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
         <Link href="/macro" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Macro</Link>
         <StatusBadge label={indicator.status} real={indicator.real_data} />
         {indicator.id ? <PinButton target={{ type: "indicator", id: indicator.id }} defaultPins={defaultPins} /> : null}
+        {indicator.id ? <AddToWorkspaceButton type="indicator" id={indicator.id} label={indicator.label ?? indicator.id} /> : null}
       </div>
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricTile label="Latest" value={formatValueWithUnit(indicator.value, indicator.unit)} detail={indicator.latest_date ? formatDate(indicator.latest_date) : "Run pipeline"} />

@@ -102,10 +102,10 @@ export const modules: MacroWatchModule[] = [
   {
     id: "research-workspace",
     label: "Research Workspace",
-    group: "future",
-    status: "disabled",
-    description: "Future multi-module workspace.",
-    badge: "future",
+    href: "/workspace",
+    group: "research",
+    status: "active",
+    description: "Local saved research workspace.",
   },
   {
     id: "flow-builder",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToWorkspaceButton } from "@/components/AddToWorkspaceButton";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData } from "@/lib/data";
 import { evidenceHref } from "@/lib/evidenceRoutes";
@@ -33,6 +34,7 @@ export default async function StressBucketPage({ params }: { params: Promise<{ b
         <Link href="/stress" className="rounded border border-line px-3 py-2 text-slate-300 hover:bg-panel hover:text-white">Back to Stress</Link>
         <StatusBadge label={bucket.status} real={bucket.status === "real" || bucket.status === "ok" || bucket.status === "partial"} />
         <StatusBadge label={bucket.severity} />
+        <AddToWorkspaceButton type="stressBucket" id={bucket.id ?? bucketId} label={bucket.label ?? bucketId} />
         <span className="text-slate-400">Context-only diagnosis. Not a full score or trading signal.</span>
       </div>
 
@@ -119,7 +121,10 @@ function UnavailableBucket({ bucketId }: { bucketId: string }) {
       <Panel title="Bucket unavailable">
         <p className="text-sm text-slate-300">This bucket is known, but it is not present in the current Stress Engine output.</p>
         <p className="mt-2 text-sm text-slate-500">Run the local refresh workflow for generated context. This page remains context-only and does not add a composite score or trading signal.</p>
-        <Link href="/stress" className="mt-4 inline-flex rounded border border-line px-3 py-2 text-sm text-slate-300 hover:bg-ink hover:text-white">Back to Stress</Link>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link href="/stress" className="inline-flex rounded border border-line px-3 py-2 text-sm text-slate-300 hover:bg-ink hover:text-white">Back to Stress</Link>
+          <AddToWorkspaceButton type="stressBucket" id={bucketId} label={bucketId} />
+        </div>
       </Panel>
     </>
   );
