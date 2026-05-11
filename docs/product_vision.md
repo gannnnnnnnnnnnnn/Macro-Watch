@@ -8,6 +8,8 @@ Macro-Watch is a local-first macro research terminal that connects market data, 
 
 The product is not a trading bot and not a broker terminal. It is a research workbench for observing macro state, transition signals, financial stress, and evidence trails. The goal is to help the user find, compare, and validate macro views with structured evidence.
 
+The Evidence Library is the audit layer between raw signals and future AI analysis.
+
 ## Core Principles
 
 - Local first.

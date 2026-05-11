@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { getCockpitData } from "@/lib/data";
+import { evidenceHref } from "@/lib/evidenceRoutes";
 import { formatDelta } from "@/lib/format";
 import { STRESS_BUCKET_ORDER, stressBucketTitle } from "@/lib/stressRoutes";
 import type { EvidenceCard, StressEngineBucket, StressEngineCounterEvidence, StressEngineDriver, StressEngineIndicator } from "@/lib/types";
@@ -160,7 +161,7 @@ function RelatedEvidence({ cards }: { cards: EvidenceCard[] }) {
     <Panel title="Related evidence">
       <div className="space-y-3">
         {(cards.length ? cards : [{ id: "none", title: "No related evidence", summary: "No existing evidence card matched this bucket source id." }]).map((card) => (
-          <LinkOrBox key={card.id ?? card.title} href={card.evidence?.[0]?.href}>
+          <LinkOrBox key={card.id ?? card.title} href={card.id && card.id !== "none" ? evidenceHref(card.id) : undefined}>
             <p className="font-medium text-white">{card.title ?? card.id}</p>
             <p className="mt-1 text-sm text-slate-400">{card.summary ?? "Mechanical evidence reference."}</p>
             <p className="mt-2 text-xs text-slate-500">{card.source_ids?.join(", ") ?? "No source ids"}</p>

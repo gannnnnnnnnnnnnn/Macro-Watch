@@ -47,13 +47,17 @@ Evidence cards reference signal cards and source pages. They are mechanical summ
 
 Evidence cards are not AI prose, notes, news summaries, or article ingestion.
 
+Evidence detail pages exist at `/library/[id]`. They expose summary fields, source ids, evidence links, tags, and related signal cards while preserving the generated-first/mock-fallback data contract. The pages are deterministic and read-only.
+
+Evidence-first means every analysis surface should be traceable to source ids or evidence cards. Future AI Analyst work must cite evidence cards instead of free-talking around the data. Future Trader Reader claim verification should produce claim/evidence links, not ungrounded prose.
+
 ## Stress Engine Relationship
 
 The stress engine consumes signal cards, not vibes. Phase 2.7 upgrades `stress_engine.json` from a skeleton into a transparent diagnosis layer with bucket severity, momentum, drivers, counter-evidence, watch items, and a light confirmation matrix.
 
 Severity is context-only and based on available signal-card percentiles. Momentum is derived from recent signal-card changes only when directionality is available. Driver and counter-evidence text is mechanical and auditable. The confirmation matrix is a relationship map, not a composite model.
 
-AI can later read signal, evidence, and stress outputs, but it should cite evidence and should not invent scores, missing data, or certainty.
+AI can later read signal, evidence, and stress outputs, but it must cite evidence cards and should not invent scores, missing data, or certainty.
 
 ## Future Modules
 

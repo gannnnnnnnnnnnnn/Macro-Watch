@@ -4,17 +4,19 @@ import { Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
 import { TradingViewWidget } from "@/components/TradingViewWidget";
 import { getCockpitData, getEnabledAssetCatalog, getPinCatalog, resolveAsset } from "@/lib/data";
+import { evidenceHref } from "@/lib/evidenceRoutes";
 import { formatCompact, formatDate, formatDateTime, formatNumber, formatPercent, formatValueWithUnit } from "@/lib/format";
 
 export default async function AssetDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
   const { symbol: rawSymbol } = await params;
   const symbol = decodeURIComponent(rawSymbol);
-  const { market, marketHistory, pipelineStatus } = getCockpitData();
+  const { market, marketHistory, pipelineStatus, evidenceCards } = getCockpitData();
   const asset = resolveAsset(symbol, market);
   const defaultPins = getPinCatalog();
   const history = asset.symbol ? marketHistory.symbols?.[asset.symbol]?.rows ?? [] : [];
   const recent = history.slice(-12).reverse();
   const change = formatPercent(asset.change);
+  const relatedEvidence = (evidenceCards.cards ?? []).filter((card) => asset.symbol && card.source_ids?.includes(asset.symbol)).slice(0, 5);
 
   return (
     <>
@@ -61,13 +63,16 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
             </table>
           </div>
         </Panel>
-        <details className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
-          <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">External TradingView reference</summary>
-          <div className="mt-3">
-            <TradingViewWidget symbol={asset.symbol} />
-            <p className="mt-3 text-xs text-slate-500">External public reference only. Primary chart uses local generated JSON.</p>
-          </div>
-        </details>
+        <div className="space-y-4">
+          <RelatedEvidence cards={relatedEvidence} />
+          <details className="rounded-lg border border-line bg-panel p-4 shadow-xl shadow-black/20">
+            <summary className="cursor-pointer text-sm font-semibold uppercase tracking-wide text-slate-300">External TradingView reference</summary>
+            <div className="mt-3">
+              <TradingViewWidget symbol={asset.symbol} />
+              <p className="mt-3 text-xs text-slate-500">External public reference only. Primary chart uses local generated JSON.</p>
+            </div>
+          </details>
+        </div>
       </div>
     </>
   );
@@ -75,4 +80,27 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ sy
 
 export function generateStaticParams() {
   return getEnabledAssetCatalog().map((asset) => ({ symbol: asset.symbol }));
+}
+
+function RelatedEvidence({ cards }: { cards: { id?: string; title?: string; summary?: string; source_ids?: string[] }[] }) {
+  return (
+    <Panel title="Related evidence">
+      <div className="space-y-3">
+        {(cards.length ? cards : [{ id: "none", title: "No related evidence", summary: "No evidence card matched this asset source id." }]).map((card) => (
+          card.id && card.id !== "none" ? (
+            <Link key={card.id} href={evidenceHref(card.id)} className="block rounded border border-line bg-ink p-3 hover:border-cyan-400/40">
+              <p className="font-medium text-white">{card.title ?? card.id}</p>
+              <p className="mt-1 text-sm text-slate-400">{card.summary ?? "Mechanical evidence reference."}</p>
+              <p className="mt-2 text-xs text-slate-500">{card.source_ids?.join(", ") ?? "No source ids"}</p>
+            </Link>
+          ) : (
+            <div key={card.id ?? card.title} className="rounded border border-line bg-ink p-3">
+              <p className="font-medium text-white">{card.title}</p>
+              <p className="mt-1 text-sm text-slate-400">{card.summary}</p>
+            </div>
+          )
+        ))}
+      </div>
+    </Panel>
+  );
 }

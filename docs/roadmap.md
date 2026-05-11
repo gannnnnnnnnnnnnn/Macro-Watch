@@ -90,7 +90,7 @@ Status: merged to `main` and tagged `v0.7-terminal-shell-data-source-center`.
 
 ## v0.8 Stress Bucket Detail Pages
 
-Status: active.
+Status: merged to `main` and tagged `v0.8-stress-bucket-detail-pages`.
 
 - Dedicated stress bucket detail pages such as `/stress/credit`, `/stress/liquidity`, and `/stress/banking`
 - Better driver, counter-evidence, and watch-item drilldowns
@@ -98,11 +98,12 @@ Status: active.
 
 ## v0.9 Evidence-first Analytics Upgrade
 
-Status: planned.
+Status: active.
 
 - Richer evidence browsing and filtering
 - Better signal/evidence traceability from research pages
 - Keep evidence deterministic and auditable
+- Evidence detail pages at `/library/[id]`
 
 ## v1.0 Research Workspace MVP
 

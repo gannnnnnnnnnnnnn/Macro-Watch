@@ -3,6 +3,7 @@ import { LightweightChart } from "@/components/LightweightChart";
 import { MetricTile, Panel, ShellTitle, StatusBadge } from "@/components/Cockpit";
 import { PinButton } from "@/components/PinsClient";
 import { getCockpitData, getEnabledIndicatorCatalog, getPinCatalog, indicatorHistoryFor, resolveIndicator } from "@/lib/data";
+import { evidenceHref } from "@/lib/evidenceRoutes";
 import { formatDate, formatDateTime, formatDelta, formatValueWithUnit } from "@/lib/format";
 
 export function generateStaticParams() {
@@ -12,10 +13,11 @@ export function generateStaticParams() {
 export default async function IndicatorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
-  const { macro, stress, indicatorHistory, pipelineStatus } = getCockpitData();
+  const { macro, stress, indicatorHistory, pipelineStatus, evidenceCards } = getCockpitData();
   const indicator = resolveIndicator(id, macro, stress);
   const defaultPins = getPinCatalog();
   const rows = indicatorHistoryFor(indicator.id ?? id, indicatorHistory);
+  const relatedEvidence = (evidenceCards.cards ?? []).filter((card) => indicator.id && card.source_ids?.includes(indicator.id)).slice(0, 5);
 
   return (
     <>
@@ -44,23 +46,47 @@ export default async function IndicatorDetailPage({ params }: { params: Promise<
           </div>
         </Panel>
       </div>
-      <div className="mt-4">
-      <Panel title="Recent observations">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[420px] text-left text-sm">
-            <thead className="text-xs uppercase tracking-wide text-slate-500"><tr><th className="py-2">Date</th><th>Value</th></tr></thead>
-            <tbody>
-              {(rows.length ? rows.slice(-16).reverse() : [{ date: "Unavailable", value: null }]).map((row, index) => (
-                <tr key={`${row.date}-${index}`} className="border-t border-line">
-                  <td className="py-3 font-medium text-white">{row.date ? formatDate(row.date) : "N/A"}</td>
-                  <td>{formatValueWithUnit(row.value, indicator.unit)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Panel>
+      <div className="mt-4 grid gap-4 xl:grid-cols-[1fr_0.55fr]">
+        <Panel title="Recent observations">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[420px] text-left text-sm">
+              <thead className="text-xs uppercase tracking-wide text-slate-500"><tr><th className="py-2">Date</th><th>Value</th></tr></thead>
+              <tbody>
+                {(rows.length ? rows.slice(-16).reverse() : [{ date: "Unavailable", value: null }]).map((row, index) => (
+                  <tr key={`${row.date}-${index}`} className="border-t border-line">
+                    <td className="py-3 font-medium text-white">{row.date ? formatDate(row.date) : "N/A"}</td>
+                    <td>{formatValueWithUnit(row.value, indicator.unit)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+        <RelatedEvidence cards={relatedEvidence} />
       </div>
     </>
+  );
+}
+
+function RelatedEvidence({ cards }: { cards: { id?: string; title?: string; summary?: string; source_ids?: string[] }[] }) {
+  return (
+    <Panel title="Related evidence">
+      <div className="space-y-3">
+        {(cards.length ? cards : [{ id: "none", title: "No related evidence", summary: "No evidence card matched this indicator source id." }]).map((card) => (
+          card.id && card.id !== "none" ? (
+            <Link key={card.id} href={evidenceHref(card.id)} className="block rounded border border-line bg-ink p-3 hover:border-cyan-400/40">
+              <p className="font-medium text-white">{card.title ?? card.id}</p>
+              <p className="mt-1 text-sm text-slate-400">{card.summary ?? "Mechanical evidence reference."}</p>
+              <p className="mt-2 text-xs text-slate-500">{card.source_ids?.join(", ") ?? "No source ids"}</p>
+            </Link>
+          ) : (
+            <div key={card.id ?? card.title} className="rounded border border-line bg-ink p-3">
+              <p className="font-medium text-white">{card.title}</p>
+              <p className="mt-1 text-sm text-slate-400">{card.summary}</p>
+            </div>
+          )
+        ))}
+      </div>
+    </Panel>
   );
 }

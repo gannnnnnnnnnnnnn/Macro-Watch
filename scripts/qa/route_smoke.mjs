@@ -18,6 +18,8 @@ const routes = [
   "/stress/leverage",
   "/stress/volatility",
   "/library",
+  "/library/evidence%3ASPY",
+  "/library/evidence%3ADGS10",
   "/data-lab",
 ];
 
